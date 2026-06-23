@@ -4,6 +4,7 @@
 
 [build.environment]
   NODE_VERSION = "22"
+  SECRETS_SCAN_OMIT_KEYS = "OPENAI_TTS_VOICE,OPENAI_MODEL,OPENAI_TTS_MODEL,OPENAI_STT_MODEL"
 
 [[redirects]]
   from = "/*"
