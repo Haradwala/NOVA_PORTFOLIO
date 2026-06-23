@@ -20,7 +20,9 @@ export default function About() {
   const skillsRef = useRef(null);
 
   useEffect(() => {
-    const unregister = registerSection('skills', skillsRef);
+    const unregisterSkills = registerSection('skills', skillsRef);
+    const unregisterAbout  = registerSection('about', sectionRef);
+
     if (window.__pendingScroll === 'skills') {
       window.__pendingScroll = null;
       setTimeout(() => {
@@ -30,8 +32,17 @@ export default function About() {
           highlightSection('skills');
         }
       }, 350);
+    } else if (window.__pendingScroll === 'about') {
+      window.__pendingScroll = null;
+      setTimeout(() => {
+        sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 350);
     }
-    return unregister;
+
+    return () => {
+      unregisterSkills();
+      unregisterAbout();
+    };
   }, []);
 
   useEffect(() => {
@@ -66,6 +77,7 @@ export default function About() {
     <section
       id="about"
       ref={sectionRef}
+      className="about-section"
       style={{
         position: 'relative', zIndex: 2,
         padding: '7rem 3.5rem',
@@ -73,6 +85,24 @@ export default function About() {
         background: 'transparent', // let universe show through
       }}
     >
+      <style>{`
+        @media (max-width: 768px) {
+          .about-section {
+            padding: 4rem 1.5rem !important;
+            padding-left: calc(1.5rem + env(safe-area-inset-left)) !important;
+            padding-right: calc(1.5rem + env(safe-area-inset-right)) !important;
+            overflow-x: hidden !important;
+          }
+          .about-top-split {
+            grid-template-columns: 1fr !important;
+            gap: 2.5rem !important;
+          }
+          .about-bottom-split {
+            grid-template-columns: 1fr !important;
+            gap: 1.5rem !important;
+          }
+        }
+      `}</style>
       {/* Subtle section darkening overlay so text stays readable */}
       <div style={{
         position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none',
@@ -105,7 +135,7 @@ export default function About() {
         </div>
 
         {/* ── Top split ── */}
-        <div style={{
+        <div className="about-top-split" style={{
           display: 'grid', gridTemplateColumns: '1fr 1fr',
           gap: '5rem', alignItems: 'start', marginBottom: '4rem',
         }}>
@@ -146,7 +176,7 @@ export default function About() {
         <div className="reveal" style={{ height: 1, background: 'linear-gradient(90deg,var(--rose),var(--violet),transparent)', opacity: .25, margin: '3rem 0' }} />
 
         {/* ── Bottom 3-col (glass cards) ── */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '1.5rem' }}>
+        <div className="about-bottom-split" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '1.5rem' }}>
 
           {/* Skills */}
           <div ref={skillsRef} className="reveal" style={{ ...glass, padding: '1.5rem' }}>

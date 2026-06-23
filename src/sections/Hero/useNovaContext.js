@@ -12,12 +12,18 @@ export function useNovaContext() {
   const [lastEntity, setLastEntity] = useState(null);
   const [lastAction, setLastAction] = useState(null);
 
+  // Pending action UX states
+  const [pendingAction, setPendingAction] = useState(null);
+  const [pendingPayload, setPendingPayload] = useState(null);
+
   const resetContext = useCallback(() => {
     setActiveSubNodes([]);
     setHighlightedNode(null);
     setPreviewCard(null);
     setNavigationLock(false);
     setPendingRoute(null);
+    setPendingAction(null);
+    setPendingPayload(null);
   }, []);
 
   const triggerPreview = useCallback((previewPayload) => {
@@ -53,7 +59,13 @@ export function useNovaContext() {
     lastEntity,
     setLastEntity,
     lastAction,
-    setLastAction
+    setLastAction,
+
+    // Pending action UX fields
+    pendingAction,
+    setPendingAction,
+    pendingPayload,
+    setPendingPayload
   };
 }
 

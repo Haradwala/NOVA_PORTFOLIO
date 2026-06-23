@@ -4,6 +4,24 @@ import { useNovaKnowledge } from './useNovaKnowledge';
 import { useNovaActions } from './useNovaActions';
 import { INTENT_KEYWORDS } from './constants';
 
+function isNavigationQuery(text) {
+  const clean = text.toLowerCase().trim();
+  const navPhrases = [
+    'show me',
+    'show',
+    'take me',
+    'open',
+    'navigate',
+    'go to',
+    'scroll to',
+    'display',
+    'visualize',
+    'launch',
+    'jump to'
+  ];
+  return navPhrases.some(phrase => clean.includes(phrase));
+}
+
 function resolvePronouns(text, lastEntity) {
   if (!lastEntity) return text;
   
@@ -37,7 +55,11 @@ export function useNovaNavigation({ novaContext, speakReply }) {
     navigationLock,
     setNavigationLock,
     resetContext,
-    setHighlightedNode
+    setHighlightedNode,
+    pendingAction,
+    setPendingAction,
+    pendingPayload,
+    setPendingPayload
   } = novaContext;
 
   // Triggers core event pulse + route transition
@@ -59,6 +81,29 @@ export function useNovaNavigation({ novaContext, speakReply }) {
   const handleQueryIntent = useCallback(async (queryText) => {
     const text = queryText.toLowerCase().trim();
     if (!text) return null;
+
+    // ── PENDING ACTION PROCESSING ──
+    if (pendingAction) {
+      const isConfirmation = ['yes', 'sure', 'okay', 'take me there', 'show me'].some(kw => text === kw || text.includes(kw));
+      const isCancellation = ['no', 'nope', 'not now', 'maybe later', 'cancel', 'never mind', 'stay here'].some(kw => text === kw || text.includes(kw));
+
+      if (isConfirmation) {
+        const action = pendingAction;
+        const payload = pendingPayload;
+        setPendingAction(null);
+        setPendingPayload(null);
+        executeAction(action, payload);
+        return "Sure, taking you there now.";
+      } else if (isCancellation) {
+        setPendingAction(null);
+        setPendingPayload(null);
+        return "No problem. Let me know if you'd like to explore that section later.";
+      } else {
+        // Clear pending action if user says something else, then proceed to normal processing
+        setPendingAction(null);
+        setPendingPayload(null);
+      }
+    }
 
     // ── CASE A: Navigation Lock is Active (Waiting for confirmation) ──
     if (navigationLock) {
@@ -105,16 +150,33 @@ export function useNovaNavigation({ novaContext, speakReply }) {
         novaContext.setLastEntity(entity);
       }
 
-      // Execute action immediately
       const actionPayload = knowledgeResponse.preview?.data?.id || null;
-      executeAction(knowledgeResponse.action, actionPayload);
 
-      // Trigger preview panel rendering
-      if (knowledgeResponse.preview) {
-        triggerPreview(knowledgeResponse.preview);
+      // Handle navigation actions with UX confirmation prompt
+      if (knowledgeResponse.action) {
+        if (isNavigationQuery(text)) {
+          // Navigation query -> execute action immediately
+          executeAction(knowledgeResponse.action, actionPayload);
+          if (knowledgeResponse.preview) {
+            triggerPreview(knowledgeResponse.preview);
+          }
+          return knowledgeResponse.text;
+        } else {
+          // Informational query -> store pending action & payload, prompt for navigation
+          setPendingAction(knowledgeResponse.action);
+          setPendingPayload(actionPayload);
+          if (knowledgeResponse.preview) {
+            triggerPreview(knowledgeResponse.preview);
+          }
+          return `${knowledgeResponse.text} Would you like me to take you there?`;
+        }
+      } else {
+        // No action associated with this intent
+        if (knowledgeResponse.preview) {
+          triggerPreview(knowledgeResponse.preview);
+        }
+        return knowledgeResponse.text;
       }
-
-      return knowledgeResponse.text;
     }
 
     // ── CASE C: Broad category navigation requests ──
@@ -149,7 +211,7 @@ export function useNovaNavigation({ novaContext, speakReply }) {
     }
 
     return null;
-  }, [navigationLock, pendingRoute, activeSubNodes, queryKnowledge, triggerPreview, triggerSubNodes, setPendingRoute, setNavigationLock, executeNavigation, executeAction, novaContext]);
+  }, [navigationLock, pendingRoute, activeSubNodes, queryKnowledge, triggerPreview, triggerSubNodes, setPendingRoute, setNavigationLock, executeNavigation, executeAction, novaContext, pendingAction, pendingPayload, setPendingAction, setPendingPayload]);
 
   return {
     handleQueryIntent,

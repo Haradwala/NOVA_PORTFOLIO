@@ -224,7 +224,28 @@ export default function Work() {
 
   return (
     <>
-      <section id="work" ref={sectionRef} style={{ position:'relative', zIndex:2, padding:'7rem 3.5rem', background:'transparent' }}>
+      <section id="work" ref={sectionRef} className="work-section" style={{ position:'relative', zIndex:2, padding:'7rem 3.5rem', background:'transparent' }}>
+        <style>{`
+          .work-grid {
+            columns: 3;
+          }
+          @media (max-width: 1024px) {
+            .work-grid {
+              columns: 2;
+            }
+            .work-section {
+              padding: 4rem 1.5rem !important;
+              padding-left: calc(1.5rem + env(safe-area-inset-left)) !important;
+              padding-right: calc(1.5rem + env(safe-area-inset-right)) !important;
+              overflow-x: hidden !important;
+            }
+          }
+          @media (max-width: 640px) {
+            .work-grid {
+              columns: 1;
+            }
+          }
+        `}</style>
         <div style={{ position:'absolute', inset:0, zIndex:0, pointerEvents:'none', background:'radial-gradient(ellipse 100% 100% at 50% 50%, rgba(7,7,15,.5) 0%, rgba(7,7,15,.72) 100%)' }} />
 
         <div style={{ position:'relative', zIndex:1 }}>
@@ -247,7 +268,7 @@ export default function Work() {
             </div>
           </div>
 
-          <div style={{ maxWidth:1100, margin:'0 auto', columns:3, columnGap:'1.1rem' }}>
+          <div className="work-grid" style={{ maxWidth:1100, margin:'0 auto', columnGap:'1.1rem' }}>
             {shown.map((p, i) => <ProjectCard key={i} p={p} onDeepDive={setActiveId} />)}
           </div>
         </div>

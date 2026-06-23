@@ -1,9 +1,8 @@
 export const CORE_NODES = [
-  { label: 'Projects',   route: '/work',    description: 'Interactive project portfolio' },
-  { label: 'Skills',     route: '/about',   description: 'Core technical capabilities' },
-  { label: 'Experience', route: '/about',   description: 'Professional history' },
-  { label: 'Contact',    route: '/contact', description: 'Get in touch' },
-  { label: 'AI Systems', route: '/chat',    description: 'Integrated assistant capabilities' },
+  { label: 'About',    route: '/', description: 'Learn about Shadab' },
+  { label: 'Skills',   route: '/', description: 'Technical toolkit' },
+  { label: 'Projects', route: '/', description: 'Featured case studies' },
+  { label: 'Contact',  route: '/', description: 'Get in touch' },
 ];
 
 export const INTENT_KEYWORDS = {

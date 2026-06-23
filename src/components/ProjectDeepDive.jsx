@@ -130,6 +130,15 @@ export default function ProjectDeepDive({ projectId, onClose }) {
     return () => window.removeEventListener('keydown', h);
   }, [close]);
 
+  // Body scroll lock
+  useEffect(() => {
+    const orig = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = orig;
+    };
+  }, []);
+
   if (!cs) return null;
 
   const isOpen = phase === 'open';
@@ -141,13 +150,18 @@ export default function ProjectDeepDive({ projectId, onClose }) {
   ];
 
   return (
-    <div style={{
+    <div className="modal-container" style={{
       position: 'fixed', inset: 0, zIndex: 2000,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       padding: '1rem',
+      paddingTop: 'calc(1rem + env(safe-area-inset-top))',
+      paddingBottom: 'calc(1rem + env(safe-area-inset-bottom))',
+      paddingLeft: 'calc(1rem + env(safe-area-inset-left))',
+      paddingRight: 'calc(1rem + env(safe-area-inset-right))',
       transition: 'opacity .5s ease, transform .5s cubic-bezier(.34,1.1,.64,1)',
       opacity: isOpen ? 1 : 0,
       transform: isOpen ? 'scale(1)' : 'scale(.94)',
+      overflow: 'hidden',
     }}>
       {/* Backdrop */}
       <div
@@ -160,7 +174,7 @@ export default function ProjectDeepDive({ projectId, onClose }) {
       />
 
       {/* Main card — flies toward viewer */}
-      <div style={{
+      <div className="modal-card" style={{
         position: 'relative', zIndex: 1,
         width: '100%', maxWidth: 1000,
         maxHeight: '90vh',
@@ -174,9 +188,66 @@ export default function ProjectDeepDive({ projectId, onClose }) {
         transition: 'all .5s cubic-bezier(.34,1.1,.64,1)',
         transform: isOpen ? 'translateZ(0) rotateX(0deg)' : 'translateZ(-200px) rotateX(8deg)',
       }}>
+        <style>{`
+          @media (max-width: 768px) {
+            .modal-container {
+              padding: 0 !important;
+            }
+            .modal-card {
+              grid-template-columns: 1fr !important;
+              grid-template-rows: auto !important;
+              max-height: 100vh !important;
+              height: 100% !important;
+              margin: 0 !important;
+              border-radius: 0 !important;
+              overflow-y: auto !important;
+              -webkit-overflow-scrolling: touch;
+              padding-top: env(safe-area-inset-top) !important;
+              padding-bottom: env(safe-area-inset-bottom) !important;
+            }
+            .modal-left {
+              min-height: auto !important;
+              height: 200px !important;
+            }
+            .modal-right-container {
+              overflow: visible !important;
+              display: block !important;
+            }
+            .modal-content-panel {
+              overflow-y: visible !important;
+              padding: 1.2rem 1rem !important;
+            }
+            .modal-header {
+              position: sticky !important;
+              top: 0 !important;
+              z-index: 100 !important;
+              background: rgba(14, 10, 35, 0.98) !important;
+              backdrop-filter: blur(10px) !important;
+              padding: 1rem 1.2rem 0.75rem !important;
+              border-bottom: 1px solid rgba(255,255,255,.06) !important;
+            }
+            .modal-footer {
+              padding: 0.75rem 1.2rem !important;
+            }
+          }
+          @media (max-width: 480px) {
+            .metrics-grid {
+              grid-template-columns: 1fr !important;
+              gap: 0.5rem !important;
+            }
+            .step-nav {
+              padding: 0.5rem 1rem !important;
+              gap: 0.25rem !important;
+            }
+            .step-btn {
+              padding: 0.3rem 0.6rem !important;
+              font-size: 0.6rem !important;
+            }
+          }
+        `}</style>
 
         {/* LEFT — 3D scene */}
-        <div style={{ background: 'rgba(8,5,20,.8)', position: 'relative', minHeight: 480 }}>
+        <div className="modal-left" style={{ background: 'rgba(8,5,20,.8)', position: 'relative', minHeight: 480 }}>
           <ThreeScene color={cs.color} isOpen={isOpen} />
 
           {/* Tag overlay */}
@@ -197,10 +268,10 @@ export default function ProjectDeepDive({ projectId, onClose }) {
         </div>
 
         {/* RIGHT — case study content */}
-        <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <div className="modal-right-container" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
 
           {/* Header */}
-          <div style={{
+          <div className="modal-header" style={{
             padding: '1.5rem 1.5rem 1rem',
             borderBottom: '1px solid rgba(255,255,255,.06)',
             display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start',
@@ -211,9 +282,9 @@ export default function ProjectDeepDive({ projectId, onClose }) {
           </div>
 
           {/* Step nav */}
-          <div style={{ display: 'flex', padding: '.75rem 1.5rem', gap: '.4rem', borderBottom: '1px solid rgba(255,255,255,.06)' }}>
+          <div className="step-nav" style={{ display: 'flex', padding: '.75rem 1.5rem', gap: '.4rem', borderBottom: '1px solid rgba(255,255,255,.06)' }}>
             {steps.map((s, i) => (
-              <button key={s.label} onClick={() => setStep(i)} style={{
+              <button key={s.label} className="step-btn" onClick={() => setStep(i)} style={{
                 padding: '.35rem .9rem', borderRadius: 50, cursor: 'pointer',
                 background: step === i ? `${cs.accent}22` : 'rgba(255,255,255,.04)',
                 color: step === i ? cs.accent : 'rgba(255,255,255,.4)',
@@ -225,7 +296,7 @@ export default function ProjectDeepDive({ projectId, onClose }) {
           </div>
 
           {/* Content panels */}
-          <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem', scrollbarWidth: 'thin', scrollbarColor: `${cs.accent}40 transparent` }}>
+          <div className="modal-content-panel" style={{ flex: 1, overflowY: 'auto', padding: '1.5rem', scrollbarWidth: 'thin', scrollbarColor: `${cs.accent}40 transparent` }}>
 
             {step === 0 && (
               <div style={{ animation: 'msgIn .35s ease both' }}>
@@ -234,7 +305,7 @@ export default function ProjectDeepDive({ projectId, onClose }) {
                   <div style={{ fontSize: '.58rem', letterSpacing: '.16em', textTransform: 'uppercase', color: cs.accent, marginBottom: '.6rem' }}>The challenge</div>
                   <p style={{ fontSize: '.82rem', lineHeight: 1.8, color: 'rgba(160,160,192,.8)', fontStyle: 'italic' }}>{cs.challenge}</p>
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '.65rem' }}>
+                <div className="metrics-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '.65rem' }}>
                   {cs.metrics.map(m => (
                     <div key={m.lbl} style={{ background: 'rgba(255,255,255,.04)', border: `1px solid ${cs.accent}25`, borderRadius: 12, padding: '.85rem', textAlign: 'center' }}>
                       <div style={{ fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: '1.4rem', color: cs.accent, lineHeight: 1 }}>{m.val}</div>
@@ -267,7 +338,7 @@ export default function ProjectDeepDive({ projectId, onClose }) {
                 <div style={{ background: `linear-gradient(135deg, ${cs.accent}12, rgba(139,92,246,.08))`, border: `1px solid ${cs.accent}30`, borderRadius: 16, padding: '1.5rem', marginBottom: '1.5rem' }}>
                   <p style={{ fontSize: '.92rem', lineHeight: 1.9, color: 'rgba(230,230,245,.9)' }}>{cs.outcome}</p>
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '.65rem', marginBottom: '1.5rem' }}>
+                <div className="metrics-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '.65rem', marginBottom: '1.5rem' }}>
                   {cs.metrics.map(m => (
                     <div key={m.lbl} style={{ background: `${cs.accent}12`, border: `1px solid ${cs.accent}30`, borderRadius: 12, padding: '1rem', textAlign: 'center' }}>
                       <div style={{ fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: '1.6rem', color: cs.accent, lineHeight: 1 }}>{m.val}</div>
@@ -283,7 +354,7 @@ export default function ProjectDeepDive({ projectId, onClose }) {
           </div>
 
           {/* Footer nav */}
-          <div style={{ padding: '.85rem 1.5rem', borderTop: '1px solid rgba(255,255,255,.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div className="modal-footer" style={{ padding: '.85rem 1.5rem', borderTop: '1px solid rgba(255,255,255,.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <button onClick={() => setStep(s => Math.max(0, s-1))} disabled={step===0}
               style={{ padding: '.45rem 1rem', borderRadius: 50, border: '1px solid rgba(255,255,255,.1)', background: 'none', color: step===0 ? 'rgba(255,255,255,.2)' : 'rgba(255,255,255,.6)', fontSize: '.65rem', cursor: step===0 ? 'default' : 'pointer', transition: 'all .2s' }}>← Prev</button>
             <div style={{ display: 'flex', gap: 6 }}>

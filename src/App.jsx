@@ -93,11 +93,15 @@ function PortfolioShell({ showWelcome, onWelcomeDone, novaTrigger, onAskNova }) 
   return (
     <>
       {showWelcome && <Welcome onDone={onWelcomeDone} />}
-      <Navbar onAskNova={onAskNova} />
       <PageFade>
         <Routes>
           <Route path="/" element={
-            <Hero novaPanelOpen={novaTrigger} onOpenNova={onAskNova} />
+            <>
+              <Hero novaPanelOpen={novaTrigger} onOpenNova={onAskNova} />
+              <About />
+              <Work />
+              <Contact />
+            </>
           } />
           <Route path="/about"   element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><About /></div>} />
           <Route path="/work"    element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Work /></div>} />

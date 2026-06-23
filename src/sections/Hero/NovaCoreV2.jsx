@@ -49,8 +49,8 @@ export default function NovaCoreV2({
   const [hoveredNode, setHoveredNode] = useState(null);
   const [isDesktop, setIsDesktop] = useState(typeof window !== 'undefined' && window.innerWidth > 1024);
 
-  const leftNodes = ['Projects', 'Skills', 'Experience'];
-  const rightNodes = ['AI Systems', 'Contact'];
+  const leftNodes = ['About', 'Skills'];
+  const rightNodes = ['Projects', 'Contact'];
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -132,13 +132,15 @@ export default function NovaCoreV2({
           />
           {label}
         </div>
-        <div
-          className={`font-sans text-[8px] transition-all duration-300
-            ${isActive ? 'text-[#A0A0C0]/85' : 'text-[#A0A0C0]/45'}
-            ${alignLeft ? 'pr-[13px] pl-0' : isDesktop ? 'pl-[13px] pr-0' : 'pl-0'}`}
-        >
-          {nodeInfo.description}
-        </div>
+        {isDesktop && (
+          <div
+            className={`font-sans text-[8px] transition-all duration-300
+              ${isActive ? 'text-[#A0A0C0]/85' : 'text-[#A0A0C0]/45'}
+              ${alignLeft ? 'pr-[13px] pl-0' : isDesktop ? 'pl-[13px] pr-0' : 'pl-0'}`}
+          >
+            {nodeInfo.description}
+          </div>
+        )}
       </button>
     );
   };

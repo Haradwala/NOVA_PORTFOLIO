@@ -12,6 +12,7 @@ import { useNOVAMemory } from '../../hooks/useNOVAMemory';
 import { useFullDuplex } from '../../hooks/useFullDuplex';
 import { useSTT } from '../../hooks/useSTT';
 import NovaDebugPanel from '../../components/NovaDebugPanel';
+import { scrollToSection, highlightSection } from '../../utils/sectionRegistry';
 
 const FIRST_GREETING = "Hey! I'm NOVA 👋 Shadab's AI assistant. Ask me about my projects, skills, or experience!";
 
@@ -19,6 +20,7 @@ export default function Hero({ novaPanelOpen }) {
   const [chatOpen, setChatOpen] = useState(false);
   const [time,     setTime]     = useState('');
   const [showDebug, setShowDebug] = useState(false);
+  const [interacted, setInteracted] = useState(false);
   const greeted = useRef(false);
   const bumpedRef = useRef(false);
 
@@ -61,6 +63,7 @@ export default function Hero({ novaPanelOpen }) {
   const handleSend = useCallback(async (text, options = {}) => {
     const { speakReply = true } = options;
     if (!text?.trim()) return null;
+    setInteracted(true);
     setChatOpen(true);
     greeted.current = true;
 
@@ -94,6 +97,12 @@ export default function Hero({ novaPanelOpen }) {
   const ds             = duplex.duplexState;
   const spokenText     = duplex.spokenText;
   const { isSpeaking, isThinking, voiceState } = useNovaVoiceState(ds);
+
+  useEffect(() => {
+    if (voiceState !== 'idle') {
+      setInteracted(true);
+    }
+  }, [voiceState]);
 
   useEffect(() => {
     const iv = setInterval(() =>
@@ -157,7 +166,7 @@ export default function Hero({ novaPanelOpen }) {
 
       <NovaCards mouseOffset={mouseOffset} />
 
-      {/* Name Title */}
+      {/* Name Title & Identity */}
       <div style={{ textAlign: 'center', zIndex: 5, animation: 'fadeUp .8s .2s ease both', opacity: 0 }}>
         <h1 style={{
           fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 'clamp(2.5rem, 6vw, 5.5rem)',
@@ -165,15 +174,103 @@ export default function Hero({ novaPanelOpen }) {
           background: 'linear-gradient(135deg, #EEEEF5 15%, #A78BFA 55%, #E8956D 100%)',
           WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
           filter: 'drop-shadow(0 0 40px rgba(139,92,246,.4))',
-        }}>SHADAB</h1>
+        }}>NOVA</h1>
         <p style={{
-          fontFamily: "'JetBrains Mono', monospace", fontWeight: 300, fontSize: 'clamp(.6rem, 1.2vw, .78rem)',
-          letterSpacing: '.2em', textTransform: 'uppercase', color: 'rgba(160,160,192,.6)', marginTop: '.45rem',
-          animation: 'shimmer 4s ease infinite',
+          fontFamily: "'JetBrains Mono', monospace", fontWeight: 300, fontSize: 'clamp(.65rem, 1.3vw, .84rem)',
+          letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--violet2)', marginTop: '.45rem',
         }}>
-          AI Developer &nbsp;|&nbsp; Building Intelligent Systems
+          Shadab's AI Portfolio &nbsp;|&nbsp; AI Developer & Designer
+        </p>
+        <p style={{
+          fontFamily: "'DM Sans', sans-serif", fontWeight: 300, fontSize: 'clamp(.75rem, 1.4vw, .95rem)',
+          color: 'rgba(160,160,192,.8)', marginTop: '.5rem', maxWidth: '540px', margin: '.5rem auto 0',
+          lineHeight: 1.5,
+        }}>
+          Ask me anything. I know every project, skill, and story behind this portfolio.
         </p>
       </div>
+
+      {/* Onboarding card suggestions */}
+      {!interacted && (
+        <div className="hud-card" style={{
+          zIndex: 5,
+          background: 'rgba(14, 10, 35, 0.4)',
+          border: '1px solid rgba(139, 92, 246, 0.2)',
+          borderRadius: '16px',
+          padding: '1.2rem 1.5rem',
+          maxWidth: '440px',
+          width: '90%',
+          marginTop: '0.2rem',
+          animation: 'fadeUp .8s .3s ease both',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), 0 0 15px rgba(139, 92, 246, 0.1)',
+          backdropFilter: 'blur(10px)',
+          transition: 'all 0.5s ease',
+        }}>
+          <div style={{
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: '0.62rem',
+            color: 'rgba(167, 139, 250, 0.95)',
+            textTransform: 'uppercase',
+            letterSpacing: '0.12em',
+            marginBottom: '0.8rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+          }}>
+            <span style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: '#8B5CF6', boxShadow: '0 0 6px #8B5CF6' }} />
+            Try asking:
+          </div>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.6rem',
+            alignItems: 'stretch',
+          }}>
+            {[
+              "Tell me about your projects",
+              "What technologies do you use?",
+              "Show me your skills",
+              "How can I contact you?"
+            ].map(hint => (
+              <button
+                key={hint}
+                onClick={() => {
+                  setInteracted(true);
+                  handleSend(hint);
+                }}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.02)',
+                  border: '1px solid rgba(255, 255, 255, 0.05)',
+                  borderRadius: '8px',
+                  padding: '0.5rem 0.8rem',
+                  color: 'rgba(200, 200, 220, 0.9)',
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: '0.74rem',
+                  textAlign: 'left',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background = 'rgba(139, 92, 246, 0.12)';
+                  e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.3)';
+                  e.currentTarget.style.color = '#fff';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)';
+                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.05)';
+                  e.currentTarget.style.color = 'rgba(200, 200, 220, 0.9)';
+                }}
+              >
+                <span style={{ color: 'var(--rose)', fontSize: '0.75rem' }}>•</span>
+                {hint}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Neural Core + Conversational Layers */}
       <div style={{
@@ -188,10 +285,21 @@ export default function Hero({ novaPanelOpen }) {
 
         <NovaCoreV2
           duplexState={voiceState}
-          onClickNode={(label) => navigation.executeNavigation(
-            label === 'AI Systems' ? '/chat' : label === 'Contact' ? '/contact' : label === 'Projects' ? '/work' : '/about',
-            label
-          )}
+          onClickNode={(label) => {
+            window.dispatchEvent(new CustomEvent('nova-nav', { detail: { label } }));
+            setTimeout(() => {
+              if (label === 'About') {
+                scrollToSection('about');
+              } else if (label === 'Skills') {
+                scrollToSection('skills');
+                highlightSection('skills');
+              } else if (label === 'Projects') {
+                scrollToSection('projects');
+              } else if (label === 'Contact') {
+                scrollToSection('contact');
+              }
+            }, 300);
+          }}
           activeSubNodes={novaContext.activeSubNodes}
           highlightedNode={novaContext.highlightedNode}
           setHighlightedNode={novaContext.setHighlightedNode}
