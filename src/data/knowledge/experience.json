@@ -1,0 +1,47 @@
+[
+  {
+    "id": "exp-freelance",
+    "period": "2023 — Present",
+    "role": "Senior Product Architect & Developer",
+    "company": "Independent / Freelance",
+    "summary": "Building custom AI integrations, WebGL spaces, and secure SaaS interfaces for global startup clients.",
+    "detailedDescription": "Designed and deployed responsive 3D WebGL user portals, orchestrated local and cloud cognitive agent pipelines, and integrated robust payment systems.",
+    "year": "2023 — Present",
+    "status": "Active",
+    "difficulty": "Expert",
+    "action": null,
+    "related": [],
+    "tags": ["architect", "developer", "freelance", "independent", "career", "history"],
+    "keywords": ["freelance", "independent", "architect", "startup", "current", "present", "consulting", "experience", "timeline", "chronology", "job"]
+  },
+  {
+    "id": "exp-razorpay",
+    "period": "2021 — 2023",
+    "role": "Product Engineer & UI Designer",
+    "company": "Razorpay",
+    "summary": "Led developer tool redesigns, payment flow optimization, and custom merchant dashboard design systems.",
+    "detailedDescription": "Pioneered interactive payment experience overhauls, built highly optimized checkout dashboard grids, and designed scalable interface tokens for high-volume transactions.",
+    "year": "2021 — 2023",
+    "status": "Completed",
+    "difficulty": "Advanced",
+    "action": null,
+    "related": [],
+    "tags": ["corporate", "fintech", "product-engineer", "ui-designer", "experience", "career"],
+    "keywords": ["razorpay", "payment", "checkout", "dashboard", "tokens", "fintech", "engineer", "job", "history", "timeline"]
+  },
+  {
+    "id": "exp-lollypop",
+    "period": "2019 — 2021",
+    "role": "Visual Design Engineer",
+    "company": "Lollypop Design Studio",
+    "summary": "Crafted dynamic brand experiences, mobile apps, and micro-interactive web applications.",
+    "detailedDescription": "Designed mobile application layouts, researched micro-motion user flows, and developed visual guidelines for leading corporate web solutions.",
+    "year": "2019 — 2021",
+    "status": "Completed",
+    "difficulty": "Intermediate",
+    "action": null,
+    "related": [],
+    "tags": ["design-studio", "visual-design", "branding", "agency", "history", "career"],
+    "keywords": ["lollypop", "design studio", "visual design", "agency", "motion", "micro-interactions", "job", "experience", "timeline"]
+  }
+]

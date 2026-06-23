@@ -1,0 +1,232 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #07070F;
+  --color-bg2: #0F0F18;
+  --color-bg3: #14141F;
+  --color-card: #18182A;
+  --color-card2: #1E1E30;
+  --color-rose: #E8956D;
+  --color-rose2: #F2B49A;
+  --color-violet: #8B5CF6;
+  --color-violet2: #A78BFA;
+  --color-teal: #2DD4BF;
+  --color-muted: #5A5A78;
+  --color-text: #EEEEF5;
+  --color-textd: #A0A0C0;
+}
+
+:root {
+  --bg: #07070F;
+  --bg2: #0F0F18;
+  --bg3: #14141F;
+  --card: #18182A;
+  --card2: #1E1E30;
+  --rose: #E8956D;
+  --rose2: #F2B49A;
+  --violet: #8B5CF6;
+  --violet2: #A78BFA;
+  --teal: #2DD4BF;
+  --muted: #5A5A78;
+  --text: #EEEEF5;
+  --textd: #A0A0C0;
+  --border: rgba(255, 255, 255, 0.06);
+  --glow-rose: 0 0 60px rgba(232, 149, 109, 0.2);
+  --glow-vio: 0 0 60px rgba(139, 92, 246, 0.2);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: #07070F; /* deep space base - universe canvas renders on top */
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+#root {
+  position: relative;
+  min-height: 100vh;
+}
+
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--violet); border-radius: 2px; }
+
+input::placeholder { color: var(--muted); }
+input:focus { outline: none; }
+button { cursor: pointer; font-family: 'DM Sans', sans-serif; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes ringPulse {
+  0%   { transform: scale(1);    opacity: .6; }
+  50%  { transform: scale(1.12); opacity: .2; }
+  100% { transform: scale(1);    opacity: .6; }
+}
+@keyframes orbFloat {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(74,222,128,.2); }
+  50%       { box-shadow: 0 0 0 6px rgba(74,222,128,.05); }
+}
+@keyframes floatA {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-14px); }
+}
+@keyframes floatB {
+  0%, 100% { transform: translateY(-8px); }
+  50%       { transform: translateY(8px); }
+}
+@keyframes floatC {
+  0%, 100% { transform: translateY(6px); }
+  50%       { transform: translateY(-10px); }
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes dotBounce {
+  0%, 60%, 100% { transform: translateY(0);  opacity: .4; }
+  30%           { transform: translateY(-6px); opacity: 1; }
+}
+@keyframes msgIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes micPulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.12); }
+}
+@keyframes hudRotate {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+@keyframes hudRotateRev {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(-360deg); }
+}
+@keyframes shimmer {
+  0%, 100% { opacity: .7; }
+  50%       { opacity: 1; }
+}
+@keyframes voiceBar {
+  0%, 100% { transform: scaleY(.3); }
+  50%       { transform: scaleY(1); }
+}
+@keyframes shimmer {
+  0%, 100% { opacity: .65; }
+  50%       { opacity: 1; }
+}
+@keyframes hudRotate {
+  from { transform: translate(-50%,-50%) rotate(0deg); }
+  to   { transform: translate(-50%,-50%) rotate(360deg); }
+}
+@keyframes hudRotateRev {
+  from { transform: translate(-50%,-50%) rotate(0deg); }
+  to   { transform: translate(-50%,-50%) rotate(-360deg); }
+}
+@keyframes chatSlide {
+  from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+@keyframes msgIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes nova-pulse-border {
+  0%, 100% { border-color: rgba(251, 191, 36, 0.25); box-shadow: none; }
+  50%       { border-color: rgba(251, 191, 36, 0.6);  box-shadow: 0 0 6px rgba(251, 191, 36, 0.2); }
+}
+
+
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity .7s ease, transform .7s ease;
+}
+.reveal.vis {
+  opacity: 1;
+  transform: none;
+}
+
+/* AI Consciousness Animation Keyframes */
+@keyframes neural-flow {
+  to {
+    stroke-dashoffset: -32;
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.5);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+@keyframes radar-sweep {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes speech-wave {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.25;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.85;
+  }
+}
+
+.animate-neural-flow {
+  animation: neural-flow 1.2s linear infinite;
+}
+
+.animate-pulse-ring-1 {
+  transform-origin: center;
+  animation: pulse-ring 1.6s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+.animate-pulse-ring-2 {
+  transform-origin: center;
+  animation: pulse-ring 1.6s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+  animation-delay: 0.5s;
+}
+
+@keyframes pulseHighlight {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(232, 149, 109, 0);
+    border-color: rgba(139, 92, 246, 0.18);
+  }
+  50% {
+    box-shadow: 0 0 35px 8px rgba(232, 149, 109, 0.6);
+    border-color: rgba(232, 149, 109, 0.85);
+  }
+}
+.pulse-highlight {
+  animation: pulseHighlight 1s ease-in-out 2;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+
