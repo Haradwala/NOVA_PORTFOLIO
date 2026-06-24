@@ -28,3 +28,8 @@ api_router.include_router(session.router)
 
 app.include_router(api_router)
 
+@app.on_event("startup")
+async def startup_event():
+    from app.services.context.context_engine import initialize_context_engine
+    initialize_context_engine()
+

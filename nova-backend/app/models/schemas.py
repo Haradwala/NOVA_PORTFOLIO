@@ -104,3 +104,35 @@ class QueryResponse(BaseModel):
     preview: Optional[PreviewData] = Field(None, description="Contextual dynamic view payload")
     updated_memory: VisitorMemory = Field(..., description="Mutated client memory object")
     debug: Optional[DebugMetadata] = Field(None, description="Debug details for development environment")
+
+
+class ProjectNodeMetadata(BaseModel):
+    technologies: List[str]
+    category: str
+    github: Optional[str] = None
+    demo: Optional[str] = None
+    aliases: List[str] = []
+
+class SkillNodeMetadata(BaseModel):
+    category: str
+    level: str
+    years: str
+
+class VisitorNodeMetadata(BaseModel):
+    sessionId: str = Field(..., serialization_alias="sessionId", validation_alias=AliasChoices("sessionId", "session_id"))
+    firstSeen: str = Field(..., serialization_alias="firstSeen", validation_alias=AliasChoices("firstSeen", "first_seen"))
+    lastSeen: str = Field(..., serialization_alias="lastSeen", validation_alias=AliasChoices("lastSeen", "last_seen"))
+
+class RelationshipNode(BaseModel):
+    id: str
+    type: str
+    name: str
+    metadata: Dict[str, Any]
+
+class RelationshipEdge(BaseModel):
+    id: Optional[str] = None
+    source: str
+    target: str
+    relationType: str = Field(..., serialization_alias="relationType", validation_alias=AliasChoices("relationType", "relation_type"))
+    weight: float = 1.0
+

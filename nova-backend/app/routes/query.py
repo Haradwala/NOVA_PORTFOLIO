@@ -71,6 +71,14 @@ async def process_query(request: QueryRequest):
     updated_mem_graph = update_knowledge_graph(response_payload.updated_memory, resolved_text, intent_data, entities)
     saved_mem = update_memory(session_id, updated_mem_graph)
     response_payload.updated_memory = saved_mem
+    
+    # Update relationship graph (nodes and weighted edges)
+    from app.services.context.relationship_graph import update_graph_for_query
+    update_graph_for_query(session_id, resolved_text, intent_data, entities)
+
+    # Build context representation
+    from app.services.context.context_builder import build_context
+    context = build_context(session_id, resolved_text)
 
     # 7. Update conversation history
     prev_summary = history_records[-1].summary if history_records else ""
