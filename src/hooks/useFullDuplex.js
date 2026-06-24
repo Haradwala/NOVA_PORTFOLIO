@@ -186,8 +186,9 @@ export function useFullDuplex({ onReply }) {
           updateDebug({ recognitionActive: true });
 
           // ── Recognition config ──────────────────────────────────────────────
+          const isMobile = typeof navigator !== 'undefined' && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
           recognition.lang            = 'en-IN'; // Indian English — better for local accent
-          recognition.continuous      = true;     // no auto-timeout / no-speech cutoff
+          recognition.continuous      = !isMobile; // no auto-timeout / no-speech cutoff
           recognition.interimResults  = true;     // live partial results
           recognition.maxAlternatives = 3;        // broader matching
 
@@ -405,6 +406,17 @@ export function useFullDuplex({ onReply }) {
     lastPressTime.current = now;
 
     if (!isSupported) return;
+
+    const isMobile = typeof navigator !== 'undefined' && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (isMobile) {
+      if (stateRef.current === 'idle') {
+        startRecording();
+      } else if (stateRef.current === 'listening') {
+        stopRecording();
+      }
+      return;
+    }
+
     addLog('handlePressStart() user press down');
     isHolding.current = true;
 
@@ -416,13 +428,18 @@ export function useFullDuplex({ onReply }) {
         addLog(`Debounce finished. isHolding=${isHolding.current}, state=${stateRef.current}`);
       }
     }, 250);
-  }, [isSupported, startRecording, addLog]);
+  }, [isSupported, startRecording, stopRecording, addLog]);
 
   const handlePressEnd = useCallback((e) => {
     e?.preventDefault?.();
     const now = Date.now();
     if (now - lastReleaseTime.current < 100) return;
     lastReleaseTime.current = now;
+
+    const isMobile = typeof navigator !== 'undefined' && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (isMobile) {
+      return;
+    }
 
     addLog('handlePressEnd() user release');
     isHolding.current = false;
