@@ -1,0 +1,291 @@
+{
+  "health_status": 200,
+  "health_time": 0.0773782730102539,
+  "health_data": {
+    "ok": true
+  },
+  "session_status": 200,
+  "session_time": 0.00581669807434082,
+  "session_id": "8b33b161-167c-4d3f-b594-b195272f6eea",
+  "flow": [
+    {
+      "query": "I'm Shadab",
+      "reply": "This portfolio, \"Shadab \u2014 AI Developer & Designer\" (version 3.0.0), was designed and created by Shadab based in Ahmedabad, India. It is Apple-inspired interactive 3D portfolio workspace powered by NOVA.OS living AI core. \u00a9 2026 Shadab \u2014 AI Developer & Designer.",
+      "intent": "portfolio",
+      "confidence": 0.75,
+      "action": null,
+      "preview_type": null,
+      "elapsed": 0.007225513458251953,
+      "memory": {
+        "visitCount": 1,
+        "topics": [
+          "about"
+        ],
+        "lastName": "Shadab",
+        "questions": [
+          "I'm Shadab"
+        ],
+        "sessionId": "8b33b161-167c-4d3f-b594-b195272f6eea",
+        "firstVisit": "2026-06-24T23:03:53.572796Z",
+        "lastVisit": "2026-06-24T23:03:53.577640Z",
+        "knowledgeGraph": {
+          "projects": [],
+          "skills": []
+        }
+      }
+    },
+    {
+      "query": "Tell me about Petal n Pins",
+      "reply": "The project \"Petal n Pins\" is a E-Commerce system. I designed and built this in 2024 (difficulty: Advanced, status: Production). Technologies used include: React, Node.js, Supabase, Tailwind CSS, Razorpay, Vite. The key challenge was: Preventing double-verification leaks in high-volume transaction environments. and the result was: Designed and verified a dual-pair Razorpay signature webhook parser that checks database checkout statuses prior to processing webhook hooks..",
+      "intent": "projects",
+      "confidence": 1.0,
+      "action": "open_project",
+      "preview_type": "project",
+      "elapsed": 0.0064547061920166016,
+      "memory": {
+        "visitCount": 1,
+        "topics": [
+          "about",
+          "projects"
+        ],
+        "lastName": "Shadab",
+        "questions": [
+          "I'm Shadab",
+          "Tell me about Petal n Pins"
+        ],
+        "sessionId": "8b33b161-167c-4d3f-b594-b195272f6eea",
+        "firstVisit": "2026-06-24T23:03:53.572796Z",
+        "lastVisit": "2026-06-24T23:03:53.585930Z",
+        "knowledgeGraph": {
+          "projects": [
+            "Petal n Pins"
+          ],
+          "skills": []
+        }
+      }
+    },
+    {
+      "query": "Show it again",
+      "reply": "The project \"Petal n Pins\" is a E-Commerce system. I designed and built this in 2024 (difficulty: Advanced, status: Production). Technologies used include: React, Node.js, Supabase, Tailwind CSS, Razorpay, Vite. The key challenge was: Preventing double-verification leaks in high-volume transaction environments. and the result was: Designed and verified a dual-pair Razorpay signature webhook parser that checks database checkout statuses prior to processing webhook hooks..",
+      "intent": "projects",
+      "confidence": 1.0,
+      "action": "open_project",
+      "preview_type": "project",
+      "elapsed": 0.003809690475463867,
+      "memory": {
+        "visitCount": 1,
+        "topics": [
+          "about",
+          "projects"
+        ],
+        "lastName": "Shadab",
+        "questions": [
+          "I'm Shadab",
+          "Tell me about Petal n Pins",
+          "open project petal-npins"
+        ],
+        "sessionId": "8b33b161-167c-4d3f-b594-b195272f6eea",
+        "firstVisit": "2026-06-24T23:03:53.572796Z",
+        "lastVisit": "2026-06-24T23:03:53.589685Z",
+        "knowledgeGraph": {
+          "projects": [
+            "Petal n Pins",
+            "Projects"
+          ],
+          "skills": []
+        }
+      }
+    },
+    {
+      "query": "Tell me about Python",
+      "reply": "Technical stack covering AI cognitive design, 3D WebGL interfaces, and full stack SaaS environments. My skillset is structured in categories: AI & Full Stack (LLM Pipelines, Agentic Systems, Node.js...); Interactive & 3D (Three.js, WebGL shaders, Canvas 2D Physics...); Design Systems (Figma / Prototyping, UX Research, Brand Architectures...). My top competencies are: AI Cognitive Systems, Three.js / WebGL, Full Stack Development, UI/UX Design Systems.",
+      "intent": "skills",
+      "confidence": 0.95,
+      "action": "highlight_skills",
+      "preview_type": "skills",
+      "elapsed": 0.003757953643798828,
+      "memory": {
+        "visitCount": 1,
+        "topics": [
+          "about",
+          "projects",
+          "skills"
+        ],
+        "lastName": "Shadab",
+        "questions": [
+          "I'm Shadab",
+          "Tell me about Petal n Pins",
+          "open project petal-npins",
+          "Tell me about Python"
+        ],
+        "sessionId": "8b33b161-167c-4d3f-b594-b195272f6eea",
+        "firstVisit": "2026-06-24T23:03:53.572796Z",
+        "lastVisit": "2026-06-24T23:03:53.593438Z",
+        "knowledgeGraph": {
+          "projects": [
+            "Petal n Pins",
+            "Projects"
+          ],
+          "skills": [
+            "Python"
+          ]
+        }
+      }
+    },
+    {
+      "query": "Tell me more",
+      "reply": "The project \"Petal n Pins\" is a E-Commerce system. I designed and built this in 2024 (difficulty: Advanced, status: Production). Technologies used include: React, Node.js, Supabase, Tailwind CSS, Razorpay, Vite. The key challenge was: Preventing double-verification leaks in high-volume transaction environments. and the result was: Designed and verified a dual-pair Razorpay signature webhook parser that checks database checkout statuses prior to processing webhook hooks..",
+      "intent": "projects",
+      "confidence": 1.0,
+      "action": "open_project",
+      "preview_type": "project",
+      "elapsed": 0.0032007694244384766,
+      "memory": {
+        "visitCount": 1,
+        "topics": [
+          "about",
+          "projects",
+          "skills"
+        ],
+        "lastName": "Shadab",
+        "questions": [
+          "I'm Shadab",
+          "Tell me about Petal n Pins",
+          "open project petal-npins",
+          "Tell me about Python",
+          "tell me more about project petal-npins"
+        ],
+        "sessionId": "8b33b161-167c-4d3f-b594-b195272f6eea",
+        "firstVisit": "2026-06-24T23:03:53.572796Z",
+        "lastVisit": "2026-06-24T23:03:53.597242Z",
+        "knowledgeGraph": {
+          "projects": [
+            "Petal n Pins",
+            "Projects"
+          ],
+          "skills": [
+            "Python"
+          ]
+        }
+      }
+    },
+    {
+      "query": "What do you remember about me?",
+      "reply": "Your name is Shadab. This is your first visit. You've shown interest in: about, projects, skills. Recent questions you've asked: 'I'm Shadab', 'Tell me about Petal n Pins', 'open project petal-npins', 'Tell me about Python', 'tell me more about project petal-npins'.",
+      "intent": "memory_what_do_you_remember",
+      "confidence": 1.0,
+      "action": null,
+      "preview_type": null,
+      "elapsed": 0.003968954086303711,
+      "memory": {
+        "visitCount": 1,
+        "topics": [
+          "about",
+          "projects",
+          "skills"
+        ],
+        "lastName": "Shadab",
+        "questions": [
+          "I'm Shadab",
+          "Tell me about Petal n Pins",
+          "open project petal-npins",
+          "Tell me about Python",
+          "tell me more about project petal-npins",
+          "What do you remember about me?"
+        ],
+        "sessionId": "8b33b161-167c-4d3f-b594-b195272f6eea",
+        "firstVisit": "2026-06-24T23:03:53.572796Z",
+        "lastVisit": "2026-06-24T23:03:53.600770Z",
+        "knowledgeGraph": {
+          "projects": [
+            "Petal n Pins",
+            "Projects"
+          ],
+          "skills": [
+            "Python"
+          ]
+        }
+      }
+    },
+    {
+      "query": "What were we talking about?",
+      "reply": "We were talking about projects, skills.",
+      "intent": "history_what_talking_about",
+      "confidence": 1.0,
+      "action": null,
+      "preview_type": null,
+      "elapsed": 0.00360107421875,
+      "memory": {
+        "visitCount": 1,
+        "topics": [
+          "about",
+          "projects",
+          "skills"
+        ],
+        "lastName": "Shadab",
+        "questions": [
+          "I'm Shadab",
+          "Tell me about Petal n Pins",
+          "open project petal-npins",
+          "Tell me about Python",
+          "tell me more about project petal-npins",
+          "What do you remember about me?",
+          "What were we talking about?"
+        ],
+        "sessionId": "8b33b161-167c-4d3f-b594-b195272f6eea",
+        "firstVisit": "2026-06-24T23:03:53.572796Z",
+        "lastVisit": "2026-06-24T23:03:53.604835Z",
+        "knowledgeGraph": {
+          "projects": [
+            "Petal n Pins",
+            "Projects"
+          ],
+          "skills": [
+            "Python"
+          ]
+        }
+      }
+    },
+    {
+      "query": "What projects interested me?",
+      "reply": "The projects that interested you are: Petal n Pins, Projects.",
+      "intent": "history_projects_interested",
+      "confidence": 1.0,
+      "action": null,
+      "preview_type": null,
+      "elapsed": 0.003413677215576172,
+      "memory": {
+        "visitCount": 1,
+        "topics": [
+          "about",
+          "projects",
+          "skills"
+        ],
+        "lastName": "Shadab",
+        "questions": [
+          "I'm Shadab",
+          "Tell me about Petal n Pins",
+          "open project petal-npins",
+          "Tell me about Python",
+          "tell me more about project petal-npins",
+          "What do you remember about me?",
+          "What were we talking about?",
+          "What projects interested me?"
+        ],
+        "sessionId": "8b33b161-167c-4d3f-b594-b195272f6eea",
+        "firstVisit": "2026-06-24T23:03:53.572796Z",
+        "lastVisit": "2026-06-24T23:03:53.608168Z",
+        "knowledgeGraph": {
+          "projects": [
+            "Petal n Pins",
+            "Projects"
+          ],
+          "skills": [
+            "Python"
+          ]
+        }
+      }
+    }
+  ],
+  "persistence_check": "This is our first time meeting! Nice to meet you."
+}
