@@ -21,15 +21,26 @@ export function useVoiceHalo({ duplexState, setState, setVoiceAmplitude }) {
         setVoiceAmplitude(simulatedAmp);
       }, 55);
     } else if (duplexState === 'listening') {
-      startAnalyser().catch((err) => console.error('[VoiceHalo] startAnalyser failed:', err));
+      const isMobile = typeof navigator !== 'undefined' && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      if (isMobile) {
+        let tick = 0;
+        voiceTickRef.current = setInterval(() => {
+          tick++;
+          const simulatedAmp = Math.max(0.015, Math.sin(tick * 0.45) * 0.03 + 0.03);
+          setAmp(simulatedAmp);
+          setVoiceAmplitude(simulatedAmp);
+        }, 55);
+      } else {
+        startAnalyser().catch((err) => console.error('[VoiceHalo] startAnalyser failed:', err));
 
-      const tickAnalyser = () => {
-        const values = getAnalyserValues();
-        setAmp(values.voiceAmplitude);
-        setVoiceAmplitude(values.voiceAmplitude);
-        animationFrameId = requestAnimationFrame(tickAnalyser);
-      };
-      tickAnalyser();
+        const tickAnalyser = () => {
+          const values = getAnalyserValues();
+          setAmp(values.voiceAmplitude);
+          setVoiceAmplitude(values.voiceAmplitude);
+          animationFrameId = requestAnimationFrame(tickAnalyser);
+        };
+        tickAnalyser();
+      }
     } else {
       setAmp(0);
       setVoiceAmplitude(0);
