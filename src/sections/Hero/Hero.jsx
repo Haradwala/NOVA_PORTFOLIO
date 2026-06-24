@@ -285,6 +285,10 @@ export default function Hero({ novaPanelOpen }) {
 
         <NovaCoreV2
           duplexState={voiceState}
+          onCoreClick={duplex.isSupported
+            ? duplex.handleTap
+            : () => { setChatOpen(true); doGreet(); }
+          }
           onClickNode={(label) => {
             window.dispatchEvent(new CustomEvent('nova-nav', { detail: { label } }));
             setTimeout(() => {
@@ -304,51 +308,6 @@ export default function Hero({ novaPanelOpen }) {
           highlightedNode={novaContext.highlightedNode}
           setHighlightedNode={novaContext.setHighlightedNode}
         />
-      </div>
-
-      {/* Voice Status controls */}
-      <div style={{
-        zIndex: 5, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
-        animation: 'fadeUp .8s .65s ease both', opacity: 0, marginTop: '.5rem',
-      }}>
-        <button
-          onClick={duplex.isSupported
-            ? duplex.handleTap
-            : () => { setChatOpen(true); doGreet(); }
-          }
-          style={{
-            width: 52, height: 52, borderRadius: '50%', cursor: 'pointer',
-            border: `1.5px solid ${voiceState === 'listening' ? '#E8956D' : voiceState === 'speaking' ? '#2DD4BF' : 'rgba(232,149,109,.45)'}`,
-            background: voiceState === 'listening'
-              ? 'radial-gradient(circle, rgba(232,149,109,.3), rgba(180,40,40,.2))'
-              : voiceState === 'speaking'
-              ? 'radial-gradient(circle, rgba(45,212,191,.2), rgba(139,92,246,.15))'
-              : 'radial-gradient(circle, rgba(232,149,109,.12), rgba(139,92,246,.07))',
-            fontSize: voiceState === 'listening' ? '1rem' : '1.2rem',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .25s',
-            boxShadow: voiceState === 'listening'
-              ? '0 0 0 5px rgba(232,149,109,.15), 0 0 30px rgba(232,149,109,.6)'
-              : voiceState === 'speaking'
-              ? '0 0 0 5px rgba(45,212,191,.15), 0 0 30px rgba(45,212,191,.4)'
-              : '0 0 14px rgba(232,149,109,.2)',
-            animation: voiceState === 'listening' ? 'micPulse .8s ease-in-out infinite'
-                     : voiceState === 'thinking'  ? 'micPulse 1.5s ease-in-out infinite'
-                     : 'none',
-            userSelect: 'none', WebkitUserSelect: 'none',
-          }}
-        >
-          {voiceState === 'listening' ? '⏹' : voiceState === 'thinking' ? '⏳' : voiceState === 'speaking' ? '🔊' : '🎤'}
-        </button>
-        <span style={{
-          fontSize: '.54rem', letterSpacing: '.14em', textTransform: 'uppercase',
-          color: voiceState === 'idle' ? 'rgba(90,90,120,.85)' : voiceState === 'listening' ? '#E8956D' : '#2DD4BF',
-          transition: 'color .3s',
-        }}>
-          {voiceState === 'idle'      ? 'TAP TO TALK'
-          : voiceState === 'listening' ? 'Listening… tap to cancel'
-          : voiceState === 'thinking'  ? 'NOVA is thinking…'
-          : 'NOVA is speaking…'}
-        </span>
       </div>
 
       <NovaPanel
