@@ -54,6 +54,7 @@ export function useSTT({ onResult, onError } = {}) {
       setIsListening(true);
     };
 
+
     recognition.onresult = (event) => {
       resultReceivedRef.current = true;
       setIsListening(false);
@@ -78,6 +79,8 @@ export function useSTT({ onResult, onError } = {}) {
     };
 
     recognition.onend = () => {
+      // Release the global STT mutex so the duplex hook can start.
+      window.__NOVA_STT_ACTIVE__ = false;
       setIsListening(false);
       recognitionRef.current = null;
       if (!resultReceivedRef.current) {
@@ -88,9 +91,13 @@ export function useSTT({ onResult, onError } = {}) {
     };
 
     try {
+      // Claim the global STT mutex before starting — prevents duplex hook
+      // from launching a concurrent session on mobile.
+      window.__NOVA_STT_ACTIVE__ = true;
       recognition.start();
       return true;
     } catch (error) {
+      window.__NOVA_STT_ACTIVE__ = false;
       recognitionRef.current = null;
       const message = error.message || 'Could not start browser speech recognition.';
       setLastError(message);

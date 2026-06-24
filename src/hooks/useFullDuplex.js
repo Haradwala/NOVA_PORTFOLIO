@@ -195,6 +195,8 @@ export function useFullDuplex({ onReply }) {
           // ── onstart ────────────────────────────────────────────────────────
           recognition.onstart = () => {
             addLog('[SR] onstart — recognition engine started');
+            // Claim the global STT mutex — held until onend fires.
+            window.__NOVA_STT_ACTIVE__ = true;
             if (shouldStopOnStartRef.current) {
               addLog('[SR] Early release flagged — stopping immediately.');
               shouldStopOnStartRef.current = false;
@@ -296,6 +298,8 @@ export function useFullDuplex({ onReply }) {
           // ── onend ──────────────────────────────────────────────────────────
           recognition.onend = async () => {
             addLog('[SR] onend fired — recognition session terminated');
+            // Release the global STT mutex.
+            window.__NOVA_STT_ACTIVE__ = false;
             recognitionRef.current = null;
             updateDebug({ recognitionActive: false, interimTranscript: '' });
 
@@ -327,6 +331,14 @@ export function useFullDuplex({ onReply }) {
           };
 
           addLog(`[SR] recognition.start() → lang:en-IN continuous:true interimResults:true maxAlternatives:3`);
+
+          // Guard: abort if another STT hook already owns the microphone.
+          if (window.__NOVA_STT_ACTIVE__) {
+            addLog('[SR] Aborted — another STT session is active (mutex held). Preventing mic collision.');
+            recognitionRef.current = null;
+            return false;
+          }
+
           recognition.start();
           return true;
         } catch (err) {

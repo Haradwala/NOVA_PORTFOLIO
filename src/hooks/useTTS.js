@@ -19,18 +19,26 @@ export function useTTS() {
     if (!hasBrowserTTS) return null;
     const voices = window.speechSynthesis.getVoices() || [];
 
-    // Priority: premium named voices first, then lang-based fallbacks
+    // Pre-filter to English voices only. Prevents voices[0] from being a
+    // non-English system voice (Hindi, Spanish, etc.) on localized Android devices.
+    const enVoices = voices.filter(
+      (v) => v.lang?.toLowerCase().startsWith('en')
+    );
+    // Fall back to full list only if no English voices exist at all.
+    const pool = enVoices.length > 0 ? enVoices : voices;
+
+    // Priority: premium named voices first, then lang-based fallbacks.
     return (
-      voices.find((v) => /microsoft aria/i.test(v.name)) ||
-      voices.find((v) => /microsoft zira/i.test(v.name)) ||
-      voices.find((v) => /google uk english female/i.test(v.name)) ||
-      voices.find((v) => /samantha/i.test(v.name)) ||
-      voices.find((v) => /victoria|karen|moira|tessa|fiona|hazel|ava|susan/i.test(v.name)) ||
-      voices.find((v) => v.lang === 'en-US' && /female/i.test(v.name)) ||
-      voices.find((v) => v.lang === 'en-GB') ||
-      voices.find((v) => v.lang === 'en-US') ||
-      voices.find((v) => v.lang?.startsWith('en')) ||
-      voices[0] ||
+      pool.find((v) => /microsoft aria/i.test(v.name)) ||
+      pool.find((v) => /microsoft zira/i.test(v.name)) ||
+      pool.find((v) => /google uk english female/i.test(v.name)) ||
+      pool.find((v) => /samantha/i.test(v.name)) ||
+      pool.find((v) => /victoria|karen|moira|tessa|fiona|hazel|ava|susan/i.test(v.name)) ||
+      pool.find((v) => v.lang === 'en-US' && /female/i.test(v.name)) ||
+      pool.find((v) => v.lang === 'en-GB') ||
+      pool.find((v) => v.lang === 'en-US') ||
+      pool.find((v) => v.lang?.toLowerCase().startsWith('en')) ||
+      pool[0] ||
       null
     );
   }, [hasBrowserTTS]);
