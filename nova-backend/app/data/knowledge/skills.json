@@ -1,0 +1,44 @@
+{
+  "id": "shadab-skills",
+  "summary": "Technical stack covering AI cognitive design, 3D WebGL interfaces, and full stack SaaS environments.",
+  "detailedDescription": "Experienced in developing modular Three.js canvases, building robust REST/WebSocket backends using Node.js/Supabase, and designing interactive motion branding prototypes.",
+  "categories": [
+    {
+      "id": "skill-cat-ai-fs",
+      "name": "AI & Full Stack",
+      "techs": ["LLM Pipelines", "Agentic Systems", "Node.js", "React", "Supabase", "REST / WebSockets"],
+      "summary": "AI cognitive pipelines, backend servers, and web architectures.",
+      "detailedDescription": "Experience building secure databases with Supabase, dynamic UI state management using React, and local speech parsing pipelines.",
+      "tags": ["ai", "backend", "database", "api"],
+      "keywords": ["node.js", "supabase", "react", "websockets", "llm", "pipelines", "agentic"]
+    },
+    {
+      "id": "skill-cat-3d-webgl",
+      "name": "Interactive & 3D",
+      "techs": ["Three.js", "WebGL shaders", "Canvas 2D Physics", "SVG Projection", "Responsive WebGL"],
+      "summary": "3D graphics, particle lattices, and visual animations in the browser.",
+      "detailedDescription": "Expertise in writing GLSL custom vertex and fragment shaders, tracking mouse/scroll coordinates, and projecting interactive overlay lines dynamically.",
+      "tags": ["webgl", "three.js", "shaders", "physics", "canvas"],
+      "keywords": ["three.js", "shaders", "webgl", "glsl", "canvas", "projection", "particle"]
+    },
+    {
+      "id": "skill-cat-design",
+      "name": "Design Systems",
+      "techs": ["Figma / Prototyping", "UX Research", "Brand Architectures", "Motion Design", "Micro-interactions"],
+      "summary": "Luxury design guidelines, micro-motion, and usability layout logic.",
+      "detailedDescription": "Trained in Figma prototyping, interactive user testing runs, vector layout composition, and custom Webflow development.",
+      "tags": ["design", "branding", "figma", "ux", "motion"],
+      "keywords": ["figma", "prototyping", "ux research", "motion design", "micro-interactions", "webflow"]
+    }
+  ],
+  "rawList": [
+    { "id": "raw-skill-ai", "name": "AI Cognitive Systems", "level": 95 },
+    { "id": "raw-skill-three", "name": "Three.js / WebGL", "level": 90 },
+    { "id": "raw-skill-dev", "name": "Full Stack Development", "level": 88 },
+    { "id": "raw-skill-design", "name": "UI/UX Design Systems", "level": 92 }
+  ],
+  "action": "highlight_skills",
+  "related": [],
+  "tags": ["skills", "technologies", "stack", "toolkit"],
+  "keywords": ["skills", "stack", "toolkit", "technologies", "competencies", "three.js", "react", "node", "supabase"]
+}
