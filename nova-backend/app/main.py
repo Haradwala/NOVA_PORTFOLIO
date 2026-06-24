@@ -1,6 +1,6 @@
 from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes import health, query
+from app.routes import health, query, session
 from app.config import DEBUG, ALLOWED_ORIGINS
 
 # Initialize app
@@ -24,5 +24,7 @@ app.add_middleware(
 api_router = APIRouter(prefix="/api/v1")
 api_router.include_router(health.router)
 api_router.include_router(query.router)
+api_router.include_router(session.router)
 
 app.include_router(api_router)
+

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, AliasChoices
 from typing import List, Dict, Any, Optional
 
 class Message(BaseModel):
@@ -6,10 +6,81 @@ class Message(BaseModel):
     content: str = Field(..., description="Text content of the message")
 
 class VisitorMemory(BaseModel):
-    visitCount: int = Field(default=1, description="Number of times the client visited the page")
-    topics: List[str] = Field(default_factory=list, description="Categorized topics client showed interest in")
-    lastName: Optional[str] = Field(None, description="Extracted client name if resolved")
-    lastQuestion: Optional[str] = Field(None, description="Last recorded question transcript")
+    visitCount: int = Field(
+        default=1,
+        serialization_alias="visitCount",
+        validation_alias=AliasChoices("visitCount", "visit_count"),
+        description="Number of times the client visited the page"
+    )
+    topics: List[str] = Field(
+        default_factory=list,
+        description="Categorized topics client showed interest in"
+    )
+    lastName: Optional[str] = Field(
+        None,
+        serialization_alias="lastName",
+        validation_alias=AliasChoices("lastName", "last_name"),
+        description="Extracted client name if resolved"
+    )
+    questions: List[str] = Field(
+        default_factory=list,
+        description="Most recent unique queries"
+    )
+    sessionId: Optional[str] = Field(
+        None,
+        serialization_alias="sessionId",
+        validation_alias=AliasChoices("sessionId", "session_id"),
+        description="Unique session identifier"
+    )
+    firstVisit: Optional[str] = Field(
+        None,
+        serialization_alias="firstVisit",
+        validation_alias=AliasChoices("firstVisit", "first_visit"),
+        description="ISO timestamp of first visit"
+    )
+    lastVisit: Optional[str] = Field(
+        None,
+        serialization_alias="lastVisit",
+        validation_alias=AliasChoices("lastVisit", "last_visit"),
+        description="ISO timestamp of last visit"
+    )
+    knowledgeGraph: Dict[str, List[str]] = Field(
+        default_factory=dict,
+        serialization_alias="knowledgeGraph",
+        validation_alias=AliasChoices("knowledgeGraph", "knowledge_graph"),
+        description="Knowledge graph relationships"
+    )
+
+class ConversationRecord(BaseModel):
+    id: Optional[str] = Field(None, description="UUID of the record")
+    sessionId: str = Field(
+        ...,
+        serialization_alias="sessionId",
+        validation_alias=AliasChoices("sessionId", "session_id"),
+        description="Session identifier"
+    )
+    timestamp: str = Field(..., description="ISO timestamp")
+    userMessage: str = Field(
+        ...,
+        serialization_alias="userMessage",
+        validation_alias=AliasChoices("userMessage", "user_message"),
+        description="User's query text"
+    )
+    assistantReply: str = Field(
+        ...,
+        serialization_alias="assistantReply",
+        validation_alias=AliasChoices("assistantReply", "assistant_reply"),
+        description="NOVA reply text"
+    )
+    intent: str = Field(..., description="Matched intent name")
+    entities: List[str] = Field(default_factory=list, description="Extracted entities")
+    topics: List[str] = Field(default_factory=list, description="Topic classifications")
+    summary: str = Field(..., description="Incremental Turn Summarization")
+    payload: Optional[str] = Field(None, description="Intent payload (e.g. project ID)")
+
+
+
+
 
 class PreviewData(BaseModel):
     type: str = Field(..., description="Category identifier, e.g. 'project', 'skills', 'contact'")

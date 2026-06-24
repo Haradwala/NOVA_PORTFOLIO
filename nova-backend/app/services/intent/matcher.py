@@ -101,7 +101,7 @@ def match_intent(text: str) -> Dict[str, Any]:
 
     # 3. skills match
     skills_data = provider.get_skills()
-    skills_keywords = ['skills', 'toolkit', 'stack', 'three.js', 'react', 'supabase', 'figma', 'webgl']
+    skills_keywords = ['skills', 'toolkit', 'stack', 'three.js', 'react', 'supabase', 'figma', 'webgl', 'python', 'fastapi']
     skills_kws = get_matched_keywords(query_tokens, skills_data.get("keywords", []), skills_data.get("tags", []))
     has_skill_kw = any(kw in raw_query for kw in skills_keywords)
     
@@ -143,7 +143,29 @@ def match_intent(text: str) -> Dict[str, Any]:
         portfolio_score = get_match_ratio(query_tokens, portfolio_data.get("keywords", []), portfolio_data.get("tags", []))
     update_best("portfolio", portfolio_score, matched_kws=port_kws)
 
+    # 7. memory intents
+    if any(p in raw_query for p in ["who am i", "what is my name", "what's my name"]):
+        update_best("memory_who_am_i", 1.0, matched_kws=["name"])
+    elif any(p in raw_query for p in ["what do you remember about me", "what do you remember"]):
+        update_best("memory_what_do_you_remember", 1.0, matched_kws=["remember", "memory"])
+    elif any(p in raw_query for p in ["what have i asked about", "what have i asked"]):
+        update_best("memory_what_have_i_asked", 1.0, matched_kws=["asked"])
+    elif any(p in raw_query for p in ["have we met before", "have we met"]):
+        update_best("memory_have_we_met", 1.0, matched_kws=["met", "visit"])
+    elif any(p in raw_query for p in ["what were we talking about", "what did we talk about"]):
+        update_best("history_what_talking_about", 1.0, matched_kws=["history", "talking"])
+    elif any(p in raw_query for p in ["continue our conversation", "continue conversation"]):
+        update_best("history_continue_conversation", 1.0, matched_kws=["continue"])
+    elif any(p in raw_query for p in ["summarize this session", "summarize our session"]):
+        update_best("history_summarize_session", 1.0, matched_kws=["summarize", "session"])
+    elif any(p in raw_query for p in ["what projects interested me", "what projects did i ask about", "which projects did i look at"]):
+        update_best("history_projects_interested", 1.0, matched_kws=["projects", "interested"])
+    elif any(p in raw_query for p in ["what skills did i ask about", "what skills did i ask", "which skills did i ask", "what skills interested me", "which skills interested me"]):
+        update_best("history_skills_asked", 1.0, matched_kws=["skills", "asked"])
+
     # Fallback threshold checks
+
+
     if best_confidence < 0.25:
         return {
             "intent": "fallback",

@@ -20,7 +20,7 @@ PROJECT_METADATA_FALLBACKS: Dict[str, Dict[str, Any]] = {
     }
 }
 
-def build_response(intent_data: Dict[str, Any], query_text: str, current_memory: VisitorMemory) -> QueryResponse:
+def build_response(intent_data: Dict[str, Any], query_text: str, current_memory: VisitorMemory, history: Optional[List[Any]] = None) -> QueryResponse:
     intent = intent_data["intent"]
     confidence = intent_data["confidence"]
     action = intent_data["action"]
@@ -150,17 +150,126 @@ def build_response(intent_data: Dict[str, Any], query_text: str, current_memory:
         if "contact" not in updated_topics:
             updated_topics.append("contact")
 
+    elif intent == "memory_who_am_i":
+        if current_memory.lastName:
+            reply = f"Your name is {current_memory.lastName}."
+        else:
+            reply = "I don't know your name yet. What should I call you?"
+            
+    elif intent == "memory_what_do_you_remember":
+        from app.services.memory.memory_service import build_memory_summary
+        reply = build_memory_summary(current_memory)
+        
+    elif intent == "memory_what_have_i_asked":
+        if current_memory.topics:
+            topics_str = ", ".join(current_memory.topics)
+            reply = f"You have asked about the following topics: {topics_str}."
+        else:
+            reply = "You haven't asked me about any specific topics yet."
+            
+    elif intent == "memory_have_we_met":
+        if current_memory.visitCount > 1:
+            reply = f"Yes, we've met! You have visited {current_memory.visitCount} times."
+        else:
+            reply = "This is our first time meeting! Nice to meet you."
+
+    elif intent == "history_what_talking_about":
+        recent_topics = []
+        if history:
+            unique_intents = []
+            for r in reversed(history):
+                intent_name = getattr(r, "intent", "fallback")
+                intent_map = {
+                    "projects": "projects",
+                    "skills": "skills",
+                    "about": "your background",
+                    "experience": "your experience",
+                    "contact": "your contact info"
+                }
+                mapped = intent_map.get(intent_name)
+                if mapped and mapped not in unique_intents:
+                    unique_intents.append(mapped)
+                    if len(unique_intents) >= 3:
+                        break
+            if unique_intents:
+                recent_topics = unique_intents
+        if recent_topics:
+            reply = f"We were talking about {', '.join(recent_topics)}."
+        else:
+            reply = "We haven't discussed any specific topics yet in this session."
+
+    elif intent == "history_continue_conversation":
+        last_intent = None
+        if history:
+            for r in reversed(history):
+                intent_name = getattr(r, "intent", "fallback")
+                if intent_name in ["projects", "skills", "about", "experience", "contact"]:
+                    last_intent = intent_name
+                    break
+        if last_intent == "projects":
+            reply = "Let's continue! We were discussing projects. Would you like to check out another project like Petal n Pins or Portfolio OS?"
+        elif last_intent == "skills":
+            reply = "Sure! We were looking at technical skills. Would you like to explore Python, React, Three.js, or Supabase?"
+        elif last_intent == "about":
+            reply = "Let's continue. We were talking about your background. What else would you like to know about Shadab's bio or focus?"
+        elif last_intent == "experience":
+            reply = "Let's continue our conversation about your experience. What specific role or timeline would you like to discuss?"
+        elif last_intent == "contact":
+            reply = "Sure, let's continue! We were discussing contact details. Would you like to know Shadab's availability or location?"
+        else:
+            reply = "We just started our session! What would you like to discuss: projects, skills, or experience?"
+
+    elif intent == "history_summarize_session":
+        last_summary = ""
+        if history:
+            for r in reversed(history):
+                s = getattr(r, "summary", "")
+                if s:
+                    last_summary = s
+                    break
+        if last_summary:
+            reply = f"Here is a summary of our session: {last_summary}"
+        else:
+            reply = "We just started our session, so there is no conversation history to summarize yet!"
+
+    elif intent == "history_projects_interested":
+        projs = current_memory.knowledgeGraph.get("projects", []) if current_memory.knowledgeGraph else []
+        if projs:
+            reply = f"The projects that interested you are: {', '.join(projs)}."
+        else:
+            reply = "You haven't shown interest in any specific projects yet. Ask me about Petal n Pins or Portfolio OS to get started!"
+
+    elif intent == "history_skills_asked":
+        skills = current_memory.knowledgeGraph.get("skills", []) if current_memory.knowledgeGraph else []
+        if skills:
+            reply = f"The skills you asked about are: {', '.join(skills)}."
+        else:
+            reply = "You haven't asked about any specific skills yet. Try asking about React, Three.js, Python, or Supabase!"
+
+
     # Name extraction logic (regex pattern)
     lastName = current_memory.lastName
     name_match = re.search(r"(?:i'm|i am|my name is)\s+([a-zA-Z]+)", query_text.lower())
     if name_match:
         lastName = name_match.group(1).capitalize()
 
+    updated_questions = list(current_memory.questions) if current_memory.questions else []
+    cleaned_query = query_text.strip()
+    if cleaned_query:
+        if not updated_questions or updated_questions[-1] != cleaned_query:
+            updated_questions.append(cleaned_query)
+            if len(updated_questions) > 10:
+                updated_questions = updated_questions[-10:]
+
     updated_mem = VisitorMemory(
+        sessionId=current_memory.sessionId,
         visitCount=current_memory.visitCount,
         topics=updated_topics,
         lastName=lastName,
-        lastQuestion=query_text[:120]
+        questions=updated_questions,
+        firstVisit=current_memory.firstVisit,
+        lastVisit=current_memory.lastVisit,
+        knowledgeGraph=current_memory.knowledgeGraph
     )
 
     debug_meta = None
