@@ -312,15 +312,10 @@ export default function Hero({ novaPanelOpen }) {
         animation: 'fadeUp .8s .65s ease both', opacity: 0, marginTop: '.5rem',
       }}>
         <button
-          onPointerDown={duplex.isSupported ? duplex.handlePressStart : undefined}
-          onPointerUp={duplex.isSupported ? duplex.handlePressEnd : undefined}
-          onPointerLeave={duplex.isSupported ? duplex.handlePressEnd : undefined}
-          onMouseDown={duplex.isSupported ? duplex.handlePressStart : undefined}
-          onMouseUp={duplex.isSupported ? duplex.handlePressEnd : undefined}
-          onMouseLeave={duplex.isSupported ? duplex.handlePressEnd : undefined}
-          onTouchStart={duplex.isSupported ? duplex.handlePressStart : undefined}
-          onTouchEnd={duplex.isSupported ? duplex.handlePressEnd : undefined}
-          onClick={duplex.isSupported ? undefined : () => { setChatOpen(true); doGreet(); }}
+          onClick={duplex.isSupported
+            ? duplex.handleTap
+            : () => { setChatOpen(true); doGreet(); }
+          }
           style={{
             width: 52, height: 52, borderRadius: '50%', cursor: 'pointer',
             border: `1.5px solid ${voiceState === 'listening' ? '#E8956D' : voiceState === 'speaking' ? '#2DD4BF' : 'rgba(232,149,109,.45)'}`,
@@ -349,9 +344,9 @@ export default function Hero({ novaPanelOpen }) {
           color: voiceState === 'idle' ? 'rgba(90,90,120,.85)' : voiceState === 'listening' ? '#E8956D' : '#2DD4BF',
           transition: 'color .3s',
         }}>
-          {voiceState === 'idle'      ? 'Hold to talk'
-          : voiceState === 'listening' ? 'Listening… release to send'
-          : voiceState === 'thinking'  ? 'NOVA is processing…'
+          {voiceState === 'idle'      ? 'TAP TO TALK'
+          : voiceState === 'listening' ? 'Listening… tap to cancel'
+          : voiceState === 'thinking'  ? 'NOVA is thinking…'
           : 'NOVA is speaking…'}
         </span>
       </div>
