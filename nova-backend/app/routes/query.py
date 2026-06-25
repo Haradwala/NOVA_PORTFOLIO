@@ -63,8 +63,9 @@ async def process_query(request: QueryRequest):
     # 4. Match intent using resolved text
     intent_data = match_intent(resolved_text)
     
-    # 5. Build QueryResponse payload
-    response_payload = build_response(intent_data, resolved_text, current_mem, history=history_records)
+    # 5. Build QueryResponse payload (routes via orchestrator when matching fallback)
+    from app.services.orchestrator.router import route_query
+    response_payload = route_query(resolved_text, intent_data, current_mem, history_records, session_id)
     
     # 6. Update memory (including Knowledge Graph and regular updates)
     entities = extract_entities(resolved_text)

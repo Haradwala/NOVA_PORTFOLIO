@@ -1,12 +1,12 @@
 {
   "health_status": 200,
-  "health_time": 0.0773782730102539,
+  "health_time": 0.06046462059020996,
   "health_data": {
     "ok": true
   },
   "session_status": 200,
-  "session_time": 0.00581669807434082,
-  "session_id": "8b33b161-167c-4d3f-b594-b195272f6eea",
+  "session_time": 0.0035858154296875,
+  "session_id": "6a0a9c44-b45e-40c4-a27c-af8c6383fb39",
   "flow": [
     {
       "query": "I'm Shadab",
@@ -15,7 +15,7 @@
       "confidence": 0.75,
       "action": null,
       "preview_type": null,
-      "elapsed": 0.007225513458251953,
+      "elapsed": 0.004013538360595703,
       "memory": {
         "visitCount": 1,
         "topics": [
@@ -25,9 +25,9 @@
         "questions": [
           "I'm Shadab"
         ],
-        "sessionId": "8b33b161-167c-4d3f-b594-b195272f6eea",
-        "firstVisit": "2026-06-24T23:03:53.572796Z",
-        "lastVisit": "2026-06-24T23:03:53.577640Z",
+        "sessionId": "6a0a9c44-b45e-40c4-a27c-af8c6383fb39",
+        "firstVisit": "2026-06-24T23:17:40.483566Z",
+        "lastVisit": "2026-06-24T23:17:40.486838Z",
         "knowledgeGraph": {
           "projects": [],
           "skills": []
@@ -41,7 +41,7 @@
       "confidence": 1.0,
       "action": "open_project",
       "preview_type": "project",
-      "elapsed": 0.0064547061920166016,
+      "elapsed": 0.003708362579345703,
       "memory": {
         "visitCount": 1,
         "topics": [
@@ -53,9 +53,9 @@
           "I'm Shadab",
           "Tell me about Petal n Pins"
         ],
-        "sessionId": "8b33b161-167c-4d3f-b594-b195272f6eea",
-        "firstVisit": "2026-06-24T23:03:53.572796Z",
-        "lastVisit": "2026-06-24T23:03:53.585930Z",
+        "sessionId": "6a0a9c44-b45e-40c4-a27c-af8c6383fb39",
+        "firstVisit": "2026-06-24T23:17:40.483566Z",
+        "lastVisit": "2026-06-24T23:17:40.491328Z",
         "knowledgeGraph": {
           "projects": [
             "Petal n Pins"
@@ -71,7 +71,7 @@
       "confidence": 1.0,
       "action": "open_project",
       "preview_type": "project",
-      "elapsed": 0.003809690475463867,
+      "elapsed": 0.004767417907714844,
       "memory": {
         "visitCount": 1,
         "topics": [
@@ -84,9 +84,9 @@
           "Tell me about Petal n Pins",
           "open project petal-npins"
         ],
-        "sessionId": "8b33b161-167c-4d3f-b594-b195272f6eea",
-        "firstVisit": "2026-06-24T23:03:53.572796Z",
-        "lastVisit": "2026-06-24T23:03:53.589685Z",
+        "sessionId": "6a0a9c44-b45e-40c4-a27c-af8c6383fb39",
+        "firstVisit": "2026-06-24T23:17:40.483566Z",
+        "lastVisit": "2026-06-24T23:17:40.495507Z",
         "knowledgeGraph": {
           "projects": [
             "Petal n Pins",
@@ -103,7 +103,7 @@
       "confidence": 0.95,
       "action": "highlight_skills",
       "preview_type": "skills",
-      "elapsed": 0.003757953643798828,
+      "elapsed": 0.032195091247558594,
       "memory": {
         "visitCount": 1,
         "topics": [
@@ -118,9 +118,9 @@
           "open project petal-npins",
           "Tell me about Python"
         ],
-        "sessionId": "8b33b161-167c-4d3f-b594-b195272f6eea",
-        "firstVisit": "2026-06-24T23:03:53.572796Z",
-        "lastVisit": "2026-06-24T23:03:53.593438Z",
+        "sessionId": "6a0a9c44-b45e-40c4-a27c-af8c6383fb39",
+        "firstVisit": "2026-06-24T23:17:40.483566Z",
+        "lastVisit": "2026-06-24T23:17:40.527589Z",
         "knowledgeGraph": {
           "projects": [
             "Petal n Pins",
@@ -139,7 +139,7 @@
       "confidence": 1.0,
       "action": "open_project",
       "preview_type": "project",
-      "elapsed": 0.0032007694244384766,
+      "elapsed": 0.004781246185302734,
       "memory": {
         "visitCount": 1,
         "topics": [
@@ -155,9 +155,9 @@
           "Tell me about Python",
           "tell me more about project petal-npins"
         ],
-        "sessionId": "8b33b161-167c-4d3f-b594-b195272f6eea",
-        "firstVisit": "2026-06-24T23:03:53.572796Z",
-        "lastVisit": "2026-06-24T23:03:53.597242Z",
+        "sessionId": "6a0a9c44-b45e-40c4-a27c-af8c6383fb39",
+        "firstVisit": "2026-06-24T23:17:40.483566Z",
+        "lastVisit": "2026-06-24T23:17:40.533366Z",
         "knowledgeGraph": {
           "projects": [
             "Petal n Pins",
@@ -176,7 +176,7 @@
       "confidence": 1.0,
       "action": null,
       "preview_type": null,
-      "elapsed": 0.003968954086303711,
+      "elapsed": 0.005090951919555664,
       "memory": {
         "visitCount": 1,
         "topics": [
@@ -193,9 +193,9 @@
           "tell me more about project petal-npins",
           "What do you remember about me?"
         ],
-        "sessionId": "8b33b161-167c-4d3f-b594-b195272f6eea",
-        "firstVisit": "2026-06-24T23:03:53.572796Z",
-        "lastVisit": "2026-06-24T23:03:53.600770Z",
+        "sessionId": "6a0a9c44-b45e-40c4-a27c-af8c6383fb39",
+        "firstVisit": "2026-06-24T23:17:40.483566Z",
+        "lastVisit": "2026-06-24T23:17:40.537319Z",
         "knowledgeGraph": {
           "projects": [
             "Petal n Pins",
@@ -214,7 +214,7 @@
       "confidence": 1.0,
       "action": null,
       "preview_type": null,
-      "elapsed": 0.00360107421875,
+      "elapsed": 0.003531932830810547,
       "memory": {
         "visitCount": 1,
         "topics": [
@@ -232,9 +232,9 @@
           "What do you remember about me?",
           "What were we talking about?"
         ],
-        "sessionId": "8b33b161-167c-4d3f-b594-b195272f6eea",
-        "firstVisit": "2026-06-24T23:03:53.572796Z",
-        "lastVisit": "2026-06-24T23:03:53.604835Z",
+        "sessionId": "6a0a9c44-b45e-40c4-a27c-af8c6383fb39",
+        "firstVisit": "2026-06-24T23:17:40.483566Z",
+        "lastVisit": "2026-06-24T23:17:40.542138Z",
         "knowledgeGraph": {
           "projects": [
             "Petal n Pins",
@@ -253,7 +253,7 @@
       "confidence": 1.0,
       "action": null,
       "preview_type": null,
-      "elapsed": 0.003413677215576172,
+      "elapsed": 0.004459857940673828,
       "memory": {
         "visitCount": 1,
         "topics": [
@@ -272,9 +272,9 @@
           "What were we talking about?",
           "What projects interested me?"
         ],
-        "sessionId": "8b33b161-167c-4d3f-b594-b195272f6eea",
-        "firstVisit": "2026-06-24T23:03:53.572796Z",
-        "lastVisit": "2026-06-24T23:03:53.608168Z",
+        "sessionId": "6a0a9c44-b45e-40c4-a27c-af8c6383fb39",
+        "firstVisit": "2026-06-24T23:17:40.483566Z",
+        "lastVisit": "2026-06-24T23:17:40.546186Z",
         "knowledgeGraph": {
           "projects": [
             "Petal n Pins",
