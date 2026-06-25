@@ -62,13 +62,34 @@ def build_context(session_id: str, query: str) -> Dict[str, Any]:
     
     # Structure knowledge to map ID, type, name, and metadata
     knowledge_list = []
+    seen_ids = set()
     for node in matched_nodes:
+        node_id = node["id"]
+        seen_ids.add(node_id)
         knowledge_list.append({
-            "id": node["id"],
+            "id": node_id,
             "type": node["type"],
             "name": node["name"],
             "metadata": node.get("metadata", {})
         })
+        
+    # 3.5. RAG Hybrid Retrieval integration
+    try:
+        from app.services.retrieval.retrieval_engine import get_retrieval_engine
+        retriever = get_retrieval_engine()
+        rag_results = retriever.retrieve(query, session_id)
+        for doc in rag_results:
+            if doc.id not in seen_ids:
+                seen_ids.add(doc.id)
+                knowledge_list.append({
+                    "id": doc.id,
+                    "type": doc.type,
+                    "name": doc.name,
+                    "metadata": doc.metadata
+                })
+    except Exception as e:
+        import logging
+        logging.getLogger("context_builder").warning(f"RAG Knowledge Retrieval failed or skipped: {e}")
         
     # 4. Relationship Graph context
     g = get_graph()

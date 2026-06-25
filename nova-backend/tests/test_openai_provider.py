@@ -105,8 +105,6 @@ def test_openai_provider_unsupported_methods():
         provider.transcribe(b"")
     with pytest.raises(NotImplementedError):
         provider.speak("")
-    with pytest.raises(NotImplementedError):
-        provider.embed("")
 
 @patch("app.services.providers.openai_provider.OpenAI")
 def test_orchestrator_fallback_on_openai_error(mock_openai_class):

@@ -152,8 +152,20 @@ class OpenAIProvider(BaseAIProvider):
         raise NotImplementedError("Text-to-speech is not supported by OpenAIProvider.")
 
     def embed(self, text: str) -> List[float]:
-        """Embedding generation is not implemented."""
-        raise NotImplementedError("Embeddings are not supported by OpenAIProvider.")
+        """
+        Generates vector embeddings for a given text using OpenAI API.
+        """
+        import os
+        embedding_model = os.getenv("OPENAI_EMBEDDING_MODEL", "text-embedding-3-small")
+        try:
+            response = self.client.embeddings.create(
+                input=[text],
+                model=embedding_model
+            )
+            return response.data[0].embedding
+        except Exception as e:
+            logger.error(f"OpenAI embedding generation failed: {e}")
+            raise e
 
     def health(self) -> bool:
         """
