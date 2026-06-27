@@ -30,6 +30,22 @@ def select_context(context_data: Dict[str, Any], max_bytes: int = 4096) -> Dict[
         if not val:
             continue
             
+        # Omit empty relationship graphs
+        if key == "relationship_graph" and isinstance(val, dict):
+            if not val.get("nodes") and not val.get("edges"):
+                continue
+                
+        # Omit empty recent_conversation metadata
+        if key == "recent_conversation" and isinstance(val, dict):
+            # Check if all metadata lists/strings are empty and score is 0
+            is_empty = (
+                not val.get("entities") and 
+                not val.get("topics") and 
+                val.get("importanceScore", 0.0) == 0.0
+            )
+            if is_empty:
+                continue
+            
         # Tentatively add segment and calculate total byte size
         test_dict = {**selected, key: val}
         serialized = json.dumps(test_dict, ensure_ascii=False)
