@@ -3,22 +3,24 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import Cursor from './components/Cursor';
 import Welcome from './components/Welcome';
 import Navbar from './components/Navbar';
-import UniverseCanvas from './components/UniverseCanvas';
+import CinematicUniverseCanvas from './features/scene-engine/CinematicUniverseCanvas';
+import { SceneProvider } from './features/scene-engine/SceneContext';
 import Hero from './sections/Hero';
 import About from './sections/About';
 import Work from './sections/Work';
 import Contact from './sections/Contact';
 
-const ClientChat = lazy(() => import('./pages/ClientChat.jsx'));
-const AdminDashboard = lazy(() => import('./pages/AdminDashboard.jsx'));
-const NOVAHero = lazy(() => import('./features/nova/NOVAHero').then(m => ({ default: m.NOVAHero })));
-const NOVAHeroV2 = lazy(() => import('./features/nova-v2/NOVAHeroV2').then(m => ({ default: m.NOVAHeroV2 })));
-const NOVAHeroV3 = lazy(() => import('./features/nova-v3/NOVAHeroV3').then(m => ({ default: m.NOVAHeroV3 })));
+const ClientChat      = lazy(() => import('./pages/ClientChat.jsx'));
+const AdminDashboard  = lazy(() => import('./pages/AdminDashboard.jsx'));
+const NOVAHero        = lazy(() => import('./features/nova/NOVAHero').then(m => ({ default: m.NOVAHero })));
+const NOVAHeroV2      = lazy(() => import('./features/nova-v2/NOVAHeroV2').then(m => ({ default: m.NOVAHeroV2 })));
+const NOVAHeroV3      = lazy(() => import('./features/nova-v3/NOVAHeroV3').then(m => ({ default: m.NOVAHeroV3 })));
 
-// Phase 2 — NOVA Operating Environment (cinematic world)
+// Preserved: the nova-oe WorldEngine experiment — accessible at /world for future work
 const WorldEngine = lazy(() => import('./features/nova-oe/WorldEngine'));
 
 
+// ── Warp scroll indicator bar ─────────────────────────────────────────────────
 function WarpBar() {
   const barRef  = useRef(null);
   const animRef = useRef(null);
@@ -92,6 +94,7 @@ function PageFade({ children }) {
   );
 }
 
+// ── Main portfolio shell (Hero + About + Work + Contact) ──────────────────────
 function PortfolioShell({ showWelcome, onWelcomeDone, novaTrigger, onAskNova }) {
   return (
     <>
@@ -115,6 +118,7 @@ function PortfolioShell({ showWelcome, onWelcomeDone, novaTrigger, onAskNova }) 
   );
 }
 
+// ── App ───────────────────────────────────────────────────────────────────────
 export default function App() {
   const [showWelcome, setShowWelcome] = useState(true);
   const [novaTrigger, setNovaTrigger] = useState(0);
@@ -123,15 +127,24 @@ export default function App() {
   const onWelcomeDone = useCallback(() => setShowWelcome(false), []);
   const onAskNova     = useCallback(() => setNovaTrigger(n => n + 1), []);
 
-  // WorldEngine manages its own canvas, scroll, and HUD
-  const isWorldEngine = location.pathname === '/';
-  const isStandalone  = ['/chat', '/admin'].includes(location.pathname) || isWorldEngine;
+  // Standalone routes that manage their own full-screen canvas / layout
+  const isStandalone = ['/chat', '/admin', '/world'].includes(location.pathname);
 
   return (
-    <>
-      {!isStandalone && <UniverseCanvas />}
+    <SceneProvider>
+      {/* ── Shared cinematic environment canvas ──────────────────────────────
+          Sits at z-index: 0, pointer-events: none.
+          Does NOT render on standalone pages that manage their own canvas.  */}
+      {!isStandalone && <CinematicUniverseCanvas />}
+
+      {/* ── Scroll warp indicator (cosmetic chrome bar) ─────────────────── */}
       {!isStandalone && <WarpBar />}
+
+      {/* ── Custom cursor ──────────────────────────────────────────────── */}
       <Cursor />
+
+      {/* ── Navigation ─────────────────────────────────────────────────── */}
+      {!isStandalone && <Navbar />}
 
       <Suspense fallback={
         <div style={{
@@ -145,7 +158,7 @@ export default function App() {
           letterSpacing: '0.2em',
           color: 'rgba(167, 139, 250, 0.75)',
           textTransform: 'uppercase',
-          userSelect: 'none'
+          userSelect: 'none',
         }}>
           <span style={{
             width: '6px',
@@ -154,24 +167,14 @@ export default function App() {
             backgroundColor: '#A78BFA',
             marginRight: '12px',
             display: 'inline-block',
-            boxShadow: '0 0 8px #A78BFA'
+            boxShadow: '0 0 8px #A78BFA',
           }} />
           Loading interface...
         </div>
       }>
         <Routes>
-          {/* ── NOVA Operating Environment (Phase 2) — main experience ── */}
-          <Route path="/" element={<WorldEngine />} />
-
-          {/* ── Preserved routes ──────────────────────────────────────── */}
-          <Route path="/novatest"  element={<NOVAHero />} />
-          <Route path="/novatest2" element={<NOVAHeroV2 />} />
-          <Route path="/novatest3" element={<NOVAHeroV3 />} />
-          <Route path="/chat"      element={<ClientChat />} />
-          <Route path="/admin"     element={<AdminDashboard />} />
-
-          {/* ── Legacy portfolio shell (accessible via /legacy) ─────── */}
-          <Route path="/legacy" element={
+          {/* ── Main portfolio (Phase 1+2 active) ────────────────────── */}
+          <Route path="/" element={
             <PortfolioShell
               showWelcome={showWelcome}
               onWelcomeDone={onWelcomeDone}
@@ -179,8 +182,18 @@ export default function App() {
               onAskNova={onAskNova}
             />
           } />
+
+          {/* ── Utility / test routes ────────────────────────────────── */}
+          <Route path="/novatest"  element={<NOVAHero />} />
+          <Route path="/novatest2" element={<NOVAHeroV2 />} />
+          <Route path="/novatest3" element={<NOVAHeroV3 />} />
+          <Route path="/chat"      element={<ClientChat />} />
+          <Route path="/admin"     element={<AdminDashboard />} />
+
+          {/* ── WorldEngine experiment — preserved, not active on / ── */}
+          <Route path="/world"     element={<WorldEngine />} />
         </Routes>
       </Suspense>
-    </>
+    </SceneProvider>
   );
 }
