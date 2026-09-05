@@ -1,0 +1,647 @@
+/* ==========================================================================
+   NOVA OS — World Engine Styling
+   Minimal, Premium, Cinematic AI Operating System Interface
+   ========================================================================== */
+
+/* ── Base Container & Background ─────────────────────────────────────────── */
+.nova-portal {
+  min-height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  position: relative;
+  background: #05010f;
+  color: #f6f1ff;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  isolation: isolate;
+  user-select: none;
+}
+
+/* ── 3D Viewport Scene Container ──────────────────────────────────────────── */
+.portal-scene {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: filter 0.6s ease, transform 0.6s ease;
+}
+
+.nova-sphere-container {
+  position: relative;
+  width: min(520px, 92vw);
+  height: min(460px, 60vh);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+  overflow: visible;
+}
+
+/* ── Atmospheric Radial Vignette ─────────────────────────────────────────── */
+.portal-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(
+    circle at 50% 50%,
+    transparent 15%,
+    rgba(5, 1, 15, 0.45) 60%,
+    rgba(5, 1, 15, 0.95) 100%
+  );
+  transition: background 0.6s ease;
+}
+
+.nova-portal.has-panel .portal-vignette {
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(5, 1, 15, 0.5) 10%,
+    rgba(5, 1, 15, 0.88) 65%,
+    rgba(5, 1, 15, 0.98) 100%
+  );
+}
+
+/* ── Top Header Bar ──────────────────────────────────────────────────────── */
+.portal-header,
+.portal-footer {
+  position: absolute;
+  left: clamp(24px, 4vw, 64px);
+  right: clamp(24px, 4vw, 64px);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: rgba(233, 224, 255, 0.5);
+  font: 10px 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+
+.portal-header {
+  top: 28px;
+}
+
+.portal-footer {
+  bottom: 22px;
+  font-size: 9px;
+}
+
+.portal-footer span {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.portal-brand {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+}
+
+.brand-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-right: 10px;
+  background: #ffb38a;
+  box-shadow: 0 0 12px #ffb38a;
+}
+
+.portal-subtitle {
+  color: rgba(200, 185, 235, 0.65);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+}
+
+.portal-status {
+  display: flex;
+  align-items: center;
+  color: rgba(139, 233, 194, 0.9);
+}
+
+.status-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-right: 8px;
+  background: #8be9c2;
+  box-shadow: 0 0 10px #8be9c2;
+  animation: pulseStatus 2.2s infinite ease-in-out;
+}
+
+@keyframes pulseStatus {
+  0%, 100% { opacity: 0.6; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+/* ── Centered Subtitle below Sphere ──────────────────────────────────────── */
+.portal-idle {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 145px);
+  z-index: 5;
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none;
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+.portal-idle p {
+  margin: 0;
+  color: rgba(245, 238, 255, 0.88);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  font-weight: 400;
+}
+
+.portal-idle span {
+  display: block;
+  margin-top: 8px;
+  color: rgba(180, 160, 220, 0.45);
+  font: 9px 'JetBrains Mono', monospace;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.nova-portal.has-panel .portal-idle {
+  opacity: 0.2;
+  transform: translateX(-50%) translateY(6px);
+}
+
+/* ── Bottom Command Console ──────────────────────────────────────────────── */
+.portal-console {
+  position: absolute;
+  z-index: 6;
+  left: 50%;
+  bottom: 45px;
+  width: min(640px, 94vw);
+  transform: translateX(-50%);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.portal-console form {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  padding: 6px 8px;
+  background: rgba(11, 7, 23, 0.72);
+  border: 1px solid rgba(198, 173, 255, 0.22);
+  border-radius: 9px;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.4), inset 0 1px rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.portal-console form:focus-within {
+  border-color: rgba(167, 139, 250, 0.6);
+  box-shadow: 0 0 20px rgba(167, 139, 250, 0.25), inset 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.console-prompt {
+  padding: 0 10px;
+  color: #ffb38a;
+  white-space: nowrap;
+  font: 11px 'JetBrains Mono', monospace;
+}
+
+.console-prompt b {
+  color: #b07cff;
+  font-weight: 400;
+  margin-left: 5px;
+}
+
+.portal-console input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  color: #ffffff;
+  padding: 0 8px;
+  font: 12px 'JetBrains Mono', monospace;
+  outline: none;
+}
+
+.portal-console input::placeholder {
+  color: rgba(200, 185, 230, 0.35);
+}
+
+.portal-console button {
+  border: 0;
+  background: transparent;
+  color: #d5c0ff;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.portal-console button:hover {
+  background: rgba(167, 139, 250, 0.12);
+  color: #ffffff;
+}
+
+.portal-console .portal-send {
+  border: 1px solid rgba(217, 191, 255, 0.2);
+  background: rgba(176, 124, 255, 0.16);
+  margin-left: 4px;
+}
+
+.portal-console .portal-send:hover {
+  background: rgba(176, 124, 255, 0.3);
+}
+
+/* ── Shortcut Commands Bar ───────────────────────────────────────────────── */
+.portal-commands {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 8px 12px;
+  margin-top: 14px;
+  width: 100%;
+}
+
+.portal-cmd-btn {
+  border: 1px solid rgba(198, 173, 255, 0.16);
+  background: rgba(15, 10, 30, 0.6);
+  color: rgba(220, 205, 245, 0.75);
+  font: 11px 'JetBrains Mono', monospace;
+  letter-spacing: 0.05em;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  white-space: nowrap;
+  gap: 5px;
+  backdrop-filter: blur(12px);
+  transition: all 0.22s ease;
+  flex-shrink: 0;
+}
+
+.cmd-badge {
+  color: #ffb38a;
+  font-size: 10px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.cmd-name {
+  color: rgba(240, 230, 255, 0.9);
+  white-space: nowrap;
+}
+
+.portal-cmd-btn:hover {
+  color: #ffffff;
+  border-color: rgba(198, 173, 255, 0.4);
+  background: rgba(167, 139, 250, 0.18);
+  transform: translateY(-1px);
+}
+
+/* ── HUD Ring Overlay & Interactive Node Buttons ─────────────────────────── */
+.nova-hud-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.nova-hud-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  background: rgba(13, 8, 28, 0.72);
+  border: 1px solid rgba(198, 173, 255, 0.28);
+  border-radius: 20px;
+  padding: 4px 11px;
+  color: rgba(240, 230, 255, 0.88);
+  font: 10px 'JetBrains Mono', monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 0 12px rgba(167, 139, 250, 0.15);
+  backdrop-filter: blur(14px);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hud-node-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #a78bfa;
+  box-shadow: 0 0 8px #a78bfa;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.nova-hud-node:hover {
+  background: rgba(28, 18, 55, 0.88);
+  border-color: rgba(255, 179, 138, 0.6);
+  color: #ffffff;
+  transform: translate(-50%, -50%) scale(1.08);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 179, 138, 0.3);
+}
+
+.nova-hud-node:hover .hud-node-dot {
+  background: #ffb38a;
+  box-shadow: 0 0 10px #ffb38a;
+  transform: scale(1.25);
+}
+
+.nova-hud-node.is-active {
+  border-color: #a78bfa;
+  background: rgba(167, 139, 250, 0.25);
+  color: #ffffff;
+}
+
+/* ── Keyboard Accessibility Focus States ──────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid #a78bfa !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 14px rgba(167, 139, 250, 0.6) !important;
+}
+
+/* ── Glassmorphism Modal Panel Overlay ───────────────────────────────────── */
+.nova-panel-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(3, 1, 10, 0.65);
+  backdrop-filter: blur(16px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.nova-glass-panel {
+  position: relative;
+  width: min(520px, 92vw);
+  max-height: min(620px, 85vh);
+  overflow-y: auto;
+  padding: 34px;
+  background: linear-gradient(135deg, rgba(20, 12, 42, 0.88), rgba(8, 4, 20, 0.94));
+  border: 1px solid rgba(213, 188, 255, 0.24);
+  border-radius: 20px;
+  box-shadow: 0 32px 100px rgba(0, 0, 0, 0.7), 0 0 60px rgba(167, 139, 250, 0.15);
+  backdrop-filter: blur(28px);
+  color: #f6f1ff;
+}
+
+/* Scrollbar styling for panel */
+.nova-glass-panel::-webkit-scrollbar {
+  width: 5px;
+}
+
+.nova-glass-panel::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.nova-glass-panel::-webkit-scrollbar-thumb {
+  background: rgba(167, 139, 250, 0.3);
+  border-radius: 3px;
+}
+
+.panel-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.panel-world-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: rgba(167, 139, 250, 0.12);
+  border: 1px solid rgba(167, 139, 250, 0.25);
+  font: 10px 'JetBrains Mono', monospace;
+  letter-spacing: 0.14em;
+  color: #a78bfa;
+}
+
+.badge-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #a78bfa;
+  box-shadow: 0 0 8px #a78bfa;
+}
+
+.panel-close-btn {
+  border: 1px solid rgba(219, 195, 255, 0.18);
+  background: rgba(255, 255, 255, 0.04);
+  color: #d9c9f9;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.panel-close-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border-color: rgba(219, 195, 255, 0.4);
+}
+
+.panel-kicker {
+  color: #ffb38a;
+  font: 10px 'JetBrains Mono', monospace;
+  letter-spacing: 0.16em;
+  margin: 0 0 12px;
+  text-transform: uppercase;
+}
+
+.panel-title {
+  font-size: 28px;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  font-weight: 500;
+  margin: 0 0 16px;
+  color: #ffffff;
+}
+
+.panel-rule {
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255, 179, 140, 0.6), transparent);
+  margin-bottom: 20px;
+}
+
+.panel-desc {
+  font-size: 14px;
+  line-height: 1.65;
+  color: rgba(240, 234, 255, 0.78);
+  margin-bottom: 24px;
+}
+
+.panel-section {
+  margin-top: 24px;
+}
+
+.section-heading {
+  font-size: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(200, 185, 235, 0.75);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.features-grid,
+.skills-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.feature-card,
+.skill-card,
+.project-item {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(219, 195, 255, 0.14);
+  border-radius: 12px;
+}
+
+.feature-card h3,
+.skill-card h3,
+.project-header h3 {
+  margin: 0 0 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.feature-card p,
+.skill-card p,
+.project-item p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.55;
+  color: rgba(220, 210, 240, 0.7);
+}
+
+.tags-row,
+.tech-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 14px;
+}
+
+.panel-tag,
+.tech-chip {
+  padding: 4px 9px;
+  background: rgba(167, 139, 250, 0.1);
+  border: 1px solid rgba(167, 139, 250, 0.2);
+  border-radius: 6px;
+  color: #d5c0ff;
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.philosophy-box {
+  padding: 16px;
+  background: rgba(255, 179, 138, 0.06);
+  border-left: 3px solid #ffb38a;
+  border-radius: 4px 10px 10px 4px;
+  margin-bottom: 24px;
+}
+
+.philosophy-text {
+  margin: 0;
+  font-style: italic;
+  font-size: 13px;
+  color: rgba(255, 230, 215, 0.9);
+  line-height: 1.55;
+}
+
+.contact-email-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  background: rgba(167, 139, 250, 0.16);
+  border: 1px solid rgba(167, 139, 250, 0.35);
+  border-radius: 10px;
+  color: #ffffff;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  margin-bottom: 10px;
+}
+
+.contact-email-link:hover {
+  background: rgba(167, 139, 250, 0.3);
+  border-color: #a78bfa;
+}
+
+.socials-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(219, 195, 255, 0.18);
+  border-radius: 8px;
+  color: #f5eeff;
+  font-size: 11px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.social-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+/* ── Responsive Mobile Adjustments ────────────────────────────────────────── */
+@media (max-width: 700px) {
+  .portal-header {
+    top: 20px;
+  }
+  .portal-subtitle {
+    display: none;
+  }
+  .portal-footer {
+    display: none;
+  }
+  .portal-idle {
+    top: calc(50% + 140px);
+    width: 88vw;
+  }
+  .portal-console {
+    bottom: 24px;
+    width: 92vw;
+  }
+  .nova-glass-panel {
+    padding: 24px;
+    width: 94vw;
+  }
+}

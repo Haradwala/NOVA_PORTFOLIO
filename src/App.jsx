@@ -15,6 +15,9 @@ const NOVAHero = lazy(() => import('./features/nova/NOVAHero').then(m => ({ defa
 const NOVAHeroV2 = lazy(() => import('./features/nova-v2/NOVAHeroV2').then(m => ({ default: m.NOVAHeroV2 })));
 const NOVAHeroV3 = lazy(() => import('./features/nova-v3/NOVAHeroV3').then(m => ({ default: m.NOVAHeroV3 })));
 
+// Phase 2 — NOVA Operating Environment (cinematic world)
+const WorldEngine = lazy(() => import('./features/nova-oe/WorldEngine'));
+
 
 function WarpBar() {
   const barRef  = useRef(null);
@@ -120,7 +123,9 @@ export default function App() {
   const onWelcomeDone = useCallback(() => setShowWelcome(false), []);
   const onAskNova     = useCallback(() => setNovaTrigger(n => n + 1), []);
 
-  const isStandalone = ['/chat', '/admin'].includes(location.pathname);
+  // WorldEngine manages its own canvas, scroll, and HUD
+  const isWorldEngine = location.pathname === '/';
+  const isStandalone  = ['/chat', '/admin'].includes(location.pathname) || isWorldEngine;
 
   return (
     <>
@@ -155,12 +160,18 @@ export default function App() {
         </div>
       }>
         <Routes>
-          <Route path="/novatest" element={<NOVAHero />} />
+          {/* ── NOVA Operating Environment (Phase 2) — main experience ── */}
+          <Route path="/" element={<WorldEngine />} />
+
+          {/* ── Preserved routes ──────────────────────────────────────── */}
+          <Route path="/novatest"  element={<NOVAHero />} />
           <Route path="/novatest2" element={<NOVAHeroV2 />} />
           <Route path="/novatest3" element={<NOVAHeroV3 />} />
-          <Route path="/chat"  element={<ClientChat />} />
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/*" element={
+          <Route path="/chat"      element={<ClientChat />} />
+          <Route path="/admin"     element={<AdminDashboard />} />
+
+          {/* ── Legacy portfolio shell (accessible via /legacy) ─────── */}
+          <Route path="/legacy" element={
             <PortfolioShell
               showWelcome={showWelcome}
               onWelcomeDone={onWelcomeDone}

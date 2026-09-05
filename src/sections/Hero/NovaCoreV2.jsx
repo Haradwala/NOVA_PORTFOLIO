@@ -80,6 +80,7 @@ export default function NovaCoreV2({
   onCoreClick,
   activeSubNodes = [],
   highlightedNode = null,
+  showStateSubtitle = true,
 }) {
   const [forcedState, setForcedState] = useState(null);
   const [forcedAmp,   setForcedAmp]   = useState(null);
@@ -342,7 +343,7 @@ export default function NovaCoreV2({
           )}
 
           {/* ── State Subtitle ─────────────────────────────────────────── */}
-          <div
+          {showStateSubtitle && <div
             key={effectiveState}
             style={{
               marginTop: effectiveText && effectiveState !== 'idle' ? '0.55rem' : '1.1rem',
@@ -370,10 +371,10 @@ export default function NovaCoreV2({
                 : 'novaBreath 3s ease-in-out infinite',
             }} />
             {SUBTITLE[effectiveState] || SUBTITLE.idle}
-          </div>
+          </div>}
 
           {/* ── Permission hint (idle only) ────────────────────────────── */}
-          {effectiveState === 'idle' && onCoreClick && (
+          {showStateSubtitle && effectiveState === 'idle' && onCoreClick && (
             <p style={{
               marginTop: '0.4rem',
               fontFamily: "'DM Sans', sans-serif",
