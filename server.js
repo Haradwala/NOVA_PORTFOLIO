@@ -28,6 +28,10 @@ const OPENAI_STT_MODEL = process.env.OPENAI_STT_MODEL || 'gpt-4o-mini-transcribe
 const OPENAI_TTS_MODEL = process.env.OPENAI_TTS_MODEL || 'gpt-4o-mini-tts';
 const OPENAI_TTS_VOICE = process.env.OPENAI_TTS_VOICE || 'nova';
 
+const LLM_PROVIDER = (process.env.LLM_PROVIDER || 'openai').toLowerCase().trim();
+const OLLAMA_BASE_URL = (process.env.OLLAMA_BASE_URL || 'http://localhost:11434/v1').replace(/\/+$/, '');
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL || '';
+
 function sendJson(res, status, payload) {
   res.writeHead(status, {
     'Content-Type': 'application/json',
@@ -60,7 +64,8 @@ async function readJsonBody(req) {
 
 function extractResponseText(data) {
   if (data && data.choices && data.choices[0] && data.choices[0].message) {
-    return (data.choices[0].message.content || '').trim();
+    const msg = data.choices[0].message;
+    return (msg.content || msg.reasoning || '').trim();
   }
 
   if (typeof data.output_text === 'string' && data.output_text.trim()) {
@@ -139,6 +144,48 @@ async function callOpenAI(path, options = {}) {
   return response;
 }
 
+async function callOllamaChat(formattedMessages, maxOutputTokens) {
+  if (!OLLAMA_MODEL) {
+    throw new Error(
+      `Could not reach Ollama at ${OLLAMA_BASE_URL} — is \`ollama serve\` running and is OLLAMA_MODEL set correctly in .env?`
+    );
+  }
+
+  let response;
+  try {
+    response = await fetch(`${OLLAMA_BASE_URL}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: OLLAMA_MODEL,
+        messages: formattedMessages,
+        max_tokens: maxOutputTokens,
+      }),
+    });
+  } catch (netErr) {
+    throw new Error(
+      `Could not reach Ollama at ${OLLAMA_BASE_URL} — is \`ollama serve\` running and is OLLAMA_MODEL set correctly in .env? (${netErr.message})`
+    );
+  }
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    let detail = errorText;
+    try {
+      const parsed = JSON.parse(errorText);
+      if (parsed?.error?.message) detail = parsed.error.message;
+      else if (parsed?.error) detail = parsed.error;
+    } catch (_) {}
+    throw new Error(
+      `Could not reach Ollama at ${OLLAMA_BASE_URL} — is \`ollama serve\` running and is OLLAMA_MODEL set correctly in .env? (HTTP ${response.status}: ${detail})`
+    );
+  }
+
+  return response;
+}
+
 const server = createServer(async (req, res) => {
   if (req.method === 'OPTIONS') {
     res.writeHead(204, {
@@ -170,23 +217,32 @@ const server = createServer(async (req, res) => {
         }
       }
 
-      const openAiRes = await callOpenAI('/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: OPENAI_MODEL,
-          messages: formattedMessages,
-          max_tokens: maxOutputTokens,
-        }),
-      });
+      let chatRes;
+      if (LLM_PROVIDER === 'ollama') {
+        chatRes = await callOllamaChat(formattedMessages, maxOutputTokens);
+      } else {
+        chatRes = await callOpenAI('/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: OPENAI_MODEL,
+            messages: formattedMessages,
+            max_tokens: maxOutputTokens,
+          }),
+        });
+      }
 
-      const data = await openAiRes.json();
+      const data = await chatRes.json();
       const reply = extractResponseText(data);
 
       if (!reply) {
-        throw new Error('OpenAI returned an empty reply.');
+        throw new Error(
+          LLM_PROVIDER === 'ollama'
+            ? `Ollama (${OLLAMA_MODEL}) returned an empty reply.`
+            : 'OpenAI returned an empty reply.'
+        );
       }
 
       sendJson(res, 200, { reply });
@@ -277,5 +333,6 @@ const server = createServer(async (req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`NOVA API listening on http://localhost:${PORT}`);
+  const providerDetails = LLM_PROVIDER === 'ollama' ? `ollama (${OLLAMA_MODEL || 'no model set'})` : 'openai';
+  console.log(`NOVA API listening on http://localhost:${PORT} [provider: ${providerDetails}]`);
 });
