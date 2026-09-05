@@ -40,12 +40,13 @@ function StarField({ count }) {
 
       pos[i * 3]     = r * Math.sin(phi) * Math.cos(theta);
       pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta) * 0.55; // flatten Y
-      pos[i * 3 + 2] = -Math.abs(r * Math.cos(phi)) * 1.4;          // push behind camera
+      // Push behind scene origin so stars form a true deep cosmic background
+      pos[i * 3 + 2] = -2.0 - Math.abs(r * Math.cos(phi)) * 1.4;
 
-      // Depth-sorted opacity: farther = dimmer
+      // Depth-sorted opacity: farther = dimmer, closer = crisp luminous points
       const depth = Math.abs(pos[i * 3 + 2]);
-      op[i]  = Math.max(0.04, 0.45 - depth / 50.0);
-      sz[i]  = 0.8 + Math.random() * 2.2;
+      op[i]  = Math.max(0.12, 0.65 - depth / 45.0);
+      sz[i]  = 0.6 + Math.random() * 0.8;
     }
     return { positions: pos, sizes: sz, opacities: op };
   }, [count]);
@@ -58,7 +59,7 @@ function StarField({ count }) {
     return geo;
   }, [positions, sizes, opacities]);
 
-  // Vertex: twinkling via sin(time + random offset)
+  // Vertex: crisp point sizing with depth attenuation and clamp to prevent blurry blobs
   const vertexShader = `
     attribute float aSize;
     attribute float aOpacity;
@@ -66,20 +67,22 @@ function StarField({ count }) {
     uniform float uTime;
 
     void main() {
-      vOpacity = aOpacity * (0.75 + 0.25 * sin(uTime * 0.8 + position.x * 3.7));
+      vOpacity = aOpacity * (0.75 + 0.25 * sin(uTime * 1.2 + position.x * 3.7 + position.y * 2.1));
       vec4 mv = modelViewMatrix * vec4(position, 1.0);
-      gl_PointSize = aSize * (280.0 / -mv.z);
+      float pSize = aSize * (24.0 / -mv.z);
+      gl_PointSize = clamp(pSize, 1.0, 3.8);
       gl_Position  = projectionMatrix * mv;
     }
   `;
 
+  // Fragment: crisp stellar pinpricks with tight 1px anti-aliased edge (no fuzzy halo)
   const fragmentShader = `
     varying float vOpacity;
     void main() {
       float d = length(gl_PointCoord - vec2(0.5));
       if (d > 0.5) discard;
-      float alpha = (1.0 - smoothstep(0.2, 0.5, d)) * vOpacity;
-      gl_FragColor = vec4(0.87, 0.84, 0.98, alpha); // cool-lavender white
+      float alpha = smoothstep(0.5, 0.25, d) * vOpacity;
+      gl_FragColor = vec4(0.88, 0.86, 0.98, alpha); // cool-lavender white
     }
   `;
 

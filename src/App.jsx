@@ -120,7 +120,13 @@ function PortfolioShell({ showWelcome, onWelcomeDone, novaTrigger, onAskNova }) 
 
 // ── App ───────────────────────────────────────────────────────────────────────
 export default function App() {
-  const [showWelcome, setShowWelcome] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('nowelcome') === 'true' || params.get('skipWelcome') === 'true') return false;
+    }
+    return true;
+  });
   const [novaTrigger, setNovaTrigger] = useState(0);
   const location = useLocation();
 
