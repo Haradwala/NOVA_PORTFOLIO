@@ -162,6 +162,7 @@ async function callOllamaChat(formattedMessages, maxOutputTokens) {
         model: OLLAMA_MODEL,
         messages: formattedMessages,
         max_tokens: maxOutputTokens,
+        think: false,
       }),
     });
   } catch (netErr) {
