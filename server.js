@@ -28,7 +28,11 @@ const OPENAI_STT_MODEL = process.env.OPENAI_STT_MODEL || 'gpt-4o-mini-transcribe
 const OPENAI_TTS_MODEL = process.env.OPENAI_TTS_MODEL || 'gpt-4o-mini-tts';
 const OPENAI_TTS_VOICE = process.env.OPENAI_TTS_VOICE || 'nova';
 
-const LLM_PROVIDER = (process.env.LLM_PROVIDER || 'openai').toLowerCase().trim();
+const GROQ_API_KEY = process.env.GROQ_API_KEY;
+const GROQ_BASE_URL = (process.env.GROQ_BASE_URL || 'https://api.groq.com/openai/v1').replace(/\/+$/, '');
+const GROQ_MODEL = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
+
+const LLM_PROVIDER = (process.env.LLM_PROVIDER || 'groq').toLowerCase().trim();
 const OLLAMA_BASE_URL = (process.env.OLLAMA_BASE_URL || 'http://localhost:11434/v1').replace(/\/+$/, '');
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL || '';
 
@@ -187,6 +191,49 @@ async function callOllamaChat(formattedMessages, maxOutputTokens) {
   return response;
 }
 
+async function callGroqChat(formattedMessages, maxOutputTokens) {
+  if (!GROQ_API_KEY) {
+    throw new Error(
+      'Could not reach Groq — check GROQ_API_KEY is set and valid, and that GROQ_MODEL is a currently available model.'
+    );
+  }
+
+  let response;
+  try {
+    response = await fetch(`${GROQ_BASE_URL}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${GROQ_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: GROQ_MODEL,
+        messages: formattedMessages,
+        max_tokens: maxOutputTokens,
+      }),
+    });
+  } catch (netErr) {
+    throw new Error(
+      `Could not reach Groq — check GROQ_API_KEY is set and valid, and that GROQ_MODEL is a currently available model. (${netErr.message})`
+    );
+  }
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    let detail = errorText;
+    try {
+      const parsed = JSON.parse(errorText);
+      if (parsed?.error?.message) detail = parsed.error.message;
+      else if (parsed?.error) detail = parsed.error;
+    } catch (_) {}
+    throw new Error(
+      `Could not reach Groq — check GROQ_API_KEY is set and valid, and that GROQ_MODEL is a currently available model. (HTTP ${response.status}: ${detail})`
+    );
+  }
+
+  return response;
+}
+
 const server = createServer(async (req, res) => {
   if (req.method === 'OPTIONS') {
     res.writeHead(204, {
@@ -221,7 +268,7 @@ const server = createServer(async (req, res) => {
       let chatRes;
       if (LLM_PROVIDER === 'ollama') {
         chatRes = await callOllamaChat(formattedMessages, maxOutputTokens);
-      } else {
+      } else if (LLM_PROVIDER === 'openai') {
         chatRes = await callOpenAI('/chat/completions', {
           method: 'POST',
           headers: {
@@ -233,17 +280,24 @@ const server = createServer(async (req, res) => {
             max_tokens: maxOutputTokens,
           }),
         });
+      } else {
+        chatRes = await callGroqChat(formattedMessages, maxOutputTokens);
       }
 
       const data = await chatRes.json();
       const reply = extractResponseText(data);
 
       if (!reply) {
-        throw new Error(
-          LLM_PROVIDER === 'ollama'
-            ? `Ollama (${OLLAMA_MODEL}) returned an empty reply.`
-            : 'OpenAI returned an empty reply.'
-        );
+        let providerName = 'Groq';
+        let modelName = GROQ_MODEL;
+        if (LLM_PROVIDER === 'ollama') {
+          providerName = 'Ollama';
+          modelName = OLLAMA_MODEL;
+        } else if (LLM_PROVIDER === 'openai') {
+          providerName = 'OpenAI';
+          modelName = OPENAI_MODEL;
+        }
+        throw new Error(`${providerName} (${modelName || 'default'}) returned an empty reply.`);
       }
 
       sendJson(res, 200, { reply });
@@ -334,6 +388,11 @@ const server = createServer(async (req, res) => {
 });
 
 server.listen(PORT, () => {
-  const providerDetails = LLM_PROVIDER === 'ollama' ? `ollama (${OLLAMA_MODEL || 'no model set'})` : 'openai';
+  let providerDetails = `groq (${GROQ_MODEL || 'llama-3.3-70b-versatile'})`;
+  if (LLM_PROVIDER === 'ollama') {
+    providerDetails = `ollama (${OLLAMA_MODEL || 'no model set'})`;
+  } else if (LLM_PROVIDER === 'openai') {
+    providerDetails = `openai (${OPENAI_MODEL || 'gpt-4o-mini'})`;
+  }
   console.log(`NOVA API listening on http://localhost:${PORT} [provider: ${providerDetails}]`);
 });
