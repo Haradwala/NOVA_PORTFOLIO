@@ -128,7 +128,7 @@ export default function NovaCoreV2({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const { beamCoords } = useNeuralBeams({
+  const { beamCoords, coreCenter } = useNeuralBeams({
     parentRef, canvasRef, labelRefs, activeSubNodes, isDesktop,
   });
 
@@ -239,7 +239,9 @@ export default function NovaCoreV2({
           highlightedNode={highlightedNode}
           duplexState={effectiveState}
           canvasRef={canvasRef}
-          cx={cx} cy={cy} radius={radius}
+          cx={coreCenter?.cx ?? cx}
+          cy={coreCenter?.cy ?? cy}
+          radius={coreCenter?.radius ?? radius}
           amp={effectiveAmp}
         />
 

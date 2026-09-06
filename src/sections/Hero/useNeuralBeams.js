@@ -3,6 +3,7 @@ import { CORE_NODES } from './constants';
 
 export function useNeuralBeams({ parentRef, canvasRef, labelRefs, activeSubNodes, isDesktop }) {
   const [beamCoords, setBeamCoords] = useState([]);
+  const [coreCenter, setCoreCenter] = useState({ cx: 0, cy: 0, radius: 158 });
 
   const updateCoords = useCallback(() => {
     if (!parentRef.current || !canvasRef.current) return;
@@ -12,6 +13,8 @@ export function useNeuralBeams({ parentRef, canvasRef, labelRefs, activeSubNodes
     const cx = canvasRect.left - parentRect.left + canvasRect.width / 2;
     const cy = canvasRect.top - parentRect.top + canvasRect.height / 2;
     const radius = Math.min(canvasRect.width, canvasRect.height) * 0.36;
+
+    setCoreCenter({ cx, cy, radius });
 
     const coords = CORE_NODES.map((node) => {
       const el = labelRefs.current[node.label];
@@ -67,6 +70,7 @@ export function useNeuralBeams({ parentRef, canvasRef, labelRefs, activeSubNodes
 
   return {
     beamCoords,
+    coreCenter,
     updateCoords,
   };
 }

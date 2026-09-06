@@ -59,11 +59,11 @@ export const NeuralBeams = memo(function NeuralBeams({
         );
       })}
 
-      {duplexState === 'listening' && canvasRef.current && (
+      {duplexState === 'listening' && cx > 0 && (
         <g>
           <circle
-            cx={canvasRef.current.offsetLeft + cx}
-            cy={canvasRef.current.offsetTop + cy}
+            cx={cx}
+            cy={cy}
             r={radius + 12 + amp * 30}
             fill="none"
             stroke="rgba(232, 149, 109, 0.25)"
@@ -72,8 +72,8 @@ export const NeuralBeams = memo(function NeuralBeams({
             className="drop-shadow-[0_0_6px_rgba(232,149,109,0.4)]"
           />
           <circle
-            cx={canvasRef.current.offsetLeft + cx}
-            cy={canvasRef.current.offsetTop + cy}
+            cx={cx}
+            cy={cy}
             r={radius + 24 + amp * 55}
             fill="none"
             stroke="rgba(232, 149, 109, 0.1)"
