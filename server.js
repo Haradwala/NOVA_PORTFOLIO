@@ -30,7 +30,7 @@ const OPENAI_TTS_VOICE = process.env.OPENAI_TTS_VOICE || 'nova';
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const GROQ_BASE_URL = (process.env.GROQ_BASE_URL || 'https://api.groq.com/openai/v1').replace(/\/+$/, '');
-const GROQ_MODEL = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
+const GROQ_MODEL = process.env.GROQ_MODEL || 'openai/gpt-oss-120b';
 
 const LLM_PROVIDER = (process.env.LLM_PROVIDER || 'groq').toLowerCase().trim();
 const OLLAMA_BASE_URL = (process.env.OLLAMA_BASE_URL || 'http://localhost:11434/v1').replace(/\/+$/, '');
@@ -388,7 +388,7 @@ const server = createServer(async (req, res) => {
 });
 
 server.listen(PORT, () => {
-  let providerDetails = `groq (${GROQ_MODEL || 'llama-3.3-70b-versatile'})`;
+  let providerDetails = `groq (${GROQ_MODEL || 'openai/gpt-oss-120b'})`;
   if (LLM_PROVIDER === 'ollama') {
     providerDetails = `ollama (${OLLAMA_MODEL || 'no model set'})`;
   } else if (LLM_PROVIDER === 'openai') {
