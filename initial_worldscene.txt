@@ -1,0 +1,103 @@
+Created At: 2026-06-27T14:04:19Z
+Completed At: 2026-06-27T14:04:20Z
+File Path: `file:///E:/New%20folder%2010/shadab-portfolio%20%285%29/shadab-portfolio/src/features/nova-oe/WorldScene.jsx`
+Total Lines: 95
+Total Bytes: 3280
+Showing lines 1 to 95
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: /**
+2:  * WorldScene.jsx
+3:  * Master R3F scene. Orchestrates all engine systems per-frame and
+4:  * renders all 7 environments inside the single continuous world.
+5:  *
+6:  * Frame loop priority:
+7:  *  0 — WorldDirector.tick() + SceneManager.tick()
+8:  *  1 — SplineCamera applies director output to camera
+9:  *  2 — Environment-level animations (handled internally per env)
+10:  *
+11:  * No portfolio content. No UI. Pure 3D world only.
+12:  */
+13: 
+14: import { Suspense, useEffect } from 'react';
+15: import { useFrame }            from '@react-three/fiber';
+16: import { WorldDirector }  from './engine/WorldDirector';
+17: import { SceneManager }   from './engine/SceneManager';
+18: import { WorldRegistry }  from './engine/WorldRegistry';
+19: import SplineCamera       from './components/SplineCamera';
+20: import WorldAtmosphere    from './components/WorldAtmosphere';
+21: import WorldLighting      from './components/WorldLighting';
+22: import ArrivalZone        from './environments/ArrivalZone';
+23: import IdentityHall       from './environments/IdentityHall';
+24: import CapabilityReactor  from './environments/CapabilityReactor';
+25: import ProjectVault       from './environments/ProjectVault';
+26: import TimelineCorridor   from './environments/TimelineCorridor';
+27: import KnowledgeArchive   from './environments/KnowledgeArchive';
+28: import CommunicationBridge from './environments/CommunicationBridge';
+29: 
+30: // ─── Boot: connect engine to SceneManager ────────────────────────────────────
+31: 
+32: let _booted = false;
+33: 
+34: function bootEngine() {
+35:   if (_booted) return;
+36:   _booted = true;
+37: 
+38:   // Connect WorldDirector → SceneManager event bridge
+39:   SceneManager.connect(WorldDirector);
+40: 
+41:   // Register all environments
+42:   WorldRegistry.all().forEach(mod => {
+43:     SceneManager.register(mod.id, {
+44:       camera:   null,   // future per-scene camera overrides
+45:       aiPrompt: null,   // future NOVA AI contextual prompts
+46:     });
+47:   });
+48: }
+49: 
+50: // ─── Director Tick (priority 0) ───────────────────────────────────────────────
+51: 
+52: function DirectorTick() {
+53:   useEffect(() => {
+54:     bootEngine();
+55:   }, []);
+56: 
+57:   useFrame((_, delta) => {
+58:     WorldDirector.tick(delta);
+59:     SceneManager.tick(delta);
+60:   }, 0);
+61: 
+62:   return null;
+63: }
+64: 
+65: // ─── World Scene ──────────────────────────────────────────────────────────────
+66: 
+67: export default function WorldScene() {
+68:   return (
+69:     <>
+70:       {/* Engine tick — must be first (priority 0) */}
+71:       <DirectorTick />
+72: 
+73:       {/* Camera controller — reads from WorldDirector (priority 1) */}
+74:       <SplineCamera />
+75: 
+76:       {/* Global atmosphere — starfield, dust, fog */}
+77:       <WorldAtmosphere />
+78: 
+79:       {/* Cinematic lighting rig */}
+80:       <WorldLighting />
+81: 
+82:       {/* ── All 7 environments — single continuous world ──────────────────── */}
+83:       <Suspense fallback={null}>
+84:         <ArrivalZone />
+85:         <IdentityHall />
+86:         <CapabilityReactor />
+87:         <ProjectVault />
+88:         <TimelineCorridor />
+89:         <KnowledgeArchive />
+90:         <CommunicationBridge />
+91:       </Suspense>
+92:     </>
+93:   );
+94: }
+95: 
+The above content shows the entire, complete file contents of the requested file.

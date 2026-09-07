@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import NovaCoreV2 from './NovaCoreV2';
-import NovaBackground from './NovaBackground';
 import { ConversationBubble } from './ConversationBubble';
 import { NovaCards } from './NovaCards';
 import { useNovaContext } from './useNovaContext';
@@ -13,6 +12,7 @@ import { useFullDuplex } from '../../hooks/useFullDuplex';
 import { useSTT } from '../../hooks/useSTT';
 import NovaDebugPanel from '../../components/NovaDebugPanel';
 import { scrollToSection, highlightSection } from '../../utils/sectionRegistry';
+import { useScene } from '../../features/scene-engine/SceneContext';
 
 const FIRST_GREETING = "Hey! I'm NOVA 👋 Shadab's AI assistant. Ask me about my projects, skills, or experience!";
 
@@ -21,8 +21,16 @@ export default function Hero({ novaPanelOpen }) {
   const [time,     setTime]     = useState('');
   const [showDebug, setShowDebug] = useState(false);
   const [interacted, setInteracted] = useState(false);
-  const greeted = useRef(false);
-  const bumpedRef = useRef(false);
+  const greeted    = useRef(false);
+  const bumpedRef  = useRef(false);
+  const sectionRef = useRef(null);
+
+  // Register this section as 'arrival' in the SceneContext for scroll progress tracking
+  const { registerSection } = useScene();
+  useEffect(() => {
+    registerSection('arrival', sectionRef.current);
+    return () => registerSection('arrival', null);
+  }, [registerSection]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -131,11 +139,13 @@ export default function Hero({ novaPanelOpen }) {
   }, [duplex.speakReply]);
 
   return (
-    <section style={{
-      position: 'relative', minHeight: '100vh', display: 'flex', flexDirection: 'column',
-      alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
-      paddingTop: '5rem', paddingBottom: '2rem', gap: '1.2rem',
-    }}>
+    <section
+      ref={sectionRef}
+      style={{
+        position: 'relative', minHeight: '100vh', display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
+        paddingTop: '5rem', paddingBottom: '2rem', gap: '1.2rem',
+      }}>
       <style>{`
         @keyframes pulseDots { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
         .pulse-dots { animation: pulseDots 1.4s infinite; }
@@ -147,7 +157,8 @@ export default function Hero({ novaPanelOpen }) {
         }
       `}</style>
 
-      <NovaBackground />
+      {/* NovaBackground (2D grid-tunnel) removed — CinematicUniverseCanvas
+          at z-index:0 now provides the Arrival environment behind this section. */}
 
       <div style={{
         position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1,
