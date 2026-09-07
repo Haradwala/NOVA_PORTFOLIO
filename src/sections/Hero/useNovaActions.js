@@ -2,14 +2,26 @@ import { useCallback } from 'react';
 import { useWarpTransition } from '../../hooks/useWarpTransition';
 import { scrollToSection, highlightSection } from '../../utils/sectionRegistry';
 
-export function useNovaActions() {
+export function useNovaActions({ setHighlightedNode } = {}) {
   const { warpTo } = useWarpTransition();
 
   const executeAction = useCallback((action, payload) => {
     if (!action) return;
 
+    const triggerNodeFeedback = (label) => {
+      if (!label) return;
+      window.dispatchEvent(new CustomEvent('nova-nav', { detail: { label } }));
+      if (setHighlightedNode) {
+        setHighlightedNode(label);
+        setTimeout(() => {
+          setHighlightedNode((current) => (current === label ? null : current));
+        }, 3000);
+      }
+    };
+
     switch (action) {
       case 'scroll_projects': {
+        triggerNodeFeedback('Projects');
         const scrolled = scrollToSection('projects');
         if (!scrolled) {
           window.__pendingScroll = 'projects';
@@ -18,6 +30,7 @@ export function useNovaActions() {
         break;
       }
       case 'scroll_contact': {
+        triggerNodeFeedback('Contact');
         const scrolled = scrollToSection('contact');
         if (!scrolled) {
           window.__pendingScroll = 'contact';
@@ -26,6 +39,7 @@ export function useNovaActions() {
         break;
       }
       case 'highlight_skills': {
+        triggerNodeFeedback('Skills');
         const scrolled = scrollToSection('skills');
         if (scrolled) {
           highlightSection('skills');
@@ -36,7 +50,17 @@ export function useNovaActions() {
         }
         break;
       }
+      case 'scroll_about': {
+        triggerNodeFeedback('About');
+        const scrolled = scrollToSection('about');
+        if (!scrolled) {
+          window.__pendingScroll = 'about';
+          warpTo('/about');
+        }
+        break;
+      }
       case 'open_project': {
+        triggerNodeFeedback('Projects');
         if (!payload) return;
 
         // Dispatch a custom event in case the Work component is already mounted on the active route
@@ -50,7 +74,7 @@ export function useNovaActions() {
       default:
         break;
     }
-  }, [warpTo]);
+  }, [warpTo, setHighlightedNode]);
 
   return { executeAction };
 }

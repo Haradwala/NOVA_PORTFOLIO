@@ -90,5 +90,23 @@ export function useNOVA() {
     historyRef.current = [];
   }, []);
 
-  return { messages, isLoading, sendMessage, markRead, addGreeting, clearMessages, setTopicRecorder };
+  const addExchange = useCallback((userText, assistantText) => {
+    const uText = userText?.trim();
+    const aText = assistantText?.trim();
+    if (!uText || !aText) return;
+
+    onTopicRef.current?.(uText);
+
+    setMessages(prev => [
+      ...prev,
+      { role: 'user', content: uText },
+      { role: 'nova', content: aText, isNew: true },
+    ]);
+    historyRef.current.push(
+      { role: 'user', content: uText },
+      { role: 'assistant', content: aText },
+    );
+  }, []);
+
+  return { messages, isLoading, sendMessage, addExchange, markRead, addGreeting, clearMessages, setTopicRecorder };
 }

@@ -4,7 +4,7 @@ import { ConversationBubble } from './ConversationBubble';
 import { NovaCards } from './NovaCards';
 import { useNovaContext } from './useNovaContext';
 import { useNovaVoiceState } from './useNovaVoiceState';
-import { useNovaNavigation } from './useNovaNavigation';
+import { useNovaNavigation, detectReferencedSection } from './useNovaNavigation';
 import NovaPanel from '../../components/NovaPanel';
 import { useNOVA } from '../../hooks/useNOVA';
 import { useNOVAMemory } from '../../hooks/useNOVAMemory';
@@ -54,7 +54,7 @@ export default function Hero({ novaPanelOpen }) {
 
   // Context & Database lookups
   const novaContext = useNovaContext();
-  const { messages, isLoading, sendMessage, markRead, addGreeting, setTopicRecorder } = useNOVA();
+  const { messages, isLoading, sendMessage, addExchange, markRead, addGreeting, setTopicRecorder } = useNOVA();
   const { memory, bumpVisit, recordTopic, buildGreeting } = useNOVAMemory();
 
   useEffect(() => { setTopicRecorder(recordTopic); }, [setTopicRecorder, recordTopic]);
@@ -66,6 +66,8 @@ export default function Hero({ novaPanelOpen }) {
   }, [memory, bumpVisit]);
 
   const speakFnRef = useRef(null);
+  const navigationRef = useRef(null);
+  const lastReferencedSectionRef = useRef(null);
   
   // Custom send handler routing local intents first
   const handleSend = useCallback(async (text, options = {}) => {
@@ -75,8 +77,9 @@ export default function Hero({ novaPanelOpen }) {
     setChatOpen(true);
     greeted.current = true;
 
-    const localReply = await navigation.handleQueryIntent(text);
+    const localReply = await navigationRef.current?.handleQueryIntent(text);
     if (localReply) {
+      addExchange(text, localReply);
       if (speakReply && speakFnRef.current) {
         speakFnRef.current(localReply);
       }
@@ -84,18 +87,30 @@ export default function Hero({ novaPanelOpen }) {
     }
 
     const reply = await sendMessage(text);
-    if (reply && speakReply && speakFnRef.current) {
-      speakFnRef.current(reply);
+    if (reply) {
+      const section = detectReferencedSection(reply);
+      if (section) {
+        lastReferencedSectionRef.current = section;
+      }
+
+      if (speakReply && speakFnRef.current) {
+        speakFnRef.current(reply);
+      }
     }
     return reply;
-  }, [sendMessage]); // eslint-disable-line
+  }, [sendMessage, addExchange]);
 
   const duplex = useFullDuplex({
     onReply: (text) => handleSend(text, { speakReply: false }),
   });
 
   const speakReply = duplex.speakReply;
-  const navigation = useNovaNavigation({ novaContext, speakReply });
+  const navigation = useNovaNavigation({
+    novaContext,
+    speakReply,
+    lastReferencedSectionRef,
+  });
+  navigationRef.current = navigation;
 
   const { isListening, toggleListening, isSupported: sttSupported, lastError: sttError, mode: sttMode } = useSTT({
     onResult: (text) => handleSend(text),
@@ -301,6 +316,10 @@ export default function Hero({ novaPanelOpen }) {
             : () => { setChatOpen(true); doGreet(); }
           }
           onClickNode={(label) => {
+            novaContext.setHighlightedNode(label);
+            setTimeout(() => {
+              novaContext.setHighlightedNode((current) => (current === label ? null : current));
+            }, 3000);
             window.dispatchEvent(new CustomEvent('nova-nav', { detail: { label } }));
             setTimeout(() => {
               if (label === 'About') {

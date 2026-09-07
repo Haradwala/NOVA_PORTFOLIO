@@ -132,6 +132,19 @@ export default function NovaCoreV2({
     parentRef, canvasRef, labelRefs, activeSubNodes, isDesktop,
   });
 
+  useEffect(() => {
+    if (highlightedNode && beamCoords.length > 0) {
+      const beam = beamCoords.find((b) => b.label === highlightedNode);
+      if (beam) {
+        setAttention([Math.cos(beam.angle), Math.sin(beam.angle), 0.5], 0.8);
+        const timer = setTimeout(() => {
+          setAttention([0, 0, 1], 0.0);
+        }, 3000);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [highlightedNode, beamCoords, setAttention]);
+
   const { amp } = useVoiceHalo({
     duplexState: effectiveState,
     setState: (s) => {
