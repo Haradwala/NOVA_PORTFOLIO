@@ -1,0 +1,18 @@
+{
+  "id": "shadab-contact",
+  "email": "hello@shadab.design",
+  "location": "Ahmedabad, India",
+  "availability": "Open for selective freelance projects and consulting roles",
+  "summary": "Direct communication links and professional consulting coordinates.",
+  "detailedDescription": "Available for inquiries, custom WebGL consultations, and cognitive system integrations at hello@shadab.design. Based in Ahmedabad, India.",
+  "socials": [
+    { "id": "soc-behance", "name": "Behance", "url": "#" },
+    { "id": "soc-dribbble", "name": "Dribbble", "url": "#" },
+    { "id": "soc-linkedin", "name": "LinkedIn", "url": "#" },
+    { "id": "soc-instagram", "name": "Instagram", "url": "#" }
+  ],
+  "action": "scroll_contact",
+  "related": [],
+  "tags": ["contact", "email", "socials", "hire", "touch", "reach out"],
+  "keywords": ["contact", "email", "hire", "freelance", "location", "socials", "availability", "linkedin", "behance", "inbox", "message", "touch", "reach out", "located", "where", "address"]
+}

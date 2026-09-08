@@ -1,0 +1,17 @@
+{
+  "id": "portfolio-identity",
+  "owner": "Shadab",
+  "title": "Shadab — AI Developer & Designer",
+  "version": "3.0.0",
+  "tagline": "AI Developer | Building Intelligent Systems",
+  "location": "Ahmedabad, India",
+  "copyright": "© 2026 Shadab — AI Developer & Designer",
+  "poweredBy": "Powered by NOVA ✦ Ahmedabad, India",
+  "email": "hello@shadab.design",
+  "summary": "Apple-inspired interactive 3D portfolio workspace powered by NOVA.OS living AI core.",
+  "detailedDescription": "Designed to showcase WebGL warping projections and vocal AI full-duplex conversations.",
+  "action": null,
+  "related": [],
+  "tags": ["portfolio", "identity", "owner", "os", "creator"],
+  "keywords": ["shadab", "portfolio", "owner", "author", "creator", "identity", "location", "version", "copyright", "system", "who created", "who built", "who designed"]
+}

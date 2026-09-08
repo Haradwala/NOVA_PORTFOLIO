@@ -57,20 +57,21 @@ export default function About() {
   }, []);
 
   const skills = [
-    ['Figma / Prototyping', 95], ['UX Research', 85], ['Brand Identity', 90],
-    ['Motion Design', 75],       ['Design Systems', 88], ['Webflow / Code', 70],
+    ['React / Vite', 92],        ['Three.js / WebGL / R3F', 88], ['AI & LLM Pipelines', 90],
+    ['Node.js / Hono / tRPC', 86], ['Tailwind / Design Systems', 90], ['Python & Automation', 82],
   ];
   const exp = [
-    { year: '2023 — Present', role: 'Senior Product Designer', where: 'Freelance · Global', active: true },
-    { year: '2021 — 2023',    role: 'UI/UX Designer',          where: 'Razorpay · Bangalore' },
-    { year: '2019 — 2021',    role: 'Visual Designer',          where: 'Lollypop Design Studio' },
-    { year: '2015 — 2019',    role: 'B.Des Visual Comm.',       where: 'NID Ahmedabad' },
+    { year: 'Oct 2024 — Present', role: 'Student Coordinator',     where: 'Tech Smart / AEI (Hybrid)', active: true },
+    { year: '~May 2024 — 2028',   role: 'B.E. Computer Science',   where: 'Gujarat Tech. University (GTU)' },
+    { year: '2024 — Present',    role: 'Honor Society President', where: 'AEI Honor Society & Mentor' },
+    { year: '2024',              role: 'Web Dev Instructor & PM', where: 'Edu-Champs 3.0' },
+    { year: 'Sept 2023 — 2024',  role: 'High School Dual Diploma',where: 'American Education Intl. · Rank 1' },
   ];
   const nums = [
-    { val: '40+', lbl: 'Projects',   border: 'rgba(232,149,109,.25)', bg: 'rgba(232,149,109,.08)' },
-    { val: '18',  lbl: 'Clients',    border: 'rgba(139,92,246,.25)',  bg: 'rgba(139,92,246,.08)'  },
-    { val: '6+',  lbl: 'Years',      border: 'rgba(45,212,191,.25)',  bg: 'rgba(45,212,191,.08)'  },
-    { val: '8',   lbl: 'Countries',  border: 'rgba(242,180,154,.25)', bg: 'rgba(242,180,154,.08)' },
+    { val: 'GTU', lbl: "CS '28",        border: 'rgba(232,149,109,.25)', bg: 'rgba(232,149,109,.08)' },
+    { val: '#1',  lbl: 'AEI Rank',      border: 'rgba(139,92,246,.25)',  bg: 'rgba(139,92,246,.08)'  },
+    { val: '4',   lbl: 'Core Projects', border: 'rgba(45,212,191,.25)',  bg: 'rgba(45,212,191,.08)'  },
+    { val: 'Full',lbl: 'Stack & AI',    border: 'rgba(242,180,154,.25)', bg: 'rgba(242,180,154,.08)' },
   ];
 
   return (
@@ -157,17 +158,17 @@ export default function About() {
               <span style={{ display: 'block', width: '1.2rem', height: 1, background: 'var(--rose)' }} />About Me
             </div>
             <p style={{ fontSize: '.88rem', lineHeight: 2, color: 'var(--textd)', marginBottom: '1rem' }}>
-              I'm <span style={{ color: 'var(--rose2)', fontWeight: 500 }}>Shadab</span>, an AI Developer & Designer from <span style={{ color: 'var(--rose2)', fontWeight: 500 }}>Ahmedabad, India</span>. Six years in, the best design isn't just beautiful — it's <em>invisible</em>.
+              I'm <span style={{ color: 'var(--rose2)', fontWeight: 500 }}>Shadab Haradwala</span>, an AI Developer & Designer from <span style={{ color: 'var(--rose2)', fontWeight: 500 }}>Ahmedabad, India</span>, and a Computer Science student at Gujarat Technological University (GTU, expected graduation May 2028).
             </p>
             <p style={{ fontSize: '.88rem', lineHeight: 2, color: 'var(--textd)', marginBottom: '1rem' }}>
-              I build AI-powered apps, brand identities, and product interfaces that scale beautifully.
+              I'm an independent builder focused on full-stack web applications, AI integrations, and real-time 3D — currently building FORGE (a local-first AI software engineering platform) and this living NOVA portfolio environment.
             </p>
             <p style={{ fontSize: '.78rem', color: 'var(--muted)', fontStyle: 'italic', borderLeft: '2px solid rgba(232,149,109,.35)', paddingLeft: '1rem', marginTop: '1rem' }}>
-              "Great design removes noise until only the essential remains."
+              "Building intelligent systems where clean design and robust engineering converge."
             </p>
             <div style={{ marginTop: '1.5rem', display: 'flex', gap: '.85rem', flexWrap: 'wrap' }}>
               <a href="#contact" style={{ padding: '.7rem 1.5rem', borderRadius: 50, background: 'linear-gradient(135deg,var(--rose),var(--violet))', color: '#fff', fontSize: '.68rem', letterSpacing: '.12em', textTransform: 'uppercase', textDecoration: 'none', boxShadow: '0 6px 20px rgba(232,149,109,.3)' }}>Work With Me</a>
-              <a href="#" style={{ padding: '.7rem 1.5rem', borderRadius: 50, color: 'var(--textd)', fontSize: '.68rem', letterSpacing: '.12em', textTransform: 'uppercase', border: '1px solid rgba(255,255,255,.12)', textDecoration: 'none' }}>Download CV →</a>
+              <a href="#contact" style={{ padding: '.7rem 1.5rem', borderRadius: 50, color: 'var(--textd)', fontSize: '.68rem', letterSpacing: '.12em', textTransform: 'uppercase', border: '1px solid rgba(255,255,255,.12)', textDecoration: 'none' }}>Get in Touch →</a>
             </div>
           </div>
         </div>

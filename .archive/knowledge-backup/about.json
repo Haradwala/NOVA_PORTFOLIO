@@ -1,0 +1,33 @@
+{
+  "id": "shadab-about",
+  "name": "Shadab",
+  "title": "AI Developer & Designer",
+  "bio": "I am a Senior Product Architect and Developer focused on building custom AI integrations, WebGL spaces, and secure SaaS interfaces.",
+  "philosophy": "I design intelligent visual interfaces that merge hardware-inspired aesthetic minimalism with modern cognitive pipelines.",
+  "focus": [
+    "AI Cognitive Design",
+    "3D WebGL Interfaces",
+    "Secure SaaS Development"
+  ],
+  "summary": "Senior Product Architect & Developer specializing in Three.js WebGL and AI integrations.",
+  "detailedDescription": "Professional background includes leading UI design and payment engineering at Razorpay, drafting visual communications at Lollypop Design Studio, and developing AI-powered spaces as an independent architect.",
+  "action": null,
+  "related": [],
+  "tags": [
+    "profile",
+    "biography",
+    "architect",
+    "developer",
+    "designer"
+  ],
+  "keywords": [
+    "shadab",
+    "about",
+    "who are you",
+    "who is shadab",
+    "bio",
+    "background",
+    "philosophy",
+    "focus"
+  ]
+}

@@ -49,14 +49,14 @@ const matFloor = new THREE.MeshStandardMaterial({
 
 // ─── Individual Artifact Forms ────────────────────────────────────────────────
 // Each geometry chosen for narrative reason:
-//   Nova (brand)   → OctahedronGeometry: sharp, faceted, identity
-//   Bloom (organic)→ IcosahedronGeometry: natural, complex structure
-//   Folio (system) → BoxGeometry: systematic, modular, designed
-//   Pulse (cycles) → TorusGeometry: circular, repetitive, financial
+//   NOVA (living interface)   → OctahedronGeometry: cognitive architecture
+//   FORGE (local-first)       → BoxGeometry: modular, local-first engine
+//   Petal n Pins (commerce)   → TorusGeometry: live commerce platform
+//   NOVA Desktop (automation) → IcosahedronGeometry: desktop automation & vision
 
 const ARTIFACTS = [
   {
-    label:    'Nōva — Brand Identity',
+    label:    'NOVA — Operating Environment',
     pos:      [-22, 8, -15],
     geometry: () => new THREE.OctahedronGeometry(2.2, 0),
     emissive: '#8b5820',
@@ -65,27 +65,27 @@ const ARTIFACTS = [
     rotSpeed: [0.025, 0.018, 0],
   },
   {
-    label:    'Bloom — Wellness',
+    label:    'FORGE — Local-First Platform',
     pos:      [22, 11, -15],
-    geometry: () => new THREE.IcosahedronGeometry(2.0, 1),
+    geometry: () => new THREE.BoxGeometry(3.2, 3.2, 3.2),
     emissive: '#103a20',
     lightColor: '#2a8a50',
-    lightIntensity: 1.4,
+    lightIntensity: 1.6,
     rotSpeed: [0.015, 0.03, 0.01],
   },
   {
-    label:    'Folio — Design System',
+    label:    'Petal n Pins — E-Commerce',
     pos:      [-22, 7, -35],
-    geometry: () => new THREE.BoxGeometry(3.2, 3.2, 3.2),
+    geometry: () => new THREE.TorusGeometry(1.8, 0.55, 16, 80),
     emissive: '#1a1040',
     lightColor: '#6050c0',
     lightIntensity: 1.6,
     rotSpeed: [0.02, 0.025, 0.005],
   },
   {
-    label:    'Pulse — Finance',
+    label:    'NOVA Desktop — Automation Assistant',
     pos:      [22, 9, -35],
-    geometry: () => new THREE.TorusGeometry(1.8, 0.55, 16, 80),
+    geometry: () => new THREE.IcosahedronGeometry(2.0, 1),
     emissive: '#301040',
     lightColor: '#9060d0',
     lightIntensity: 1.5,

@@ -14,32 +14,28 @@ export function getNovaFallbackReply(input) {
   const text = normalize(userText);
 
   if (!text) {
-    return "Shadab is an AI Developer & Designer based in Ahmedabad, open for freelance work globally. Ask about his projects, skills, pricing, or availability and NOVA can help.";
+    return "Shadab is an AI Developer & Designer based in Ahmedabad, India, and a Computer Science student at GTU. Ask about his projects, skills, or experience and NOVA can help.";
   }
 
   if (text.includes('project') || text.includes('portfolio') || text.includes('best work')) {
-    return "Shadab's standout projects include NOVA, the AI assistant powering this portfolio, Bloom Wellness App with a 4.9-star launch, Verdant Studio Rebrand with 2x engagement, and Folio Portfolio System used by 200+ designers. Nōva Luxury E-commerce is another strong one, delivering a full brand system and a 3x conversion lift.";
+    return "Shadab's flagship projects include NOVA (the living AI operating environment powering this site), FORGE (a local-first AI software engineering platform), Petal n Pins (full-stack hair accessories e-commerce live at petalnpins.com), and the NOVA Desktop Assistant (an earlier Python automation tool).";
   }
 
   if (text.includes('skill') || text.includes('tech') || text.includes('stack') || text.includes('react') || text.includes('python')) {
-    return "Shadab works across React, Three.js, Python, Node.js, LangChain, TensorFlow, Figma, Webflow, and full UI/UX systems. He blends product design with AI integration, which is what makes his work feel both polished and deeply functional.";
-  }
-
-  if (text.includes('price') || text.includes('pricing') || text.includes('cost') || text.includes('rate') || text.includes('budget')) {
-    return "Shadab's brand projects start from $3,000, product design from $5,000+, and AI integration or development from about $4,000. Most timelines land between 2 and 8 weeks depending on scope.";
+    return "Shadab builds with React, Three.js, React Three Fiber, WebGL shaders, Python, Node.js, TypeScript, Tailwind, Hono, tRPC, MongoDB, and Supabase. He blends intelligent agent pipelines with responsive 3D interfaces.";
   }
 
   if (text.includes('contact') || text.includes('email') || text.includes('hire') || text.includes('available')) {
-    return "Shadab is open for new freelance projects and can start immediately. The best way to reach him is hello@shadab.design.";
+    return "To collaborate or get in touch with Shadab, please submit the project inquiry form on this page with your details. Public direct emails and social links are kept private.";
   }
 
-  if (text.includes('experience') || text.includes('background') || text.includes('career') || text.includes('worked')) {
-    return "Shadab has 6+ years of experience across AI, design, and digital products. He has worked as a freelance Senior Product Designer, at Razorpay, and at Lollypop Design Studio after studying Visual Communication at NID Ahmedabad.";
+  if (text.includes('experience') || text.includes('background') || text.includes('career') || text.includes('education') || text.includes('college')) {
+    return "Shadab is studying Computer Science at Gujarat Technological University (GTU, expected graduation May 2028). He currently serves as Student Coordinator at Tech Smart / American Education International, where he previously graduated Rank 1 in his High School Dual Diploma program.";
   }
 
   if (text.includes('who is shadab') || text.includes('about shadab') || text.includes('tell me about shadab')) {
-    return "Shadab is an AI Developer & Designer based in Ahmedabad, India, with 6+ years of experience and 40+ projects delivered across 8 countries. He focuses on intelligent systems, strong visual design, and polished product experiences.";
+    return "Shadab Haradwala is an AI Developer & Designer based in Ahmedabad, India, and a CS student at GTU (class of 2028). He is an independent builder creating FORGE (local-first AI software engineering) and this NOVA portfolio system.";
   }
 
-  return "Shadab is an AI Developer & Designer based in Ahmedabad, currently open for freelance work globally. NOVA's live AI connection is offline right now, but you can still ask about his projects, skills, pricing, experience, or contact details.";
+  return "Shadab is an AI Developer & Designer based in Ahmedabad, India. NOVA's live AI connection is offline right now, but you can still ask about his projects (NOVA, FORGE, Petal n Pins), skills, or submit an inquiry through the form below.";
 }

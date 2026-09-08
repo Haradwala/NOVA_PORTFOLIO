@@ -8,13 +8,13 @@
  *   Only the present moment is visible.
  *
  *   Four strata bands mark the career phases, barely illuminated with amber:
- *     Layer 0 (ground level)  → Student, NID Ahmedabad 2015–2019
- *     Layer 1 (18 units up)   → Visual Designer, Lollypop 2019–2021
- *     Layer 2 (36 units up)   → UI/UX Designer, Razorpay 2021–2023
- *     Layer 3 (54 units up)   → AI Developer & Designer, Freelance 2023–present
+ *     Layer 0 (ground level)  → High School Dual Diploma (Rank 1), AEI 2023–2024
+ *     Layer 1 (18 units up)   → Web Dev Instructor & PM, Edu-Champs 3.0 (2024)
+ *     Layer 2 (36 units up)   → Student Coordinator, Tech Smart / AEI 2024–Present
+ *     Layer 3 (54 units up)   → B.E. Computer Science, GTU 2024–2028
  *
  *   A bridge structure crosses at the height of the career transition
- *   (the moment Shadab crossed from designer to builder).
+ *   (the moment Shadab crossed from learner to full-stack AI builder).
  *
  *   At the far end: a faint amber horizon glow — the future, not yet reached.
  *
@@ -38,10 +38,10 @@ const POS = WorldRegistry.get('timeline').position;
 // Each band = one career phase, carved into the rock.
 
 const STRATA = [
-  { y: 0.1,  label: '2015–2019', color: CP.deepAmber, opacity: 0.25 },
-  { y: 18,   label: '2019–2021', color: CP.amber,     opacity: 0.20 },
-  { y: 36,   label: '2021–2023', color: CP.amber,     opacity: 0.28 },
-  { y: 54,   label: '2023–Now',  color: '#e0a050',    opacity: 0.35 },
+  { y: 0.1,  label: '2023–2024', color: CP.deepAmber, opacity: 0.25 },
+  { y: 18,   label: '2024',      color: CP.amber,     opacity: 0.20 },
+  { y: 36,   label: '2024–Now',  color: CP.amber,     opacity: 0.28 },
+  { y: 54,   label: '2024–2028', color: '#e0a050',    opacity: 0.35 },
 ];
 
 // ─── Materials ────────────────────────────────────────────────────────────────

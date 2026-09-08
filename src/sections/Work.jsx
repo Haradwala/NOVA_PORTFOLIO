@@ -7,74 +7,61 @@ import { registerSection } from '../utils/sectionRegistry';
 // Project id maps to CASE_STUDIES keys in ProjectDeepDive
 const PROJECTS = [
   {
-    id: 'nova', cat: 'brand', height: 220,
+    id: 'nova', cat: 'ai', height: 220,
     bg: 'linear-gradient(135deg,#1a0a2e,#2d1060)',
     preview: (
       <div style={{ textAlign:'center', zIndex:1, position:'relative' }}>
-        <div style={{ fontFamily:"'Syne',sans-serif", fontSize:'2.5rem', fontWeight:800, background:'linear-gradient(135deg,#E8956D,#8B5CF6)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>NŌVA</div>
-        <div style={{ fontSize:'.58rem', letterSpacing:'.2em', textTransform:'uppercase', color:'rgba(167,139,250,.6)', marginTop:'.3rem' }}>Brand Identity</div>
+        <div style={{ fontFamily:"'Syne',sans-serif", fontSize:'2.5rem', fontWeight:800, background:'linear-gradient(135deg,#E8956D,#8B5CF6)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>NOVA</div>
+        <div style={{ fontSize:'.58rem', letterSpacing:'.2em', textTransform:'uppercase', color:'rgba(167,139,250,.6)', marginTop:'.3rem' }}>Living OS Environment</div>
       </div>
     ),
-    tag: 'Brand Identity · 2025', name: 'Nōva — Luxury E-commerce',
-    desc: 'Full identity system. 3× conversion lift post-launch.', year: '6 weeks',
+    tag: 'AI Systems · 2026', name: 'NOVA — Operating Environment',
+    desc: 'This portfolio itself. Living Three.js/R3F neural core, full-duplex voice pipeline, WebGL shaders.', year: 'In Development',
   },
   {
-    id: 'bloom', cat: 'app', height: 190,
-    bg: 'linear-gradient(135deg,#061a0c,#0a2e14)',
+    id: 'forge', cat: 'ai', height: 200,
+    bg: 'linear-gradient(135deg,#061a1a,#0a2e28)',
     preview: (
       <div style={{ textAlign:'center', zIndex:1, position:'relative' }}>
-        <div style={{ fontSize:'2.2rem', marginBottom:'.3rem' }}>🌿</div>
-        <div style={{ fontFamily:"'Syne',sans-serif", fontSize:'1.3rem', fontWeight:700, color:'#2DD4BF' }}>Bloom</div>
-        <div style={{ fontSize:'.6rem', letterSpacing:'.14em', color:'rgba(45,212,191,.5)', textTransform:'uppercase' }}>Wellness App</div>
+        <div style={{ fontSize:'2.2rem', marginBottom:'.3rem' }}>⚡</div>
+        <div style={{ fontFamily:"'Syne',sans-serif", fontSize:'1.4rem', fontWeight:700, color:'#2DD4BF' }}>FORGE</div>
+        <div style={{ fontSize:'.58rem', letterSpacing:'.16em', color:'rgba(45,212,191,.6)', textTransform:'uppercase' }}>Local-First AI Engine</div>
       </div>
     ),
-    tag: 'Mobile App · 2025', name: 'Bloom — Wellness',
-    desc: 'Gesture-first UX for daily mindfulness. 4.9★ App Store.', year: 'iOS & Android',
+    tag: 'AI Platform · July 2026', name: 'FORGE — AI Software Engineering',
+    desc: 'Local-first AI software engineering platform and multi-agent execution environment.', year: 'Architecture Stage',
   },
   {
-    id: null, cat: 'brand', isText: true,
-    tag: 'Case Study · 2024', name: 'Verdant Studio\nRebrand',
-    desc: 'Full identity overhaul for a Berlin-based studio.',
-    highlight: '2× engagement lift.',
-    stats: [{ val: '2×', lbl: 'Engagement' }, { val: '18', lbl: 'Deliverables' }],
-  },
-  {
-    id: 'folio', cat: 'web', height: 200,
-    bg: 'linear-gradient(135deg,#100a1f,#1a1035)',
+    id: 'petal-npins', cat: 'web', height: 200,
+    bg: 'linear-gradient(135deg,#1a1006,#35180a)',
     preview: (
-      <div style={{ textAlign:'center', zIndex:1, position:'relative', padding:'0 1.5rem', width:'100%' }}>
-        <div style={{ width:'100%', height:48, background:'rgba(139,92,246,.15)', border:'1px solid rgba(139,92,246,.25)', borderRadius:10, display:'flex', alignItems:'center', padding:'0 .75rem', gap:'.5rem', marginBottom:'.6rem' }}>
-          <div style={{ width:6, height:6, borderRadius:'50%', background:'#E8956D' }} />
-          <div style={{ width:6, height:6, borderRadius:'50%', background:'#A78BFA' }} />
-          <div style={{ flex:1, height:7, background:'rgba(255,255,255,.07)', borderRadius:4 }} />
-        </div>
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'.4rem' }}>
-          <div style={{ height:24, background:'rgba(232,149,109,.1)', borderRadius:6, border:'1px solid rgba(232,149,109,.2)' }} />
-          <div style={{ height:24, background:'rgba(139,92,246,.1)', borderRadius:6, border:'1px solid rgba(139,92,246,.2)' }} />
-        </div>
+      <div style={{ textAlign:'center', zIndex:1, position:'relative' }}>
+        <div style={{ fontSize:'2.2rem', marginBottom:'.3rem' }}>🌸</div>
+        <div style={{ fontFamily:"'Syne',sans-serif", fontSize:'1.3rem', fontWeight:700, color:'#E8956D' }}>Petal n Pins</div>
+        <div style={{ fontSize:'.58rem', letterSpacing:'.16em', color:'rgba(232,149,109,.6)', textTransform:'uppercase' }}>Live E-Commerce</div>
       </div>
     ),
-    tag: 'Web Design · 2024', name: 'Folio — Portfolio System',
-    desc: 'Modular design system used by 200+ designers globally.', year: 'Webflow + Figma',
+    tag: 'Full-Stack · Live Production', name: 'Petal n Pins — E-Commerce',
+    desc: 'Full-stack platform live at petalnpins.com. Built with React, Tailwind, Hono, tRPC, MongoDB, and Razorpay.', year: 'petalnpins.com',
   },
   {
-    id: null, cat: 'app', isImpact: true,
-    tag: 'Impact', bigNum: '40+',
-    desc: 'Projects across brand, product & web for clients in 8 countries.',
-    quote: '"Shadab delivered beyond expectations."', quoteBy: '— Client, Nōva',
+    id: null, cat: 'ai', isImpact: true,
+    tag: 'Engineering Focus', bigNum: 'Real',
+    desc: 'Focusing on clean systems, low-latency AI integrations, and responsive 3D interfaces.',
+    quote: '"Deterministic client architecture and genuine real-time feedback."', quoteBy: '— Builder Philosophy',
   },
   {
-    id: 'pulse', cat: 'app', height: 175,
+    id: 'nova-desktop', cat: 'desktop', height: 180,
     bg: 'linear-gradient(135deg,#0f0a20,#1a1035)',
     preview: (
       <div style={{ textAlign:'center', zIndex:1, position:'relative' }}>
-        <div style={{ fontSize:'1.8rem', marginBottom:'.3rem' }}>💳</div>
-        <div style={{ fontFamily:"'Syne',sans-serif", fontSize:'1.1rem', fontWeight:700, color:'#A78BFA' }}>Pulse</div>
-        <div style={{ fontSize:'.58rem', letterSpacing:'.14em', color:'rgba(167,139,250,.5)', textTransform:'uppercase' }}>Finance Tracker</div>
+        <div style={{ fontSize:'1.8rem', marginBottom:'.3rem' }}>🖥️</div>
+        <div style={{ fontFamily:"'Syne',sans-serif", fontSize:'1.1rem', fontWeight:700, color:'#A78BFA' }}>NOVA Desktop</div>
+        <div style={{ fontSize:'.58rem', letterSpacing:'.14em', color:'rgba(167,139,250,.5)', textTransform:'uppercase' }}>Automation & Vision</div>
       </div>
     ),
-    tag: 'App Design · 2023', name: 'Pulse — Finance Tracker',
-    desc: 'Dark-mode dashboard with adaptive spending insights.', year: 'iOS · Figma',
+    tag: 'Desktop AI · 2024–2025', name: 'NOVA Desktop Assistant',
+    desc: 'Python desktop assistant for app automation, mathematical solving, and OCR text extraction.', year: 'Archived',
   },
 ];
 
@@ -219,7 +206,7 @@ export default function Work() {
     return () => obs.disconnect();
   }, []);
 
-  const filters = ['all','brand','app','web'];
+  const filters = ['all','ai','web','desktop'];
   const shown   = filter === 'all' ? PROJECTS : PROJECTS.filter(p => p.cat === filter);
 
   return (

@@ -30,8 +30,8 @@ export function detectReferencedSection(text) {
   if (!text || typeof text !== 'string') return null;
   const clean = text.toLowerCase();
 
-  // Contact keywords / email / form / touch base
-  if (/\b(hello@shadab\.design|contact(\s*(form|page|section|details|info))?|reach(\s*(out|shadab))?|get\s*in\s*touch|hire(\s*(him|shadab))?|touch\s*base)\b/i.test(clean)) {
+  // Contact keywords / inquiry form / get in touch / reach out
+  if (/\b(inquiry(\s*form)?|project\s*inquiry|contact(\s*(form|page|section|details|info))?|reach(\s*(out|shadab))?|get\s*in\s*touch|hire(\s*(him|shadab))?|touch\s*base)\b/i.test(clean)) {
     return 'contact';
   }
 

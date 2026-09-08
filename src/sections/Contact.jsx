@@ -1,8 +1,17 @@
-import { useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { registerSection } from '../utils/sectionRegistry';
 
 export default function Contact() {
   const sectionRef = useRef(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    projectType: 'Full-Stack Web',
+    budget: '$1,000 – $3,000',
+    message: '',
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
     const unregister = registerSection('contact', sectionRef);
@@ -24,6 +33,39 @@ export default function Contact() {
     return () => obs.disconnect();
   }, []);
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) return;
+    setIsSubmitting(true);
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setSubmitted(true);
+    }, 600);
+  };
+
+  const inputStyle = {
+    width: '100%',
+    padding: '.75rem 1rem',
+    borderRadius: 12,
+    background: 'rgba(20, 14, 45, 0.65)',
+    border: '1px solid rgba(139,92,246,.25)',
+    color: 'var(--text)',
+    fontSize: '.82rem',
+    fontFamily: 'inherit',
+    outline: 'none',
+    transition: 'border-color .2s, box-shadow .2s',
+  };
+
+  const labelStyle = {
+    display: 'block',
+    fontSize: '.58rem',
+    letterSpacing: '.14em',
+    textTransform: 'uppercase',
+    color: 'var(--muted)',
+    marginBottom: '.35rem',
+    textAlign: 'left',
+  };
+
   return (
     <>
       <section
@@ -37,19 +79,19 @@ export default function Contact() {
           background: 'radial-gradient(ellipse 100% 100% at 50% 50%, rgba(7,7,15,.5) 0%, rgba(7,7,15,.75) 100%)',
         }} />
 
-        <div style={{ maxWidth: 600, margin: '0 auto', position: 'relative', zIndex: 1 }}>
+        <div style={{ maxWidth: 640, margin: '0 auto', position: 'relative', zIndex: 1 }}>
           <div className="reveal" style={{
             fontSize: '.6rem', letterSpacing: '.2em', textTransform: 'uppercase',
             color: 'var(--rose)', display: 'flex', alignItems: 'center', gap: '.7rem',
             justifyContent: 'center', marginBottom: '.7rem',
           }}>
-            <span style={{ display: 'block', width: '1.2rem', height: 1, background: 'var(--rose)' }} />Get In Touch
+            <span style={{ display: 'block', width: '1.2rem', height: 1, background: 'var(--rose)' }} />Project Inquiry
           </div>
 
           <h2 className="reveal" style={{
             fontFamily: "'Syne',sans-serif", fontWeight: 800,
             fontSize: 'clamp(1.8rem,3.5vw,2.8rem)', color: 'var(--text)',
-            marginBottom: '2.5rem',
+            marginBottom: '2rem',
             textShadow: '0 0 40px rgba(139,92,246,.3)',
           }}>
             Let's build something{' '}
@@ -58,62 +100,141 @@ export default function Contact() {
             </span>
           </h2>
 
-          {/* Glass contact card */}
+          {/* Glass inquiry form card */}
           <div className="reveal" style={{
             background: 'rgba(14,10,35,0.6)',
             backdropFilter: 'blur(24px) saturate(160%)',
             border: '1px solid rgba(139,92,246,.22)',
-            borderRadius: 28, padding: '3.5rem',
+            borderRadius: 24, padding: '2.5rem',
             position: 'relative', overflow: 'hidden',
             boxShadow: '0 32px 80px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.05)',
           }}>
-            {/* Inner glow */}
-            <div style={{ position: 'absolute', inset: -1, borderRadius: 28, background: 'linear-gradient(135deg,rgba(232,149,109,.1),rgba(139,92,246,.1))', zIndex: -1 }} />
+            <div style={{ position: 'absolute', inset: -1, borderRadius: 24, background: 'linear-gradient(135deg,rgba(232,149,109,.08),rgba(139,92,246,.08))', zIndex: -1 }} />
 
-            <p style={{ fontSize: '.88rem', color: 'var(--textd)', lineHeight: 1.9, marginBottom: '2rem' }}>
-              Have a project in mind? Let's make it happen — or just ask NOVA, she knows everything about me.
-            </p>
+            {submitted ? (
+              <div style={{ padding: '2rem 1rem', textAlign: 'center' }}>
+                <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>✦</div>
+                <div style={{ fontFamily: "'Syne',sans-serif", fontSize: '1.4rem', fontWeight: 700, color: 'var(--rose2)', marginBottom: '.5rem' }}>
+                  Inquiry Transmitted
+                </div>
+                <p style={{ fontSize: '.84rem', color: 'var(--textd)', lineHeight: 1.8, maxWidth: 420, margin: '0 auto 1.5rem' }}>
+                  Thank you for reaching out. Shadab will personally review your project scope and follow up directly.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => { setSubmitted(false); setFormData({ name: '', email: '', projectType: 'Full-Stack Web', budget: '$1,000 – $3,000', message: '' }); }}
+                  style={{
+                    padding: '.65rem 1.6rem', borderRadius: 50,
+                    background: 'rgba(139,92,246,.15)', border: '1px solid rgba(139,92,246,.3)',
+                    color: 'var(--rose)', fontSize: '.68rem', letterSpacing: '.12em',
+                    textTransform: 'uppercase', cursor: 'pointer', transition: 'all .2s',
+                  }}
+                >
+                  Submit Another Inquiry
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div>
+                    <label htmlFor="inquiry-name" style={labelStyle}>Your Name *</label>
+                    <input
+                      id="inquiry-name"
+                      type="text"
+                      required
+                      placeholder="e.g. Alex Chen"
+                      value={formData.name}
+                      onChange={e => setFormData({ ...formData, name: e.target.value })}
+                      style={inputStyle}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="inquiry-email" style={labelStyle}>Your Email *</label>
+                    <input
+                      id="inquiry-email"
+                      type="email"
+                      required
+                      placeholder="alex@company.com"
+                      value={formData.email}
+                      onChange={e => setFormData({ ...formData, email: e.target.value })}
+                      style={inputStyle}
+                    />
+                  </div>
+                </div>
 
-            <a href="mailto:hello@shadab.design" style={{
-              fontFamily: "'Syne',sans-serif", fontSize: '1.25rem', fontWeight: 700,
-              background: 'linear-gradient(90deg,var(--rose),var(--violet2))',
-              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text', textDecoration: 'none',
-              display: 'inline-block', marginBottom: '2rem',
-              filter: 'drop-shadow(0 0 10px rgba(139,92,246,.3))',
-            }}>
-              hello@shadab.design
-            </a>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div>
+                    <label htmlFor="inquiry-type" style={labelStyle}>Project Type</label>
+                    <select
+                      id="inquiry-type"
+                      value={formData.projectType}
+                      onChange={e => setFormData({ ...formData, projectType: e.target.value })}
+                      style={{ ...inputStyle, cursor: 'pointer' }}
+                    >
+                      <option value="Full-Stack Web" style={{ background: '#0e0a23', color: '#fff' }}>Full-Stack Web</option>
+                      <option value="AI Integration" style={{ background: '#0e0a23', color: '#fff' }}>AI Integration</option>
+                      <option value="3D / WebGL" style={{ background: '#0e0a23', color: '#fff' }}>3D / WebGL</option>
+                      <option value="Other" style={{ background: '#0e0a23', color: '#fff' }}>Other</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label htmlFor="inquiry-budget" style={labelStyle}>Budget Range</label>
+                    <select
+                      id="inquiry-budget"
+                      value={formData.budget}
+                      onChange={e => setFormData({ ...formData, budget: e.target.value })}
+                      style={{ ...inputStyle, cursor: 'pointer' }}
+                    >
+                      <option value="< $1,000" style={{ background: '#0e0a23', color: '#fff' }}>&lt; $1,000</option>
+                      <option value="$1,000 – $3,000" style={{ background: '#0e0a23', color: '#fff' }}>$1,000 – $3,000</option>
+                      <option value="$3,000 – $5,000" style={{ background: '#0e0a23', color: '#fff' }}>$3,000 – $5,000</option>
+                      <option value="$5,000+" style={{ background: '#0e0a23', color: '#fff' }}>$5,000+</option>
+                    </select>
+                  </div>
+                </div>
 
-            <br />
+                <div>
+                  <label htmlFor="inquiry-message" style={labelStyle}>Message / Project Overview *</label>
+                  <textarea
+                    id="inquiry-message"
+                    required
+                    rows={4}
+                    placeholder="Tell me about what you are building, timeline, and goals..."
+                    value={formData.message}
+                    onChange={e => setFormData({ ...formData, message: e.target.value })}
+                    style={{ ...inputStyle, resize: 'vertical' }}
+                  />
+                </div>
 
-            <a href="mailto:hello@shadab.design" style={{
-              display: 'inline-block', padding: '.85rem 2.1rem', borderRadius: 50,
-              background: 'linear-gradient(135deg,var(--rose),var(--violet))',
-              color: '#fff', fontSize: '.7rem', letterSpacing: '.12em',
-              textTransform: 'uppercase', textDecoration: 'none',
-              boxShadow: '0 8px 32px rgba(232,149,109,.3)',
-              transition: 'transform .2s, box-shadow .2s',
-            }}>
-              Start a Project
-            </a>
-
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', marginTop: '2rem' }}>
-              {['Behance', 'Dribbble', 'LinkedIn', 'Instagram'].map(s => (
-                <a key={s} href="#" style={{
-                  fontSize: '.62rem', letterSpacing: '.14em', textTransform: 'uppercase',
-                  color: 'var(--muted)', textDecoration: 'none', transition: 'color .2s',
-                }}
-                onMouseEnter={e => e.target.style.color = 'var(--rose2)'}
-                onMouseLeave={e => e.target.style.color = 'var(--muted)'}
-                >{s}</a>
-              ))}
-            </div>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  style={{
+                    marginTop: '.5rem',
+                    padding: '.85rem 2.2rem',
+                    borderRadius: 50,
+                    background: 'linear-gradient(135deg,var(--rose),var(--violet))',
+                    color: '#fff',
+                    fontSize: '.72rem',
+                    fontWeight: 600,
+                    letterSpacing: '.14em',
+                    textTransform: 'uppercase',
+                    border: 'none',
+                    cursor: isSubmitting ? 'wait' : 'pointer',
+                    boxShadow: '0 8px 32px rgba(232,149,109,.35)',
+                    transition: 'transform .2s, box-shadow .2s',
+                    opacity: isSubmitting ? 0.7 : 1,
+                  }}
+                >
+                  {isSubmitting ? 'Transmitting...' : 'Send Inquiry ✦'}
+                </button>
+              </form>
+            )}
           </div>
         </div>
       </section>
 
-      {/* Footer — also transparent */}
+      {/* Footer */}
       <footer style={{
         position: 'relative', zIndex: 2,
         padding: '1.4rem 3.5rem',
@@ -123,7 +244,7 @@ export default function Contact() {
         backdropFilter: 'blur(12px)',
         borderTop: '1px solid rgba(139,92,246,.12)',
       }}>
-        <span style={{ fontSize: '.62rem', color: 'var(--muted)', letterSpacing: '.06em' }}>© 2026 Shadab — AI Developer & Designer</span>
+        <span style={{ fontSize: '.62rem', color: 'var(--muted)', letterSpacing: '.06em' }}>© 2026 Shadab Haradwala — AI Developer & Designer</span>
         <span style={{ fontSize: '.62rem', color: 'var(--muted)', letterSpacing: '.06em' }}>Powered by NOVA ✦ Ahmedabad, India</span>
       </footer>
     </>

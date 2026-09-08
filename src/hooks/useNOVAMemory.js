@@ -59,12 +59,11 @@ export function useNOVAMemory() {
       // Extract topic keywords
       const lower = userMessage.toLowerCase();
       const topicMap = [
-        { key: 'pricing',    words: ['price', 'cost', 'rate', 'charge', 'budget', 'pricing', 'fee'] },
-        { key: 'projects',   words: ['project', 'work', 'portfolio', 'case', 'bloom', 'nova', 'folio', 'pulse', 'verdant'] },
-        { key: 'skills',     words: ['skill', 'tool', 'figma', 'react', 'three', 'python', 'tech', 'stack'] },
-        { key: 'experience', words: ['experience', 'background', 'years', 'history', 'worked', 'career'] },
-        { key: 'contact',    words: ['contact', 'hire', 'available', 'email', 'reach', 'book'] },
-        { key: 'about',      words: ['about', 'who', 'shadab', 'person', 'life', 'interest'] },
+        { key: 'contact',    words: ['contact', 'hire', 'available', 'inquiry', 'reach', 'get in touch', 'price', 'cost', 'rate', 'quote', 'budget'] },
+        { key: 'projects',   words: ['project', 'work', 'portfolio', 'case', 'forge', 'nova', 'petal', 'pins', 'desktop'] },
+        { key: 'skills',     words: ['skill', 'tool', 'react', 'three', 'python', 'tech', 'stack', 'tailwind', 'hono', 'trpc'] },
+        { key: 'experience', words: ['experience', 'background', 'gtu', 'aei', 'tech smart', 'history', 'worked', 'career'] },
+        { key: 'about',      words: ['about', 'who', 'shadab', 'person', 'life', 'interest', 'student'] },
       ];
 
       const matched = topicMap.find(t => t.words.some(w => lower.includes(w)));

@@ -1,17 +1,16 @@
 {
   "id": "portfolio-identity",
-  "owner": "Shadab",
-  "title": "Shadab — AI Developer & Designer",
+  "owner": "Shadab Haradwala",
+  "title": "Shadab Haradwala — AI Developer & Designer",
   "version": "3.0.0",
-  "tagline": "AI Developer | Building Intelligent Systems",
+  "tagline": "AI Developer & Designer | Gujarat Technological University",
   "location": "Ahmedabad, India",
-  "copyright": "© 2026 Shadab — AI Developer & Designer",
+  "copyright": "© 2026 Shadab Haradwala — AI Developer & Designer",
   "poweredBy": "Powered by NOVA ✦ Ahmedabad, India",
-  "email": "hello@shadab.design",
-  "summary": "Apple-inspired interactive 3D portfolio workspace powered by NOVA.OS living AI core.",
-  "detailedDescription": "Designed to showcase WebGL warping projections and vocal AI full-duplex conversations.",
+  "summary": "Cinematic 3D portfolio workspace powered by the NOVA real-time AI core.",
+  "detailedDescription": "Designed and built by Shadab Haradwala, showcasing real-time WebGL, React Three Fiber, and a living conversational AI environment.",
   "action": null,
   "related": [],
   "tags": ["portfolio", "identity", "owner", "os", "creator"],
-  "keywords": ["shadab", "portfolio", "owner", "author", "creator", "identity", "location", "version", "copyright", "system", "who created", "who built", "who designed"]
+  "keywords": ["shadab", "haradwala", "portfolio", "owner", "author", "creator", "identity", "location", "version", "copyright", "who created", "who built", "who designed"]
 }

@@ -1,0 +1,156 @@
+[
+  {
+    "id": "petal-npins",
+    "title": "Petal n Pins",
+    "category": "E-Commerce",
+    "summary": "Luxury digital flowers and custom pins e-commerce platform with automated payment workflows.",
+    "description": "A premium, custom e-commerce solution featuring dynamic product grids, customizable flower configurations, and stripe/razorpay validation suites.",
+    "detailedDescription": "Designed to prevent transaction dropoffs. It features automated invoice mapping, custom bouquet builders, wishlist tracking, and Razorpay webhook hooks to prevent payment leakage.",
+    "technologies": ["React", "Node.js", "Supabase", "Tailwind CSS", "Razorpay", "Vite"],
+    "challenges": "Preventing double-verification leaks in high-volume transaction environments.",
+    "results": "Designed and verified a dual-pair Razorpay signature webhook parser that checks database checkout statuses prior to processing webhook hooks.",
+    "links": {
+      "demo": "https://petalnpins.example.com",
+      "github": "https://github.com/shadab/petal-npins"
+    },
+    "difficulty": "Advanced",
+    "status": "Production",
+    "year": "2024",
+    "action": "open_project",
+    "related": ["nova"],
+    "tags": ["e-commerce", "payments", "checkout", "database"],
+    "keywords": ["petal", "pins", "checkout", "payment", "razorpay", "stripe", "double-verification", "invoice"]
+  },
+  {
+    "id": "nova-assistant",
+    "title": "NOVA Assistant",
+    "category": "AI Systems",
+    "summary": "Voice-controlled, cognitive portfolio operating assistant.",
+    "description": "Neural Operating Virtual Architecture built to assist portfolio visitors with natural speech interaction.",
+    "detailedDescription": "Handles natural speech transcription, processes intents locally, manages session context, and speaks synthesized voice replies with an audio-reactive particle lattice.",
+    "technologies": ["Three.js", "React", "SpeechRecognition API", "Web Speech Synthesis", "OpenAI TTS"],
+    "challenges": "Synchronizing SpeechRecognition threads with standard web synthesis utterances without double-trigger conflicts.",
+    "results": "Engineered a unified ref state controller that acts as a gatekeeper, pausing browser audio capture during speech synthesis.",
+    "links": {
+      "demo": "https://localhost:5173/chat",
+      "github": "https://github.com/shadab/nova-assistant"
+    },
+    "difficulty": "Expert",
+    "status": "Active",
+    "year": "2025",
+    "action": "open_project",
+    "related": ["portfolio-os"],
+    "tags": ["ai", "voice", "three.js", "speech-to-text", "webgl"],
+    "keywords": ["nova", "assistant", "voice", "speech", "synthesis", "audio", "reactive", "microphone", "threads", "chat", "ai system", "engine"]
+  },
+  {
+    "id": "portfolio-os",
+    "title": "Shadab OS",
+    "category": "Full Stack Applications",
+    "summary": "A premium, Apple-inspired 3D virtual workspace portfolio system.",
+    "description": "An immersive landing operating environment designed to demonstrate WebGL interactive capabilities.",
+    "detailedDescription": "Maps standard portfolio pages to 3D projected coordinate grids, integrating layout-composites and mouse parallax scroll-driven coordinate warping.",
+    "technologies": ["Three.js", "React", "Vite", "React Router", "CSS Parallax"],
+    "challenges": "Maintaining performance during complex coordinate grid transformations and dynamic scroll calculations on mobile.",
+    "results": "Optimized calculations by caching matrix translations and utilizing dynamic viewport scaling to keep frame rates steady at 60fps.",
+    "links": {
+      "demo": "https://localhost:5173/",
+      "github": "https://github.com/shadab/portfolio-os"
+    },
+    "difficulty": "Expert",
+    "status": "Completed",
+    "year": "2024",
+    "action": "open_project",
+    "related": ["nova-assistant", "folio"],
+    "tags": ["webgl", "canvas", "three.js", "parallax", "workspace"],
+    "keywords": ["shadab os", "workspace", "parallax", "grid", "coordinate", "scroll", "matrix", "depth"]
+  },
+  {
+    "id": "nova",
+    "title": "Nōva — Luxury E-commerce",
+    "category": "Brand Identity",
+    "summary": "Full identity system for a luxury e-commerce platform.",
+    "description": "A premium visual design system consisting of logo, typography, colour tokens, motion guidelines, and deliverables.",
+    "detailedDescription": "The brand needed to feel premium yet approachable. Every touchpoint had to whisper luxury without shouting it. Includes 18 deliverables produced in 6 weeks.",
+    "technologies": ["Figma", "After Effects", "Principle", "Notion"],
+    "challenges": "Developing a luxury visual system that scales across print, packaging, and digital checkout pages.",
+    "results": "Completed visual guidelines leading to a 3× conversion lift in the first 90 days post-launch.",
+    "links": {
+      "demo": "#",
+      "github": "#"
+    },
+    "difficulty": "Advanced",
+    "status": "Completed",
+    "year": "2025",
+    "action": "open_project",
+    "related": ["petal-npins"],
+    "tags": ["branding", "typography", "luxury", "figma"],
+    "keywords": ["nova brand", "luxury", "conversion", "identity", "logo", "color tokens", "deliverables"]
+  },
+  {
+    "id": "bloom",
+    "title": "Bloom — Wellness App",
+    "category": "Mobile App",
+    "summary": "Calm, gesture-first iOS/Android UX for daily mindfulness.",
+    "description": "Mindfulness app designed for busy people who think they don't have time to meditate.",
+    "detailedDescription": "Most wellness apps feel clinical. Bloom was designed to feel like a warm friend, utilizing micro-gestures and clean visual cues.",
+    "technologies": ["Figma", "Protopie", "Lottie", "SwiftUI"],
+    "challenges": "Making complex meditation paths feel lightweight and inviting for first-time practitioners.",
+    "results": "Achieved a 4.9★ rating on App Store launch day and was featured by Apple in 'Apps We Love'.",
+    "links": {
+      "demo": "#",
+      "github": "#"
+    },
+    "difficulty": "Intermediate",
+    "status": "Active",
+    "year": "2025",
+    "action": "open_project",
+    "related": ["pulse"],
+    "tags": ["mobile", "mindfulness", "ux", "gestures"],
+    "keywords": ["bloom", "wellness", "mindfulness", "meditate", "gestures", "lottie", "app store", "ios"]
+  },
+  {
+    "id": "folio",
+    "title": "Folio — Portfolio System",
+    "category": "Web Design",
+    "summary": "A modular design system for creative portfolios.",
+    "description": "A comprehensive kit of components, tokens, templates, and documentation used by 200+ designers.",
+    "detailedDescription": "Designed to help senior and junior designers launch layouts quickly, avoiding spending weeks on portfolio setup instead of client work.",
+    "technologies": ["Figma", "Webflow", "Notion", "Lottie"],
+    "challenges": "Balancing layout customizability with strict modular layout alignment constraints.",
+    "results": "Launched library with 200+ active users. Covered by Design Milk and The Brand Identity.",
+    "links": {
+      "demo": "#",
+      "github": "#"
+    },
+    "difficulty": "Intermediate",
+    "status": "Production",
+    "year": "2024",
+    "action": "open_project",
+    "related": ["portfolio-os"],
+    "tags": ["webflow", "templates", "design-system", "modular"],
+    "keywords": ["folio", "templates", "components", "tokens", "library", "design milk"]
+  },
+  {
+    "id": "pulse",
+    "title": "Pulse — Finance Tracker",
+    "category": "App Design",
+    "summary": "Dark-mode iOS dashboard with adaptive spending insights.",
+    "description": "Finance tracker app that turns raw bank data into visual stories you actually understand.",
+    "detailedDescription": "Finance apps are either too simple or too complex. Pulse was built to sit in the sweet spot using clean dark-mode visuals.",
+    "technologies": ["Figma", "Principle", "Swift Charts", "D3.js"],
+    "challenges": "Visualizing dense transaction data and category spending trends on a constrained mobile viewport.",
+    "results": "Acquired by a FinTech startup 8 months after launch with 12,000+ active users.",
+    "links": {
+      "demo": "#",
+      "github": "#"
+    },
+    "difficulty": "Advanced",
+    "status": "Acquired",
+    "year": "2023",
+    "action": "open_project",
+    "related": ["bloom"],
+    "tags": ["dashboard", "fintech", "data-viz", "dark-mode"],
+    "keywords": ["pulse", "finance", "tracker", "spending", "bank", "dashboard", "charts", "acquisition"]
+  }
+]
