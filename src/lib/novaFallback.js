@@ -30,7 +30,7 @@ export function getNovaFallbackReply(input) {
   }
 
   if (text.includes('experience') || text.includes('background') || text.includes('career') || text.includes('education') || text.includes('college')) {
-    return "Shadab is studying Computer Science at Gujarat Technological University (GTU, expected graduation May 2028). He currently serves as Student Coordinator at Tech Smart / American Education International, where he previously graduated Rank 1 in his High School Dual Diploma program.";
+    return "Shadab is studying Computer Science at Gujarat Technological University (GTU, expected graduation May 2028). He previously served as Student Coordinator at Tech Smart / American Education International (~1.5 yrs), where he also graduated Rank 1 in his High School Dual Diploma program.";
   }
 
   if (text.includes('who is shadab') || text.includes('about shadab') || text.includes('tell me about shadab')) {

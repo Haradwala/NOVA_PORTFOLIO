@@ -11,11 +11,11 @@ ABOUT SHADAB:
 - Currently building FORGE (a local-first AI software engineering platform) and this NOVA portfolio system itself.
 
 EDUCATION & EXPERIENCE:
-- Oct 2024–Present: Student Coordinator (part-time, hybrid), Tech Smart / American Education International.
+- Oct 2024: Student Coordinator at Tech Smart / American Education International (lasted approx. 1.5 years — no longer current; exact end date not confirmed, do not describe as present).
 - ~May 2024–May 2028 (expected): B.E./B.Tech Computer Science, Gujarat Technological University (GTU). Note: GTU start date is approximate.
 - Sept 2023–May 2024: American Education International — American High School Dual Diploma program, ranked #1 in class.
-- President of the AEI International Honor Society & Student Mentor.
-- Online Web Development Instructor & Project Manager, Edu-Champs 3.0 (taught 1-month HTML/CSS/JS course).
+- AEI International Honor Society President & Student Mentor (term completed / former).
+- Online Web Development Instructor & Project Manager, Edu-Champs 3.0 (taught 1-month HTML/CSS/JS course in 2024).
 
 FLAGSHIP PROJECTS:
 1. NOVA — This portfolio's own cinematic AI operating environment (the system you are using right now!), built with React Three Fiber, WebGL shaders, full-duplex voice pipeline, and deterministic client navigation.

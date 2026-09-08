@@ -32,6 +32,8 @@ import { Canvas } from '@react-three/fiber';
 import { useScene } from './SceneContext';
 import CameraController from './CameraController';
 import ArrivalObservatory from './environments/ArrivalObservatory';
+import IdentityChamber from './environments/IdentityChamber';
+import CapabilitiesLab from './environments/CapabilitiesLab';
 
 // CSS-only fallback gradient for when WebGL is unavailable
 function WebGLFallback() {
@@ -118,10 +120,21 @@ export default function CinematicUniverseCanvas() {
         {/* Camera controller: entrance push-in → settles at rest, no idle drift */}
         <CameraController reducedMotion={reducedMotion} />
 
-        {/* Scene environments — only Arrival is built in Phase 2 */}
-        {/* Future scenes plug in here based on activeScene */}
+        {/* Scene environments */}
         {(activeScene === 'arrival' || activeScene === undefined) && (
           <ArrivalObservatory
+            qualityTier={qualityTier}
+            reducedMotion={reducedMotion}
+          />
+        )}
+        {activeScene === 'identity' && (
+          <IdentityChamber
+            qualityTier={qualityTier}
+            reducedMotion={reducedMotion}
+          />
+        )}
+        {activeScene === 'capabilities' && (
+          <CapabilitiesLab
             qualityTier={qualityTier}
             reducedMotion={reducedMotion}
           />

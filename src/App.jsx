@@ -7,6 +7,7 @@ import CinematicUniverseCanvas from './features/scene-engine/CinematicUniverseCa
 import { SceneProvider } from './features/scene-engine/SceneContext';
 import Hero from './sections/Hero';
 import About from './sections/About';
+import Capabilities from './sections/Capabilities';
 import Work from './sections/Work';
 import Contact from './sections/Contact';
 
@@ -105,13 +106,16 @@ function PortfolioShell({ showWelcome, onWelcomeDone, novaTrigger, onAskNova }) 
             <>
               <Hero novaPanelOpen={novaTrigger} onOpenNova={onAskNova} />
               <About />
+              <Capabilities />
               <Work />
               <Contact />
             </>
           } />
-          <Route path="/about"   element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><About /></div>} />
-          <Route path="/work"    element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Work /></div>} />
-          <Route path="/contact" element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Contact /></div>} />
+          <Route path="/about"        element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><About /><Capabilities /></div>} />
+          <Route path="/capabilities" element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Capabilities /></div>} />
+          <Route path="/skills"       element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Capabilities /></div>} />
+          <Route path="/work"         element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Work /></div>} />
+          <Route path="/contact"      element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Contact /></div>} />
         </Routes>
       </PageFade>
     </>
@@ -180,7 +184,7 @@ export default function App() {
       }>
         <Routes>
           {/* ── Main portfolio (Phase 1+2 active) ────────────────────── */}
-          <Route path="/" element={
+          <Route path="/*" element={
             <PortfolioShell
               showWelcome={showWelcome}
               onWelcomeDone={onWelcomeDone}

@@ -10,7 +10,7 @@
  *   Four strata bands mark the career phases, barely illuminated with amber:
  *     Layer 0 (ground level)  → High School Dual Diploma (Rank 1), AEI 2023–2024
  *     Layer 1 (18 units up)   → Web Dev Instructor & PM, Edu-Champs 3.0 (2024)
- *     Layer 2 (36 units up)   → Student Coordinator, Tech Smart / AEI 2024–Present
+ *     Layer 2 (36 units up)   → Student Coordinator, Tech Smart / AEI 2024 (~1.5 yrs)
  *     Layer 3 (54 units up)   → B.E. Computer Science, GTU 2024–2028
  *
  *   A bridge structure crosses at the height of the career transition
@@ -40,7 +40,7 @@ const POS = WorldRegistry.get('timeline').position;
 const STRATA = [
   { y: 0.1,  label: '2023–2024', color: CP.deepAmber, opacity: 0.25 },
   { y: 18,   label: '2024',      color: CP.amber,     opacity: 0.20 },
-  { y: 36,   label: '2024–Now',  color: CP.amber,     opacity: 0.28 },
+  { y: 36,   label: '2024–2025', color: CP.amber,     opacity: 0.28 },
   { y: 54,   label: '2024–2028', color: '#e0a050',    opacity: 0.35 },
 ];
 

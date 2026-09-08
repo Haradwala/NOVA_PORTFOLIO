@@ -21,48 +21,69 @@
 import { useRef, useEffect } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
+import { useScene } from './SceneContext';
 
-const REST_POSITION  = new THREE.Vector3(0, 0, 4.2);
-const REST_LOOK      = new THREE.Vector3(0, 0, 0);
+const SCENE_TARGETS = {
+  arrival:      { pos: new THREE.Vector3(0, 0, 4.2),    look: new THREE.Vector3(0, 0, 0) },
+  identity:     { pos: new THREE.Vector3(0, 0.2, 4.6),  look: new THREE.Vector3(0, 0.05, 0) },
+  capabilities: { pos: new THREE.Vector3(0, 0, 5.0),    look: new THREE.Vector3(0, 0, 0) },
+};
+
 const START_POSITION = new THREE.Vector3(0, 0.5, 5.8);
 
 export default function CameraController({ reducedMotion }) {
   const { camera } = useThree();
-  const progress   = useRef(0);   // 0 = at start, 1 = at rest
-  const done       = useRef(false);
+  const { activeScene } = useScene();
+  const entranceProgress = useRef(0);
+  const entranceDone = useRef(false);
+  const currentLookAt = useRef(new THREE.Vector3(0, 0, 0));
+
+  // Determine current scene target
+  const target = SCENE_TARGETS[activeScene] || SCENE_TARGETS.arrival;
 
   useEffect(() => {
     if (reducedMotion) {
-      // Skip animation — settle immediately
-      camera.position.copy(REST_POSITION);
-      camera.lookAt(REST_LOOK);
-      done.current = true;
+      camera.position.copy(target.pos);
+      camera.lookAt(target.look);
+      currentLookAt.current.copy(target.look);
+      entranceDone.current = true;
     } else {
-      // Start at vantage position
       camera.position.copy(START_POSITION);
-      camera.lookAt(REST_LOOK);
-      progress.current = 0;
-      done.current     = false;
+      camera.lookAt(target.look);
+      currentLookAt.current.copy(target.look);
+      entranceProgress.current = 0;
+      entranceDone.current = false;
     }
   }, [camera, reducedMotion]);
 
   useFrame((_, delta) => {
-    if (done.current) return;
+    // 1. Entrance push-in on initial arrival
+    if (!entranceDone.current) {
+      entranceProgress.current = Math.min(1, entranceProgress.current + delta * 0.65);
+      const t = 1 - Math.pow(1 - entranceProgress.current, 3);
+      camera.position.lerpVectors(START_POSITION, SCENE_TARGETS.arrival.pos, t);
+      camera.lookAt(SCENE_TARGETS.arrival.look);
 
-    // Advance progress (exponential ease-out: slower as it approaches 1)
-    progress.current = Math.min(1, progress.current + delta * 0.65);
-
-    // Smooth easing curve (ease-out cubic)
-    const t = 1 - Math.pow(1 - progress.current, 3);
-
-    camera.position.lerpVectors(START_POSITION, REST_POSITION, t);
-    camera.lookAt(REST_LOOK);
-
-    if (progress.current >= 1) {
-      camera.position.copy(REST_POSITION);
-      camera.lookAt(REST_LOOK);
-      done.current = true;
+      if (entranceProgress.current >= 1) {
+        camera.position.copy(SCENE_TARGETS.arrival.pos);
+        camera.lookAt(SCENE_TARGETS.arrival.look);
+        entranceDone.current = true;
+      }
+      return;
     }
+
+    // 2. Continuous smooth inter-scene lerping
+    if (reducedMotion) {
+      camera.position.copy(target.pos);
+      camera.lookAt(target.look);
+      return;
+    }
+
+    // Smooth exponential damping toward active scene target (damping factor ~ 2.4/s)
+    const factor = Math.min(1, delta * 2.4);
+    camera.position.lerp(target.pos, factor);
+    currentLookAt.current.lerp(target.look, factor);
+    camera.lookAt(currentLookAt.current);
   });
 
   return null;
