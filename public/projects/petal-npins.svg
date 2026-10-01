@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="750" height="500" viewBox="0 0 750 500">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#2c140a"/>
+      <stop offset="60%" stop-color="#140804"/>
+      <stop offset="100%" stop-color="#080301"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="45%" r="40%">
+      <stop offset="0%" stop-color="#E8956D" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#E8956D" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="750" height="500" fill="url(#bg)" rx="12"/>
+  <rect width="750" height="500" fill="url(#glow)" rx="12"/>
+  <rect x="1.5" y="1.5" width="747" height="497" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1.5" rx="11"/>
+
+  <!-- Blossom Geometric Petals -->
+  <g transform="translate(375, 230)">
+    <g stroke="#E8956D" stroke-width="2" fill="none">
+      <ellipse cx="0" cy="-35" rx="20" ry="32"/>
+      <ellipse cx="30" cy="-17" rx="20" ry="32" transform="rotate(60 30 -17)"/>
+      <ellipse cx="30" cy="17" rx="20" ry="32" transform="rotate(120 30 17)"/>
+      <ellipse cx="0" cy="35" rx="20" ry="32" transform="rotate(180 0 35)"/>
+      <ellipse cx="-30" cy="17" rx="20" ry="32" transform="rotate(240 -30 17)"/>
+      <ellipse cx="-30" cy="-17" rx="20" ry="32" transform="rotate(300 -30 -17)"/>
+    </g>
+    <circle cx="0" cy="0" r="14" fill="#E8956D"/>
+    <circle cx="0" cy="0" r="6" fill="#F2B49A"/>
+  </g>
+
+  <!-- Minimal Project Title Overlay -->
+  <text x="40" y="445" font-family="'Instrument Sans', -apple-system, sans-serif" font-size="28" font-weight="700" fill="#FFFFFF" letter-spacing="1">PETAL N PINS</text>
+  <text x="40" y="470" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="500" fill="rgba(255,255,255,0.5)" letter-spacing="1.5">LIVE E-COMMERCE PLATFORM</text>
+</svg>

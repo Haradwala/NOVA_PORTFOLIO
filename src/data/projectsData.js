@@ -142,3 +142,18 @@ export const PROJECTS_DATA = [
 ];
 
 export const TOTAL_PROJECTS = PROJECTS_DATA.length; // Exactly 8
+
+/**
+ * Slide objects formatted for Componentry Spiral3DSlider
+ */
+export const SPIRAL_PROJECT_SLIDES = PROJECTS_DATA.map((p) => ({
+  src: `/projects/${p.slug}.svg`,
+  alt: `${p.title} — ${p.subtitle}`,
+  slug: p.slug,
+  id: p.id,
+  title: p.title,
+  category: p.category,
+  year: p.year,
+  color: p.color,
+  accentColor: p.accentColor,
+}));

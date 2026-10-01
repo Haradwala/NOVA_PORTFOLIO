@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="750" height="500" viewBox="0 0 750 500">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#0c1d2e"/>
+      <stop offset="60%" stop-color="#07111c"/>
+      <stop offset="100%" stop-color="#04080e"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="45%" r="40%">
+      <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.32"/>
+      <stop offset="100%" stop-color="#38BDF8" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="750" height="500" fill="url(#bg)" rx="12"/>
+  <rect width="750" height="500" fill="url(#glow)" rx="12"/>
+  <rect x="1.5" y="1.5" width="747" height="497" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1.5" rx="11"/>
+
+  <!-- Isometric Accounting Cubes -->
+  <g transform="translate(375, 230)">
+    <!-- Base Cube -->
+    <path d="M0 -55 L48 -27 L48 27 L0 55 L-48 27 L-48 -27 Z" fill="none" stroke="#38BDF8" stroke-width="2.5"/>
+    <path d="M0 -55 L0 0 L48 27 M0 0 L-48 27" fill="none" stroke="#7DD3FC" stroke-width="2"/>
+    <circle cx="0" cy="0" r="5" fill="#38BDF8"/>
+  </g>
+
+  <!-- Minimal Project Title Overlay -->
+  <text x="40" y="445" font-family="'Instrument Sans', -apple-system, sans-serif" font-size="28" font-weight="700" fill="#FFFFFF" letter-spacing="1">FINANCE MANAGER</text>
+  <text x="40" y="470" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="500" fill="rgba(255,255,255,0.5)" letter-spacing="1.5">ACCOUNTING ENGINE &amp; LEDGER CORE</text>
+</svg>

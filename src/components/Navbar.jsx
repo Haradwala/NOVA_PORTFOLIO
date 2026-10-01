@@ -44,6 +44,10 @@ export default function Navbar({ onAskNova }) {
 
   const handleNavClick = (item) => {
     setMenuOpen(false);
+    if (item.path && item.sectionId === 'work') {
+      warpTo('/work');
+      return;
+    }
     if (pathname === '/') {
       const scrolled = scrollToSection(item.sectionId);
       if (!scrolled) {

@@ -64,7 +64,7 @@ export default function WorkProjectPage() {
             transition: 'all 0.2s ease',
           }}
         >
-          ← Back to Spiral Navigator
+          ← Back to Work
         </Link>
       </div>
 

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="750" height="500" viewBox="0 0 750 500">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#300d20"/>
+      <stop offset="60%" stop-color="#180610"/>
+      <stop offset="100%" stop-color="#0a0206"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="45%" r="40%">
+      <stop offset="0%" stop-color="#EC4899" stop-opacity="0.32"/>
+      <stop offset="100%" stop-color="#EC4899" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="750" height="500" fill="url(#bg)" rx="12"/>
+  <rect width="750" height="500" fill="url(#glow)" rx="12"/>
+  <rect x="1.5" y="1.5" width="747" height="497" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1.5" rx="11"/>
+
+  <!-- Automotive Dial / Speed lines -->
+  <g transform="translate(375, 230)">
+    <circle r="76" fill="none" stroke="#EC4899" stroke-width="1.5" opacity="0.3"/>
+    <path d="M-60 30 A68 68 0 1 1 60 30" fill="none" stroke="#EC4899" stroke-width="3" stroke-linecap="round"/>
+    <line x1="0" y1="0" x2="38" y2="-32" stroke="#F472B6" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="0" cy="0" r="8" fill="#EC4899"/>
+    <circle cx="0" cy="0" r="3" fill="#FFFFFF"/>
+  </g>
+
+  <!-- Minimal Project Title Overlay -->
+  <text x="40" y="445" font-family="'Instrument Sans', -apple-system, sans-serif" font-size="28" font-weight="700" fill="#FFFFFF" letter-spacing="1">DEALERSHIP PLATFORM</text>
+  <text x="40" y="470" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="500" fill="rgba(255,255,255,0.5)" letter-spacing="1.5">AUTOMOTIVE SERVICE &amp; JOB CARDS</text>
+</svg>

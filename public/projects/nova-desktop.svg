@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="750" height="500" viewBox="0 0 750 500">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#1c1432"/>
+      <stop offset="60%" stop-color="#0c0916"/>
+      <stop offset="100%" stop-color="#05030a"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="45%" r="40%">
+      <stop offset="0%" stop-color="#A78BFA" stop-opacity="0.32"/>
+      <stop offset="100%" stop-color="#A78BFA" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="750" height="500" fill="url(#bg)" rx="12"/>
+  <rect width="750" height="500" fill="url(#glow)" rx="12"/>
+  <rect x="1.5" y="1.5" width="747" height="497" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1.5" rx="11"/>
+
+  <!-- Desktop Display & Vision Reticle -->
+  <g transform="translate(375, 230)">
+    <rect x="-60" y="-45" width="120" height="75" rx="6" fill="none" stroke="#A78BFA" stroke-width="2.5"/>
+    <line x1="-20" y1="30" x2="20" y2="30" stroke="#A78BFA" stroke-width="2"/>
+    <line x1="0" y1="30" x2="0" y2="45" stroke="#A78BFA" stroke-width="2"/>
+    <!-- Optical Reticle -->
+    <circle cx="0" cy="-7" r="18" fill="none" stroke="#C4B5FD" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <circle cx="0" cy="-7" r="4" fill="#C4B5FD"/>
+  </g>
+
+  <!-- Minimal Project Title Overlay -->
+  <text x="40" y="445" font-family="'Instrument Sans', -apple-system, sans-serif" font-size="28" font-weight="700" fill="#FFFFFF" letter-spacing="1">NOVA DESKTOP</text>
+  <text x="40" y="470" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="500" fill="rgba(255,255,255,0.5)" letter-spacing="1.5">DESKTOP AUTOMATION &amp; VISION</text>
+</svg>
