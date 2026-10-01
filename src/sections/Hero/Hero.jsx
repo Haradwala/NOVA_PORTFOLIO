@@ -16,7 +16,7 @@ import { useScene } from '../../features/scene-engine/SceneContext';
 
 const FIRST_GREETING = "Hey! I'm NOVA 👋 Shadab's AI assistant. Ask me about my projects, skills, or experience!";
 
-export default function Hero({ novaPanelOpen, onOpenNova, onEnterCore }) {
+export default function Hero({ novaPanelOpen, onOpenNova }) {
   const [chatOpen, setChatOpen] = useState(false);
   const [time,     setTime]     = useState('');
   const [showDebug, setShowDebug] = useState(false);
@@ -255,7 +255,7 @@ export default function Hero({ novaPanelOpen, onOpenNova, onEnterCore }) {
             display: 'flex', alignItems: 'center', gap: '0.6rem',
             animation: 'heroLineReveal 0.5s 0.1s ease both', opacity: 0,
           }}>
-            <span className="system-tag">SYSTEM STATUS: ONLINE</span>
+            <span className="system-tag">AI ENGINEER & SYSTEM BUILDER</span>
           </div>
 
           {/* SHADAB HARADWALA — display headline */}
@@ -324,7 +324,7 @@ export default function Hero({ novaPanelOpen, onOpenNova, onEnterCore }) {
             margin: 0,
             animation: 'heroLineReveal 0.5s 0.7s ease both', opacity: 0,
           }}>
-            The portfolio is the visible layer. My engineering systems are the hidden layer behind it.
+            AI engineer and systems builder creating autonomous engines, distributed platforms, and quantitative architectures.
           </p>
 
           {/* CTA buttons */}
@@ -358,32 +358,28 @@ export default function Hero({ novaPanelOpen, onOpenNova, onEnterCore }) {
               EXPLORE MY WORK
             </button>
 
-            {/* ENTER THE ENGINEERING CORE — secondary intriguing depth action */}
+            {/* CONTACT ME */}
             <button
-              className="hero-enter-btn"
-              onClick={onEnterCore}
-              aria-label="Enter the Engineering Core — transition to hidden systems layer"
+              onClick={() => {
+                const contactEl = document.getElementById('contact') || document.getElementById('section-contact') || document.querySelector('[data-section="contact"]');
+                if (contactEl) contactEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
               style={{
                 display: 'flex', alignItems: 'center', gap: '0.65rem',
                 padding: '0.9rem 2rem',
-                background: 'linear-gradient(135deg, rgba(139,92,246,0.2) 0%, rgba(56,189,248,0.18) 100%)',
-                border: '1px solid rgba(167,139,250,0.5)',
+                background: 'transparent',
+                border: '1px solid rgba(139,92,246,0.3)',
                 borderRadius: '4px',
-                color: 'var(--text)',
+                color: 'var(--violet2)',
                 fontFamily: "'JetBrains Mono', monospace",
                 fontSize: '0.74rem',
-                fontWeight: 600,
                 letterSpacing: '0.16em',
                 textTransform: 'uppercase',
                 cursor: 'pointer',
                 transition: 'all 0.22s ease',
-                position: 'relative',
-                overflow: 'hidden',
-                boxShadow: '0 0 25px rgba(139,92,246,0.25)',
               }}
             >
-              <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#38BDF8', boxShadow: '0 0 8px #38BDF8', flexShrink: 0 }} />
-              ENTER THE ENGINEERING CORE →
+              GET IN TOUCH →
             </button>
           </div>
 

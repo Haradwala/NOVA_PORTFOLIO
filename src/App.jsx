@@ -7,17 +7,15 @@ import CinematicUniverseCanvas from './features/scene-engine/CinematicUniverseCa
 import { SceneProvider } from './features/scene-engine/SceneContext';
 import Hero from './sections/Hero';
 import Philosophy from './sections/Philosophy';
-import EngineeringCoreSection from './sections/EngineeringCoreSection';
 import About from './sections/About';
 import Capabilities from './sections/Capabilities';
 import Work from './sections/Work';
 import Process from './sections/Process';
 import Archive from './sections/Archive';
 import Contact from './sections/Contact';
-import DepthTransitionOverlay from './components/DepthTransitionOverlay';
+import WorkProjectPage from './pages/WorkProjectPage';
 
 const ClientChat      = lazy(() => import('./pages/ClientChat.jsx'));
-const AdminDashboard  = lazy(() => import('./pages/AdminDashboard.jsx'));
 const NOVAHero        = lazy(() => import('./features/nova/NOVAHero').then(m => ({ default: m.NOVAHero })));
 const NOVAHeroV2      = lazy(() => import('./features/nova-v2/NOVAHeroV2').then(m => ({ default: m.NOVAHeroV2 })));
 const NOVAHeroV3      = lazy(() => import('./features/nova-v3/NOVAHeroV3').then(m => ({ default: m.NOVAHeroV3 })));
@@ -100,8 +98,8 @@ function PageFade({ children }) {
   );
 }
 
-// ── Main portfolio shell (Hero + Philosophy + Work + Engineering Core + About + Contact) ─
-function PortfolioShell({ showBoot, onBootDone, novaTrigger, onAskNova, onEnterCore }) {
+// ── Main Public Portfolio Shell (Hero + Philosophy + Work + About + Capabilities + Contact) ─
+function PortfolioShell({ showBoot, onBootDone, novaTrigger, onAskNova }) {
   return (
     <>
       {/* Boot sequence — plays once per session before everything else */}
@@ -111,31 +109,29 @@ function PortfolioShell({ showBoot, onBootDone, novaTrigger, onAskNova, onEnterC
           <Route path="/" element={
             <>
               {/* 01 — IDENTITY */}
-              <Hero novaPanelOpen={novaTrigger} onOpenNova={onAskNova} onEnterCore={onEnterCore} />
+              <Hero novaPanelOpen={novaTrigger} onOpenNova={onAskNova} />
               {/* 02 — PHILOSOPHY */}
-              <Philosophy onEnterCore={onEnterCore} />
+              <Philosophy />
               {/* 03 — SELECTED WORK */}
               <Work />
-              {/* 04 — ENGINEERING CORE & 05 — SYSTEM DEEP DIVE */}
-              <EngineeringCoreSection />
-              {/* 06 — ABOUT & CAPABILITIES */}
+              {/* 04 — ABOUT & CAPABILITIES */}
               <About />
               <Capabilities />
               <Process />
               <Archive />
-              {/* 07 — CONTACT */}
+              {/* 05 — CONTACT */}
               <Contact />
             </>
           } />
-          <Route path="/about"        element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><About /><Capabilities /></div>} />
-          <Route path="/capabilities" element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Capabilities /></div>} />
-          <Route path="/skills"       element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Capabilities /></div>} />
-          <Route path="/process"      element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Process /></div>} />
-          <Route path="/work"         element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Work /></div>} />
-          <Route path="/systems"      element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><EngineeringCoreSection /></div>} />
-          <Route path="/engineering"  element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><EngineeringCoreSection /></div>} />
-          <Route path="/archive"      element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Archive /></div>} />
-          <Route path="/contact"      element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Contact /></div>} />
+          {/* Public Portfolio Routes */}
+          <Route path="/work"          element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Work /></div>} />
+          <Route path="/work/:project" element={<WorkProjectPage />} />
+          <Route path="/about"         element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><About /><Capabilities /></div>} />
+          <Route path="/capabilities"  element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Capabilities /></div>} />
+          <Route path="/skills"        element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Capabilities /></div>} />
+          <Route path="/process"       element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Process /></div>} />
+          <Route path="/archive"       element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Archive /></div>} />
+          <Route path="/contact"       element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Contact /></div>} />
         </Routes>
       </PageFade>
     </>
@@ -144,46 +140,37 @@ function PortfolioShell({ showBoot, onBootDone, novaTrigger, onAskNova, onEnterC
 
 // ── App ───────────────────────────────────────────────────────────────────────
 export default function App() {
-  // Boot sequence: show on first load, BootSequence handles sessionStorage internally
   const [showBoot, setShowBoot] = useState(() => {
     if (typeof window === 'undefined') return false;
     const params = new URLSearchParams(window.location.search);
     if (params.get('nowelcome') === 'true' || params.get('skipWelcome') === 'true') return false;
     if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return false;
-    const standalone = ['/chat', '/admin', '/world'];
+    const standalone = ['/chat', '/world'];
     if (standalone.includes(window.location.pathname)) return false;
     return true;
   });
   const [novaTrigger, setNovaTrigger] = useState(0);
-  const [isCoreOpen, setIsCoreOpen]   = useState(false);
   const location = useLocation();
 
-  const onBootDone    = useCallback(() => setShowBoot(false), []);
-  const onAskNova     = useCallback(() => setNovaTrigger(n => n + 1), []);
-  const onEnterCore   = useCallback(() => setIsCoreOpen(true), []);
-  const onCloseCore   = useCallback(() => setIsCoreOpen(false), []);
+  const onBootDone = useCallback(() => setShowBoot(false), []);
+  const onAskNova  = useCallback(() => setNovaTrigger(n => n + 1), []);
 
   // Standalone routes that manage their own full-screen canvas / layout
-  const isStandalone = ['/chat', '/admin', '/world'].includes(location.pathname);
+  const isStandalone = ['/chat', '/world'].includes(location.pathname);
 
   return (
     <SceneProvider>
-      {/* ── Shared cinematic environment canvas ──────────────────────────────
-          Sits at z-index: 0, pointer-events: none.
-          Does NOT render on standalone pages that manage their own canvas.  */}
+      {/* Shared cinematic environment canvas */}
       {!isStandalone && <CinematicUniverseCanvas />}
 
-      {/* ── Scroll warp indicator (cosmetic chrome bar) ─────────────────── */}
+      {/* Scroll warp indicator */}
       {!isStandalone && <WarpBar />}
 
-      {/* ── Custom cursor ──────────────────────────────────────────────── */}
+      {/* Custom cursor */}
       <Cursor />
 
-      {/* ── Navigation ─────────────────────────────────────────────────── */}
-      {!isStandalone && <Navbar onAskNova={onAskNova} onEnterCore={onEnterCore} />}
-
-      {/* ── Depth Transition Overlay (Engineering Core Layer) ──────────── */}
-      <DepthTransitionOverlay isOpen={isCoreOpen} onClose={onCloseCore} />
+      {/* Public Navigation: WORK · ABOUT · CONTACT */}
+      {!isStandalone && <Navbar onAskNova={onAskNova} />}
 
       <Suspense fallback={
         <div style={{
@@ -212,25 +199,23 @@ export default function App() {
         </div>
       }>
         <Routes>
-          {/* ── Main portfolio (Phase 1+2 active) ────────────────────── */}
+          {/* Main public portfolio */}
           <Route path="/*" element={
             <PortfolioShell
               showBoot={showBoot}
               onBootDone={onBootDone}
               novaTrigger={novaTrigger}
               onAskNova={onAskNova}
-              onEnterCore={onEnterCore}
             />
           } />
 
-          {/* ── Utility / test routes ────────────────────────────────── */}
+          {/* Test / experiment routes */}
           <Route path="/novatest"  element={<NOVAHero />} />
           <Route path="/novatest2" element={<NOVAHeroV2 />} />
           <Route path="/novatest3" element={<NOVAHeroV3 />} />
           <Route path="/chat"      element={<ClientChat />} />
-          <Route path="/admin"     element={<AdminDashboard />} />
 
-          {/* ── WorldEngine experiment — preserved, not active on / ── */}
+          {/* WorldEngine experiment — preserved, not active on / */}
           <Route path="/world"     element={<WorldEngine />} />
         </Routes>
       </Suspense>

@@ -201,18 +201,18 @@ export default function Contact() {
                 alignItems: 'center',
                 gap: '0.5rem',
               }}>
-                <span style={{ color: 'var(--rose)' }}>●</span> COMM STATUS
+                COMMUNICATION
               </div>
               <span style={{
                 fontFamily: "'JetBrains Mono', monospace",
                 fontSize: '0.58rem',
-                color: '#4ADE80',
-                background: 'rgba(74, 222, 128, 0.1)',
+                color: 'var(--text)',
+                background: 'rgba(255, 255, 255, 0.06)',
                 padding: '2px 8px',
                 borderRadius: 4,
-                border: '1px solid rgba(74, 222, 128, 0.25)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
               }}>
-                CHANNELS ACTIVE
+                OPEN FOR INQUIRIES
               </span>
             </div>
 
@@ -577,10 +577,6 @@ export default function Contact() {
           fontSize: '.62rem',
           color: 'var(--muted)',
         }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '.4rem' }}>
-            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#4ADE80' }} />
-            SYSTEM CORE: ONLINE
-          </span>
           <span>AHMEDABAD, INDIA</span>
         </div>
       </footer>

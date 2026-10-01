@@ -10,7 +10,7 @@
 
 import { PHILOSOPHY_POINTS } from '../data/engineeringCore';
 
-export default function Philosophy({ onEnterCore }) {
+export default function Philosophy() {
   return (
     <section
       id="philosophy"
@@ -170,11 +170,11 @@ export default function Philosophy({ onEnterCore }) {
         ))}
       </div>
 
-      {/* Visual System Depth Diagram Callout */}
+      {/* Clean Callout to Selected Work */}
       <div
         style={{
-          background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(56, 189, 248, 0.05) 100%)',
-          border: '1px solid rgba(139, 92, 246, 0.25)',
+          background: 'rgba(14, 10, 35, 0.45)',
+          border: '1px solid rgba(255, 255, 255, 0.08)',
           borderRadius: 16,
           padding: '2.5rem',
           display: 'flex',
@@ -195,18 +195,18 @@ export default function Philosophy({ onEnterCore }) {
               marginBottom: '0.5rem',
             }}
           >
-            DUAL-LAYER ARCHITECTURE
+            SELECTED WORK
           </div>
           <h4
             style={{
               fontFamily: "'Syne', sans-serif",
-              fontSize: '1.5rem',
-              fontWeight: 800,
+              fontSize: '1.4rem',
+              fontWeight: 700,
               color: '#EEEEF5',
-              marginBottom: '0.75rem',
+              marginBottom: '0.65rem',
             }}
           >
-            Ready to explore what lies behind the visible portfolio?
+            Architected for scale and deterministic reliability.
           </h4>
           <p
             style={{
@@ -217,42 +217,34 @@ export default function Philosophy({ onEnterCore }) {
               margin: 0,
             }}
           >
-            Transition into the Engineering Core to inspect the financial ledger engine, quantitative
-            trading algorithms, NOVA AI pipelines, and the Forge IDE OS.
+            Explore client platforms, autonomous AI tools, and full-stack production systems.
           </p>
         </div>
 
         <button
-          onClick={onEnterCore}
+          onClick={() => {
+            const el = document.getElementById('section-work') || document.querySelector('[data-section="work"]');
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }}
           style={{
             display: 'inline-flex',
             alignItems: 'center',
-            gap: '0.75rem',
-            padding: '1rem 2rem',
-            background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(56, 189, 248, 0.25) 100%)',
-            border: '1px solid rgba(167, 139, 250, 0.5)',
+            gap: '0.65rem',
+            padding: '0.85rem 1.6rem',
+            background: 'rgba(139, 92, 246, 0.15)',
+            border: '1px solid rgba(167, 139, 250, 0.4)',
             borderRadius: 6,
             color: '#FFFFFF',
             fontFamily: "'JetBrains Mono', monospace",
-            fontSize: '0.78rem',
+            fontSize: '0.74rem',
             fontWeight: 600,
-            letterSpacing: '0.14em',
+            letterSpacing: '0.12em',
             textTransform: 'uppercase',
             cursor: 'pointer',
-            transition: 'all 0.25s ease',
-            boxShadow: '0 0 25px rgba(139, 92, 246, 0.3)',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'translateY(-2px)';
-            e.currentTarget.style.boxShadow = '0 0 40px rgba(139, 92, 246, 0.5)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'none';
-            e.currentTarget.style.boxShadow = '0 0 25px rgba(139, 92, 246, 0.3)';
+            transition: 'all 0.2s ease',
           }}
         >
-          <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#38BDF8', boxShadow: '0 0 8px #38BDF8' }} />
-          ENTER THE ENGINEERING CORE →
+          EXPLORE WORK ↓
         </button>
       </div>
     </section>
