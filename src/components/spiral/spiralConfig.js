@@ -1,92 +1,89 @@
 /**
  * spiralConfig.js
  *
- * Authoritative Geometry & Interaction Constants for the Spiral Slider
- * Final merged specification implementation.
+ * Authoritative Geometry & Configuration for the 3D Spiral Project Navigator
+ * Phase 2 Specification:
+ *   radius = 2.2
+ *   pitch = 1.4
+ *   turns = 3
+ *   panelsPerTurn = 8 (desktop)
+ *   panelCount = turns * panelsPerTurn = 24
+ *   totalAngle = turns * 2 * Math.PI = 6 * Math.PI
+ *   deltaTheta = (2 * Math.PI) / panelsPerTurn = Math.PI / 4
+ *   arcLength = radius * deltaTheta = 2.2 * (Math.PI / 4) ≈ 1.728
+ *   gap = 0.18
+ *   panelWidth = arcLength - gap ≈ 1.55
+ *   panelHeight = 1.2
  *
- * Mathematical Helix:
- *   Δθ = π / 4  (8 panels per turn)
- *   turns = panelCount / 8
- *     Desktop: 24 panels -> 3.0 turns
- *     Tablet:  18 panels -> 2.25 turns
- *     Mobile:  12 panels -> 1.5 turns
- *
- *   x(θ) = R * cos(θ)
- *   z(θ) = R * sin(θ)
- *   y(θ) = pitch * (θ - θ_active) / (2 * π)
- *
- * Active panel: located at θ = 3π where y = 0
- * Camera: azimuth at θ = 3π offset by ~30° horizontally (θ_cam = 3π - π/6)
+ * Middle turn active panel locus: θ = 3π where y = 0
  */
 
 export const SPIRAL_CONFIG = {
   // Primary Helix Geometry
   radius: 2.2,
   pitch: 1.4,
-  deltaTheta: Math.PI / 4, // 45° per panel -> exactly 8 panels per turn
-
-  // Responsive panel count configuration
-  desktopPanelCount: 24, // 3.0 turns
-  tabletPanelCount: 18,  // 2.25 turns
-  mobilePanelCount: 12,  // 1.5 turns
-
-  // Panel physical dimensions (constant across viewports)
-  panelWidth: 0.88,
-  panelHeight: 1.25,
+  turns: 3,
+  panelsPerTurn: 8,
+  gap: 0.18,
+  panelHeight: 1.2,
   panelThickness: 0.025,
-  cornerRadius: 0.04,
+
+  // Derived Desktop values
+  desktopPanelCount: 24, // 3 turns * 8 panels/turn
+  tabletPanelCount: 18,  // 3 turns * 6 panels/turn
+  mobilePanelCount: 12,  // 3 turns * 4 panels/turn
 
   // Active panel definition
-  activeTheta: 3 * Math.PI, // Reference point on helix where y = 0
-  activeLift: 0.1,          // Outward normal displacement (m)
-  activeScale: 1.06,        // Scale boost
+  activeTheta: 3 * Math.PI, // Middle turn locus where y = 0
+  activeLift: 0.10,         // Outward normal displacement (≈ 0.10)
+  activeScale: 1.06,        // Scale multiplier (≈ 1.06)
 
-  // Camera azimuth coupled to active locus: θ = 3π offset by -30° (-π/6)
+  // Camera specification
   camera: {
-    fov: 40,
-    distance: 5.8,
-    elevation: 0.7,
-    azimuthOffset: -Math.PI / 6, // 30° horizontal offset from θ = 3π
+    fov: 44, // 42–48
+    distance: 5.4,
+    elevation: 0.65,
+    azimuthOffset: -Math.PI / 7, // ~25° three-quarter perspective offset
   },
 
-  // Frosted acrylic material baseline
+  // Environment and Material
+  background: '#050505',
   material: {
-    baseColor: 0xffffff,
-    roughness: 0.25,
-    metalness: 0.02,
-    transmission: 0.85,
-    thickness: 0.3,
-    ior: 1.3,
-    clearcoat: 0.2,
+    color: 0xf5f7fb,
+    roughness: 0.28,
+    metalness: 0.04,
+    transmission: 0.82,
+    thickness: 0.25,
+    ior: 1.35,
+    clearcoat: 0.25,
     clearcoatRoughness: 0.1,
     transparent: true,
+    opacity: 0.94,
   },
-
-  // 4 Primary Portfolio System Destinations
-  destinations: [
-    {
-      panelIndex: 4,
-      id: 'finance',
-      systemId: 'finance-manager',
-      label: 'FINANCE',
-    },
-    {
-      panelIndex: 10,
-      id: 'trading',
-      systemId: 'trading-intelligence',
-      label: 'TRADING',
-    },
-    {
-      panelIndex: 16,
-      id: 'nova',
-      systemId: 'nova-ai',
-      label: 'NOVA',
-    },
-    {
-      panelIndex: 22,
-      id: 'forge',
-      systemId: 'forge-ide',
-      label: 'FORGE',
-    },
-  ],
 };
+
+/**
+ * Calculates responsive helix parameters based on panelCount
+ */
+export function getHelixGeometry(panelCount = 24) {
+  const turns = SPIRAL_CONFIG.turns; // 3
+  const panelsPerTurn = panelCount / turns;
+  const deltaTheta = (2 * Math.PI) / panelsPerTurn;
+  const totalAngle = turns * 2 * Math.PI; // 6π
+  const arcLength = SPIRAL_CONFIG.radius * deltaTheta;
+  const panelWidth = Math.max(0.7, arcLength - SPIRAL_CONFIG.gap);
+  const panelHeight = SPIRAL_CONFIG.panelHeight;
+
+  return {
+    panelCount,
+    turns,
+    panelsPerTurn,
+    deltaTheta,
+    totalAngle,
+    arcLength,
+    panelWidth,
+    panelHeight,
+    radius: SPIRAL_CONFIG.radius,
+    pitch: SPIRAL_CONFIG.pitch,
+  };
+}

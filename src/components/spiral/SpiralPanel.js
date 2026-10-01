@@ -1,20 +1,21 @@
 /**
  * SpiralPanel.js
  *
- * Curved frosted acrylic panels with:
- *   - Mathematical cylindrical curvature around radius R
- *   - Radial pitch tilt so width axis rises in the +θ direction
- *   - Individual index tint variation (±4% lightness) for distinct visual identification
- *   - Clean, minimal typography for destination panels
+ * Physical 3D curved project panel representation:
+ *   - Curved physical canvas (subtle cylindrical curvature R = 2.2)
+ *   - Dimensions: panelWidth ≈ 1.55, panelHeight = 1.2, thickness = 0.025
+ *   - Frosted acrylic physical substrate with dual-layer depth
+ *   - Authentic project thumbnail + minimal typography for each portfolio project
+ *   - Texture caching across the 8 repeated project instances
  */
 
 import * as THREE from 'three';
 import { SPIRAL_CONFIG } from './spiralConfig';
 
 /**
- * Creates curved rectangular plane geometry that subtly bends around the helix cylinder
+ * Creates curved rectangular plane geometry that bends around cylinder radius R
  */
-function createCurvedPanelGeometry(width, height, radius, segmentsX = 24, segmentsY = 4) {
+export function createCurvedPanelGeometry(width, height, radius, segmentsX = 24, segmentsY = 4) {
   const geo = new THREE.PlaneGeometry(width, height, segmentsX, segmentsY);
   const pos = geo.attributes.position;
 
@@ -29,66 +30,246 @@ function createCurvedPanelGeometry(width, height, radius, segmentsX = 24, segmen
   return geo;
 }
 
+// Global texture cache for the 8 authentic projects
+const textureCache = new Map();
+
 /**
- * Creates minimal text label texture for destination panels
+ * Generates an authentic, crisp canvas thumbnail texture for a project.
+ * Adheres strictly to Sections 7 & 8:
+ *   - [ PROJECT IMAGE / THUMBNAIL ]
+ *   - PROJECT NAME
+ *   - Minimal typography, no fake telemetry, no status badges, no fake statistics.
  */
-function createLabelTexture(label) {
+export function getProjectTexture(project) {
+  if (textureCache.has(project.id)) {
+    return textureCache.get(project.id);
+  }
+
   const canvas = document.createElement('canvas');
-  canvas.width = 512;
-  canvas.height = 720;
+  canvas.width = 768;
+  canvas.height = 600;
   const ctx = canvas.getContext('2d');
 
-  ctx.clearRect(0, 0, 512, 720);
+  const { title, category, year, color = '#8B5CF6', accentColor = '#A78BFA' } = project;
 
-  // Subtle top hairline
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.18)';
+  // Background substrate: Frosted deep dark slate
+  ctx.fillStyle = '#0c0e14';
+  ctx.fillRect(0, 0, 768, 600);
+
+  // Subtle interior gradient
+  const bgGrad = ctx.createLinearGradient(0, 0, 768, 600);
+  bgGrad.addColorStop(0, 'rgba(25, 28, 40, 0.95)');
+  bgGrad.addColorStop(1, 'rgba(10, 11, 18, 0.98)');
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(12, 12, 744, 576);
+
+  // Soft ambient radial glow using the project's authentic color accent
+  const glow = ctx.createRadialGradient(384, 200, 20, 384, 200, 280);
+  glow.addColorStop(0, `${color}28`);
+  glow.addColorStop(0.6, `${color}08`);
+  glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, 768, 420);
+
+  // Subtle frosted perimeter frame
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(16, 16, 736, 568);
+
+  // ── 1. PROJECT VISUAL THUMBNAIL AREA (Top 65%) ──
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(36, 36, 696, 350);
+  ctx.clip();
+
+  // Abstract visual treatment derived strictly from project brand identity
+  ctx.fillStyle = 'rgba(15, 17, 26, 0.85)';
+  ctx.fillRect(36, 36, 696, 350);
+
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(36, 36, 696, 350);
+
+  // Project identity visual emblem
+  const cx = 384;
+  const cy = 210;
+
+  if (project.id === 'nova' || project.id === 'nova-desktop') {
+    // Living neural core rings
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 64, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.strokeStyle = accentColor;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, 84, 40, Math.PI / 4, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+    ctx.fill();
+  } else if (project.id === 'finance-manager') {
+    // Balanced accounting ledger isometric geometry
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2.5;
+    // Central isometric cube
+    const s = 48;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - s);
+    ctx.lineTo(cx + s * 0.866, cy - s * 0.5);
+    ctx.lineTo(cx + s * 0.866, cy + s * 0.5);
+    ctx.lineTo(cx, cy + s);
+    ctx.lineTo(cx - s * 0.866, cy + s * 0.5);
+    ctx.lineTo(cx - s * 0.866, cy - s * 0.5);
+    ctx.closePath();
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx, cy + s);
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + s * 0.866, cy - s * 0.5);
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx - s * 0.866, cy - s * 0.5);
+    ctx.stroke();
+  } else if (project.id === 'trading-intelligence') {
+    // Quantitative market series curve
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(cx - 100, cy + 40);
+    ctx.lineTo(cx - 50, cy + 20);
+    ctx.lineTo(cx - 10, cy - 35);
+    ctx.lineTo(cx + 30, cy + 5);
+    ctx.lineTo(cx + 70, cy - 45);
+    ctx.lineTo(cx + 105, cy - 60);
+    ctx.stroke();
+
+    // Baseline axis
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(cx - 110, cy + 50);
+    ctx.lineTo(cx + 115, cy + 50);
+    ctx.stroke();
+  } else if (project.id === 'forge') {
+    // IDE Bracket symbols { }
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 3;
+    ctx.font = '700 72px "JetBrains Mono", monospace';
+    ctx.fillStyle = color;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('{  }', cx, cy);
+    ctx.fillStyle = accentColor;
+    ctx.font = '600 24px "JetBrains Mono", monospace';
+    ctx.fillText('OS', cx, cy);
+  } else if (project.id === 'petal-npins') {
+    // Blossom geometric petals
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2.5;
+    for (let a = 0; a < Math.PI * 2; a += Math.PI / 3) {
+      ctx.beginPath();
+      ctx.ellipse(cx + Math.cos(a) * 32, cy + Math.sin(a) * 32, 28, 14, a, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    ctx.fillStyle = accentColor;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 10, 0, Math.PI * 2);
+    ctx.fill();
+  } else if (project.id === 'mr-agro') {
+    // Agritech leaf canopy geometry
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy + 55);
+    ctx.quadraticCurveTo(cx - 55, cy, cx, cy - 55);
+    ctx.quadraticCurveTo(cx + 55, cy, cx, cy + 55);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(cx, cy + 55);
+    ctx.lineTo(cx, cy - 45);
+    ctx.stroke();
+  } else {
+    // Dealership Platform / Automotive geometry
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 55, Math.PI * 0.8, Math.PI * 2.2);
+    ctx.stroke();
+    ctx.strokeStyle = accentColor;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + 36, cy - 26);
+    ctx.stroke();
+  }
+
+  ctx.restore();
+
+  // ── 2. MINIMAL PROJECT INFORMATION AREA (Bottom 35%) ──
+  // Hairline dividing line
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
   ctx.lineWidth = 1;
   ctx.beginPath();
-  ctx.moveTo(60, 60);
-  ctx.lineTo(452, 60);
+  ctx.moveTo(36, 420);
+  ctx.lineTo(732, 420);
   ctx.stroke();
 
-  // Clean small typography
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-  ctx.font = '600 28px "Instrument Sans", sans-serif';
-  ctx.letterSpacing = '0.18em';
-  ctx.textAlign = 'center';
-  ctx.fillText(label, 256, 380);
+  // Project Title (Bold, crisp, clean)
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = '700 36px "Instrument Sans", "Syne", -apple-system, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillText(title.toUpperCase(), 44, 475);
+
+  // Subtitle / Category + Year (Subtle, elegant)
+  ctx.fillStyle = 'rgba(220, 225, 240, 0.65)';
+  ctx.font = '500 20px "JetBrains Mono", "IBM Plex Mono", monospace';
+  ctx.fillText(`${category} · ${year}`, 44, 520);
+
+  // Right-aligned discreet selection indicator
+  ctx.fillStyle = accentColor;
+  ctx.font = '600 24px "JetBrains Mono", monospace';
+  ctx.textAlign = 'right';
+  ctx.fillText('EXPLORE →', 720, 485);
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.anisotropy = 4;
+  texture.minFilter = THREE.LinearFilter;
+  textureCache.set(project.id, texture);
   return texture;
 }
 
-export function createSpiralPanelMesh(index, totalPanels) {
-  const panelWidth = SPIRAL_CONFIG.panelWidth;
-  const panelHeight = SPIRAL_CONFIG.panelHeight;
-  const panelRadius = SPIRAL_CONFIG.radius;
-  const thickness = SPIRAL_CONFIG.panelThickness;
+/**
+ * Creates an individual spiral panel mesh assembly
+ */
+export function createSpiralPanelMesh(index, totalPanels, geometryConfig, project) {
+  const { panelWidth, panelHeight, radius, panelThickness } = geometryConfig;
 
-  const destination = SPIRAL_CONFIG.destinations.find((d) => d.panelIndex === index);
-
-  // Assembly group
+  // Root assembly group for this panel
   const group = new THREE.Group();
-  group.name = `panel-${index}`;
+  group.name = `spiral-panel-${index}`;
 
-  const frontGeometry = createCurvedPanelGeometry(panelWidth, panelHeight, panelRadius);
+  const frontGeometry = createCurvedPanelGeometry(panelWidth, panelHeight, radius);
 
-  // Calculate subtle lightness tint variation (±4% across index range)
-  // Ensures every panel is identifiable in A/B captures while maintaining uniform frosted look
-  const tintFactor = totalPanels > 1 ? index / (totalPanels - 1) : 0.5;
-  const lightness = 0.96 + 0.08 * tintFactor; // 0.96 to 1.04
+  // Project texture canvas
+  const projectTexture = getProjectTexture(project);
 
-  // Frosted acrylic physical material
+  // Physical frosted acrylic material with project texture decal mapped
   const material = new THREE.MeshPhysicalMaterial({
-    color: new THREE.Color(lightness, lightness, lightness),
-    roughness: SPIRAL_CONFIG.material.roughness,
-    metalness: SPIRAL_CONFIG.material.metalness,
-    transmission: SPIRAL_CONFIG.material.transmission,
-    thickness: SPIRAL_CONFIG.material.thickness,
-    ior: SPIRAL_CONFIG.material.ior,
-    clearcoat: SPIRAL_CONFIG.material.clearcoat,
-    clearcoatRoughness: SPIRAL_CONFIG.material.clearcoatRoughness,
+    color: 0xffffff,
+    map: projectTexture,
+    roughness: 0.28,
+    metalness: 0.05,
+    transmission: 0.65,
+    thickness: 0.25,
+    ior: 1.35,
+    clearcoat: 0.35,
+    clearcoatRoughness: 0.1,
     transparent: true,
     opacity: 0.95,
   });
@@ -98,73 +279,32 @@ export function createSpiralPanelMesh(index, totalPanels) {
   frontMesh.receiveShadow = true;
   group.add(frontMesh);
 
-  // Back plate for physical depth
-  const backGeo = createCurvedPanelGeometry(panelWidth * 0.99, panelHeight * 0.99, panelRadius, 16, 2);
+  // Physical back plate for depth / acrylic thickness
+  const backGeo = createCurvedPanelGeometry(panelWidth * 0.99, panelHeight * 0.99, radius, 16, 2);
   const backMat = new THREE.MeshStandardMaterial({
-    color: 0xdde2ee,
-    roughness: 0.75,
-    metalness: 0.0,
+    color: 0x12141c,
+    roughness: 0.8,
+    metalness: 0.05,
     transparent: true,
-    opacity: 0.25,
+    opacity: 0.3,
   });
   const backMesh = new THREE.Mesh(backGeo, backMat);
-  backMesh.position.z = -thickness;
+  backMesh.position.z = -panelThickness;
   group.add(backMesh);
 
-  // Minimal label decal (only on destination panels)
-  let decalMesh = null;
-  let decalMat = null;
-  if (destination) {
-    const labelTexture = createLabelTexture(destination.label);
-    decalMat = new THREE.MeshBasicMaterial({
-      map: labelTexture,
-      transparent: true,
-      opacity: 0.9,
-      depthWrite: false,
-    });
-    decalMesh = new THREE.Mesh(frontGeometry, decalMat);
-    decalMesh.position.z = 0.005;
-    group.add(decalMesh);
-  }
-
-  // Pitch tilt angle: width axis rises in the +θ direction along the helix slope
-  // α_pitch = arctan(pitch / (2π * R))
-  const pitchSlopeAngle = Math.atan2(SPIRAL_CONFIG.pitch, 2 * Math.PI * panelRadius);
-
-  // Sub-container for pitch tilt around local radial axis
+  // Pitch tilt slope angle along the helix rise
+  const pitchSlopeAngle = Math.atan2(geometryConfig.pitch, 2 * Math.PI * radius);
   frontMesh.rotation.z = pitchSlopeAngle;
   backMesh.rotation.z = pitchSlopeAngle;
-  if (decalMesh) decalMesh.rotation.z = pitchSlopeAngle;
-
-  // Helical positioning:
-  // θ_i = (i + 0.5) * Δθ
-  // Center active point near θ = 3π
-  // Shift base angles by half a step (+0.5 * deltaTheta) to keep panel 0 off the boundary
-  const deltaTheta = SPIRAL_CONFIG.deltaTheta;
-  const baseAngle = (index + 0.5) * deltaTheta;
-
-  const x = panelRadius * Math.cos(baseAngle);
-  const z = panelRadius * Math.sin(baseAngle);
-  // y = 0 at θ = 3π
-  const y = (SPIRAL_CONFIG.pitch * (baseAngle - SPIRAL_CONFIG.activeTheta)) / (2 * Math.PI);
-
-  const normal = new THREE.Vector3(Math.cos(baseAngle), 0, Math.sin(baseAngle)).normalize();
-
-  group.position.set(x, y, z);
-  // Orient panel facing outwards along cylinder tangent
-  group.rotation.y = -baseAngle + Math.PI / 2;
 
   return {
     mesh: group,
     frontMesh,
+    backMesh,
     material,
-    decalMesh,
-    decalMat,
     index,
-    baseAngle,
-    baseLightness: lightness,
-    basePos: new THREE.Vector3(x, y, z),
-    normal,
-    destination,
+    projectIndex: index % 8,
+    project,
+    pitchSlopeAngle,
   };
 }

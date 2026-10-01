@@ -1,283 +1,94 @@
-import { useState, useEffect, useRef } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import ProjectDeepDive, { CASE_STUDIES } from '../components/ProjectDeepDive';
+/**
+ * Work.jsx
+ *
+ * Public Work Section & /work Experience
+ * Phase 2 Specification:
+ *   WORK
+ *         [3D SPIRAL PROJECT NAVIGATOR]
+ *   small project navigation hint
+ *
+ * The 3D Spiral is the hero of the Work page.
+ */
+
+import { useRef, useEffect } from 'react';
+import SpiralSlider from '../components/spiral/SpiralSlider';
 import { registerSection } from '../utils/sectionRegistry';
-import { LightningIcon, BlossomIcon, MonitorIcon } from '../components/LineIcons';
-
-
-// Project id maps to CASE_STUDIES keys in ProjectDeepDive
-const PROJECTS = [
-  {
-    id: 'nova', cat: 'ai', height: 220,
-    bg: 'linear-gradient(135deg,#1a0a2e,#2d1060)',
-    preview: (
-      <div style={{ textAlign:'center', zIndex:1, position:'relative' }}>
-        <div style={{ fontFamily:"'Syne',sans-serif", fontSize:'2.5rem', fontWeight:800, background:'linear-gradient(135deg,#E8956D,#8B5CF6)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>NOVA</div>
-        <div style={{ fontSize:'.58rem', letterSpacing:'.2em', textTransform:'uppercase', color:'rgba(167,139,250,.6)', marginTop:'.3rem' }}>Living OS Environment</div>
-      </div>
-    ),
-    tag: 'AI Systems · 2026', name: 'NOVA — Operating Environment',
-    desc: 'This portfolio itself. Living Three.js/R3F neural core, full-duplex voice pipeline, WebGL shaders.', year: 'In Development',
-  },
-  {
-    id: 'forge', cat: 'ai', height: 200,
-    bg: 'linear-gradient(135deg,#061a1a,#0a2e28)',
-    preview: (
-      <div style={{ textAlign:'center', zIndex:1, position:'relative' }}>
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom:'.3rem' }}>
-          <LightningIcon size={36} color="#2DD4BF" />
-        </div>
-        <div style={{ fontFamily:"'Syne',sans-serif", fontSize:'1.4rem', fontWeight:700, color:'#2DD4BF' }}>FORGE</div>
-        <div style={{ fontSize:'.58rem', letterSpacing:'.16em', color:'rgba(45,212,191,.6)', textTransform:'uppercase' }}>Local-First AI Engine</div>
-      </div>
-    ),
-    tag: 'AI Platform · July 2026', name: 'FORGE — AI Software Engineering',
-    desc: 'Local-first AI software engineering platform and multi-agent execution environment.', year: 'Architecture Stage',
-  },
-  {
-    id: 'petal-npins', cat: 'web', height: 200,
-    bg: 'linear-gradient(135deg,#1a1006,#35180a)',
-    preview: (
-      <div style={{ textAlign:'center', zIndex:1, position:'relative' }}>
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom:'.3rem' }}>
-          <BlossomIcon size={36} color="#E8956D" />
-        </div>
-        <div style={{ fontFamily:"'Syne',sans-serif", fontSize:'1.3rem', fontWeight:700, color:'#E8956D' }}>Petal n Pins</div>
-        <div style={{ fontSize:'.58rem', letterSpacing:'.16em', color:'rgba(232,149,109,.6)', textTransform:'uppercase' }}>Live E-Commerce</div>
-      </div>
-    ),
-    tag: 'Full-Stack · Live Production', name: 'Petal n Pins — E-Commerce',
-    desc: 'Full-stack platform live at petalnpins.com. Built with React, Tailwind, Hono, tRPC, MongoDB, and Razorpay.', year: 'petalnpins.com',
-  },
-  {
-    id: null, cat: 'ai', isImpact: true,
-    tag: 'Engineering Focus', bigNum: 'Real',
-    desc: 'Focusing on clean systems, low-latency AI integrations, and responsive 3D interfaces.',
-    quote: '"Deterministic client architecture and genuine real-time feedback."', quoteBy: '— Builder Philosophy',
-  },
-  {
-    id: 'nova-desktop', cat: 'desktop', height: 180,
-    bg: 'linear-gradient(135deg,#0f0a20,#1a1035)',
-    preview: (
-      <div style={{ textAlign:'center', zIndex:1, position:'relative' }}>
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom:'.3rem' }}>
-          <MonitorIcon size={34} color="#A78BFA" />
-        </div>
-        <div style={{ fontFamily:"'Syne',sans-serif", fontSize:'1.1rem', fontWeight:700, color:'#A78BFA' }}>NOVA Desktop</div>
-        <div style={{ fontSize:'.58rem', letterSpacing:'.14em', color:'rgba(167,139,250,.5)', textTransform:'uppercase' }}>Automation & Vision</div>
-      </div>
-    ),
-    tag: 'Desktop AI · 2024–2025', name: 'NOVA Desktop Assistant',
-    desc: 'Python desktop assistant for app automation, mathematical solving, and OCR text extraction.', year: 'Archived',
-  },
-];
-
-const cardGlass = { background:'rgba(14,10,35,0.6)', backdropFilter:'blur(20px) saturate(160%)', border:'1px solid rgba(139,92,246,0.18)', borderRadius:18, overflow:'hidden' };
-
-function ProjectCard({ p, onDeepDive }) {
-  const [hov, setHov] = useState(false);
-  const canDeepDive = !!p.id;
-
-  const handleClick = () => { if (canDeepDive) onDeepDive(p.id); };
-
-  if (p.isText) return (
-    <div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)} onClick={handleClick}
-      style={{ ...cardGlass, breakInside:'avoid', marginBottom:'1.1rem', cursor: canDeepDive ? 'pointer' : 'default',
-        background: hov ? 'rgba(20,12,50,.75)' : 'rgba(14,10,38,.65)',
-        border:`1px solid ${hov ? 'rgba(139,92,246,.4)' : 'rgba(139,92,246,.18)'}`,
-        boxShadow: hov ? '0 20px 50px rgba(0,0,0,.5)' : 'none',
-        transform: hov ? 'translateY(-5px)' : 'none', transition:'all .3s',
-      }}>
-      <div style={{ padding:'2rem' }}>
-        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:'1.2rem' }}>
-          <div style={{ fontSize:'.56rem', letterSpacing:'.16em', textTransform:'uppercase', color:'var(--violet2)' }}>{p.tag}</div>
-          <div style={{ width:32, height:32, borderRadius:'50%', border:'1px solid rgba(232,149,109,.35)', display:'flex', alignItems:'center', justifyContent:'center', color:'var(--rose)', fontSize:'.85rem' }}>↗</div>
-        </div>
-        <div style={{ fontFamily:"'Syne',sans-serif", fontSize:'1.2rem', fontWeight:700, color:'var(--text)', lineHeight:1.2, marginBottom:'.75rem', whiteSpace:'pre-line' }}>{p.name}</div>
-        <div style={{ fontSize:'.7rem', color:'var(--muted)', lineHeight:1.8, marginBottom:'1.2rem' }}>{p.desc} <span style={{ color:'var(--rose2)', fontWeight:500 }}>{p.highlight}</span></div>
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'.6rem' }}>
-          {p.stats.map(s => (
-            <div key={s.lbl} style={{ background:'rgba(232,149,109,.08)', borderRadius:10, padding:'.65rem', textAlign:'center', border:'1px solid rgba(232,149,109,.15)' }}>
-              <div style={{ fontFamily:"'Syne',sans-serif", fontSize:'1.3rem', fontWeight:800, background:'linear-gradient(135deg,var(--rose),var(--violet2))', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>{s.val}</div>
-              <div style={{ fontSize:'.55rem', letterSpacing:'.1em', textTransform:'uppercase', color:'var(--muted)', marginTop:2 }}>{s.lbl}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-
-  if (p.isImpact) return (
-    <div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
-      style={{ ...cardGlass, breakInside:'avoid', marginBottom:'1.1rem', cursor:'default', background:'rgba(20,14,42,.7)', transform: hov ? 'translateY(-5px)' : 'none', transition:'all .3s' }}>
-      <div style={{ padding:'2rem' }}>
-        <div style={{ fontSize:'.56rem', letterSpacing:'.16em', textTransform:'uppercase', color:'var(--violet2)', marginBottom:'1.2rem' }}>{p.tag}</div>
-        <div style={{ fontFamily:"'Syne',sans-serif", fontSize:'3.2rem', fontWeight:800, lineHeight:.9, background:'linear-gradient(135deg,var(--rose),var(--violet2))', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text', marginBottom:'.75rem' }}>{p.bigNum}</div>
-        <div style={{ fontSize:'.8rem', color:'var(--textd)', lineHeight:1.8, marginBottom:'1.2rem' }}>{p.desc}</div>
-        <div style={{ borderLeft:'2px solid rgba(232,149,109,.4)', paddingLeft:'1rem' }}>
-          <div style={{ fontSize:'.76rem', fontStyle:'italic', color:'var(--textd)', lineHeight:1.7 }}>{p.quote}</div>
-          <div style={{ fontSize:'.6rem', color:'var(--muted)', marginTop:'.5rem' }}>{p.quoteBy}</div>
-        </div>
-      </div>
-    </div>
-  );
-
-  return (
-    <div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)} onClick={handleClick}
-      style={{ ...cardGlass, breakInside:'avoid', marginBottom:'1.1rem', cursor: canDeepDive ? 'pointer' : 'default',
-        border:`1px solid ${hov ? 'rgba(139,92,246,.45)' : 'rgba(139,92,246,.18)'}`,
-        boxShadow: hov ? '0 24px 60px rgba(0,0,0,.55), 0 0 40px rgba(139,92,246,.15)' : 'none',
-        transform: hov ? 'translateY(-6px) scale(1.01)' : 'none', transition:'all .3s cubic-bezier(.25,.46,.45,.94)',
-      }}>
-      <div style={{ height:p.height, background:p.bg, position:'relative', display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden' }}>
-        {p.preview}
-        <div style={{ position:'absolute', inset:0, background:'radial-gradient(ellipse at 50% 50%,rgba(139,92,246,.12),transparent 65%)' }} />
-        {hov && (
-          <div style={{ position:'absolute', inset:0, background:'rgba(7,5,20,.88)', display:'flex', flexDirection:'column', justifyContent:'flex-end', padding:'1.1rem', backdropFilter:'blur(4px)' }}>
-            <span style={{ display:'inline-flex', alignItems:'center', gap:'.35rem', fontSize:'.62rem', letterSpacing:'.12em', textTransform:'uppercase', color:'var(--rose2)', border:'1px solid rgba(242,180,154,.3)', borderRadius:50, padding:'.3rem .8rem', width:'fit-content' }}>
-              {canDeepDive ? 'Deep Dive ↗' : 'View Project ↗'}
-            </span>
-            {canDeepDive && <div style={{ fontSize:'.56rem', color:'rgba(255,255,255,.35)', marginTop:'.3rem', letterSpacing:'.08em' }}>Full case study inside</div>}
-          </div>
-        )}
-      </div>
-      <div style={{ padding:'1.1rem 1.2rem 1.2rem' }}>
-        <div style={{ fontSize:'.56rem', letterSpacing:'.16em', textTransform:'uppercase', color:'var(--violet2)', marginBottom:'.3rem' }}>{p.tag}</div>
-        <div style={{ fontFamily:"'Syne',sans-serif", fontSize:'.98rem', fontWeight:700, color:'var(--text)', marginBottom:'.28rem' }}>{p.name}</div>
-        <div style={{ fontSize:'.7rem', color:'var(--muted)', lineHeight:1.65 }}>{p.desc}</div>
-        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginTop:'.7rem', paddingTop:'.7rem', borderTop:'1px solid rgba(139,92,246,.1)' }}>
-          <span style={{ fontSize:'.6rem', color:'var(--muted)' }}>{p.year}</span>
-          <div style={{ display:'flex', alignItems:'center', gap:'.3rem' }}>
-            {canDeepDive && <span style={{ fontSize:'.52rem', color:'rgba(139,92,246,.5)', letterSpacing:'.08em' }}>3D dive</span>}
-            <div style={{ width:26, height:26, borderRadius:'50%', border:`1px solid ${hov ? 'var(--rose)' : 'rgba(139,92,246,.2)'}`, display:'flex', alignItems:'center', justifyContent:'center', color: hov ? 'var(--rose)' : 'var(--muted)', fontSize:'.75rem', transition:'all .2s' }}>→</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export default function Work() {
-  const [filter,    setFilter]    = useState('all');
-  const [activeId,  setActiveId]  = useState(null);
-  const sectionRef  = useRef(null);
-  const location = useLocation();
-  const navigate = useNavigate();
+  const sectionRef = useRef(null);
 
   useEffect(() => {
-    const unregister = registerSection('projects', sectionRef);
-    if (window.__pendingScroll === 'projects') {
+    const unregister = registerSection('work', sectionRef);
+    if (window.__pendingScroll === 'work' || window.__pendingScroll === 'projects') {
       window.__pendingScroll = null;
       setTimeout(() => {
         sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 350);
+      }, 300);
     }
     return unregister;
   }, []);
 
-  useEffect(() => {
-    const handleOpen = (e) => {
-      const { projectId } = e.detail;
-      if (projectId && CASE_STUDIES[projectId]) {
-        setActiveId(projectId);
-      }
-    };
-    window.addEventListener('nova-open-project', handleOpen);
-    return () => window.removeEventListener('nova-open-project', handleOpen);
-  }, []);
-
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const projectParam = params.get('project');
-    if (projectParam && CASE_STUDIES[projectParam]) {
-      setActiveId(projectParam);
-    }
-  }, [location.search]);
-
-  const handleCloseDeepDive = () => {
-    setActiveId(null);
-    const params = new URLSearchParams(location.search);
-    if (params.has('project')) {
-      params.delete('project');
-      const searchStr = params.toString();
-      navigate(location.pathname + (searchStr ? `?${searchStr}` : ''), { replace: true });
-    }
-  };
-
-  useEffect(() => {
-    const els = sectionRef.current?.querySelectorAll('.reveal') || [];
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
-    }, { threshold: 0.08 });
-    els.forEach(el => obs.observe(el));
-    return () => obs.disconnect();
-  }, []);
-
-  const filters = ['all','ai','web','desktop'];
-  const shown   = filter === 'all' ? PROJECTS : PROJECTS.filter(p => p.cat === filter);
-
   return (
-    <>
-      <section
-        id="section-work"
-        data-section="work"
-        ref={sectionRef}
-        className="work-section"
-        style={{ position:'relative', zIndex:2, padding:'7rem 3.5rem', background:'transparent' }}
-      >
-        <style>{`
-          .work-grid {
-            columns: 3;
-          }
-          @media (max-width: 1024px) {
-            .work-grid {
-              columns: 2;
-            }
-            .work-section {
-              padding: 4rem 1.5rem !important;
-              padding-left: calc(1.5rem + env(safe-area-inset-left)) !important;
-              padding-right: calc(1.5rem + env(safe-area-inset-right)) !important;
-              overflow-x: hidden !important;
-            }
-          }
-          @media (max-width: 640px) {
-            .work-grid {
-              columns: 1;
-            }
-          }
-        `}</style>
-        <div style={{ position:'absolute', inset:0, zIndex:0, pointerEvents:'none', background:'radial-gradient(ellipse 100% 100% at 50% 50%, rgba(7,7,15,.5) 0%, rgba(7,7,15,.72) 100%)' }} />
+    <section
+      id="section-work"
+      data-section="work"
+      ref={sectionRef}
+      style={{
+        position: 'relative',
+        zIndex: 2,
+        padding: 'clamp(2rem, 5vw, 4rem) 1.5rem',
+        maxWidth: 1200,
+        margin: '0 auto',
+        minHeight: '85vh',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+      }}
+    >
+      {/* Subtle background gradient */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          zIndex: 0,
+          pointerEvents: 'none',
+          background: 'radial-gradient(ellipse 90% 70% at 50% 45%, rgba(139, 92, 246, 0.04) 0%, rgba(5, 5, 5, 0.98) 100%)',
+        }}
+      />
 
-        <div style={{ position:'relative', zIndex:1 }}>
-          <div className="reveal" style={{ maxWidth:1100, margin:'0 auto 3rem', display:'flex', justifyContent:'space-between', alignItems:'flex-end', flexWrap:'wrap', gap:'1rem' }}>
-            <div>
-              {/* Mission section header */}
-              <div style={{ marginBottom:'1rem' }}>
-                <span className="system-tag">SELECTED WORK</span>
-              </div>
-              <h2 style={{ fontFamily:"'Syne',sans-serif", fontWeight:800, fontSize:'clamp(1.8rem,4vw,3.5rem)', lineHeight:1.0, letterSpacing:'-0.02em', color:'var(--text)', margin:0 }}>
-                SELECTED<br />
-                <span style={{ background:'linear-gradient(90deg,var(--violet2),var(--rose))', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>MISSIONS</span>
-              </h2>
-              <p style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:'.58rem', color:'var(--muted)', marginTop:'.8rem', letterSpacing:'.12em', textTransform:'uppercase' }}>Click any mission to explore the full case study ↗</p>
-            </div>
-            <div style={{ display:'flex', gap:'.5rem', flexWrap:'wrap' }}>
-              {filters.map(f => (
-                <button key={f} onClick={() => setFilter(f)} style={{ padding:'.35rem .9rem', borderRadius:50, border:`1px solid ${filter===f ? 'rgba(232,149,109,.5)' : 'rgba(139,92,246,.2)'}`, background: filter===f ? 'rgba(232,149,109,.1)' : 'rgba(139,92,246,.06)', backdropFilter:'blur(8px)', color: filter===f ? 'var(--rose)' : 'var(--muted)', fontSize:'.62rem', letterSpacing:'.1em', textTransform:'uppercase', cursor:'pointer', transition:'all .2s' }}>{f}</button>
-              ))}
-            </div>
+      <div style={{ position: 'relative', zIndex: 1, width: '100%' }}>
+        {/* Section Header */}
+        <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+          <div
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: '0.68rem',
+              letterSpacing: '0.2em',
+              textTransform: 'uppercase',
+              color: 'var(--violet2)',
+              marginBottom: '0.5rem',
+            }}
+          >
+            PORTFOLIO NAVIGATOR
           </div>
-
-          <div className="work-grid" style={{ maxWidth:1100, margin:'0 auto', columnGap:'1.1rem' }}>
-            {shown.map((p, i) => <ProjectCard key={i} p={p} onDeepDive={setActiveId} />)}
-          </div>
+          <h1
+            style={{
+              fontFamily: "'Syne', sans-serif",
+              fontWeight: 800,
+              fontSize: 'clamp(2.5rem, 6vw, 4.2rem)',
+              letterSpacing: '-0.03em',
+              color: '#FFFFFF',
+              margin: 0,
+              lineHeight: 1.05,
+            }}
+          >
+            WORK
+          </h1>
         </div>
-      </section>
 
-      {/* 3D Deep-Dive Portal */}
-      {activeId && (
-        <ProjectDeepDive projectId={activeId} onClose={handleCloseDeepDive} />
-      )}
-    </>
+        {/* Hero 3D Spiral Project Navigator */}
+        <SpiralSlider />
+      </div>
+    </section>
   );
 }
