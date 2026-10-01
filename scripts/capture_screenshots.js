@@ -143,9 +143,49 @@ async function main() {
   await sleep(3000);
   await capture('4_work_mobile.png');
 
+  // 5. Desktop /about (Engineering Philosophy with Magnet Lines)
+  console.log('Navigating to /about desktop...');
+  await sendSession('Emulation.setDeviceMetricsOverride', {
+    width: 1440,
+    height: 900,
+    deviceScaleFactor: 1,
+    mobile: false,
+  });
+  await sendSession('Page.navigate', { url: 'http://localhost:5173/about' });
+  await sleep(2500);
+  await capture('5_philosophy_desktop.png');
+
+  // 6. Interactive mouse movement over Magnet Lines
+  console.log('Moving mouse to interact with Magnet Lines...');
+  await sendSession('Input.dispatchMouseEvent', {
+    type: 'mouseMoved',
+    x: 350,
+    y: 420,
+  });
+  await sleep(400);
+  await sendSession('Input.dispatchMouseEvent', {
+    type: 'mouseMoved',
+    x: 950,
+    y: 380,
+  });
+  await sleep(700);
+  await capture('6_philosophy_mouse_interact.png');
+
+  // 7. Mobile /about
+  console.log('Setting mobile viewport for /about...');
+  await sendSession('Emulation.setDeviceMetricsOverride', {
+    width: 390,
+    height: 844,
+    deviceScaleFactor: 2,
+    mobile: true,
+  });
+  await sendSession('Page.navigate', { url: 'http://localhost:5173/about' });
+  await sleep(2500);
+  await capture('7_philosophy_mobile.png');
+
   ws.close();
   edge.kill();
-  console.log('All 4 verification screenshots captured successfully!');
+  console.log('All verification screenshots captured successfully!');
 }
 
 main().catch((err) => {

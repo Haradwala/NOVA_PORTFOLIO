@@ -126,7 +126,7 @@ function PortfolioShell({ showBoot, onBootDone, novaTrigger, onAskNova }) {
           {/* Public Portfolio Routes */}
           <Route path="/work"          element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Work /></div>} />
           <Route path="/work/:project" element={<WorkProjectPage />} />
-          <Route path="/about"         element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><About /><Capabilities /></div>} />
+          <Route path="/about"         element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Philosophy /></div>} />
           <Route path="/capabilities"  element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Capabilities /></div>} />
           <Route path="/skills"        element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Capabilities /></div>} />
           <Route path="/process"       element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Process /></div>} />
