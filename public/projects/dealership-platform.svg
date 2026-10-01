@@ -1,29 +1,90 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="750" height="500" viewBox="0 0 750 500">
   <defs>
-    <radialGradient id="bg" cx="50%" cy="50%" r="70%">
+    <linearGradient id="dlBg" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#300d20"/>
-      <stop offset="60%" stop-color="#180610"/>
-      <stop offset="100%" stop-color="#0a0206"/>
+      <stop offset="50%" stop-color="#190611"/>
+      <stop offset="100%" stop-color="#090206"/>
+    </linearGradient>
+    <radialGradient id="dlGlow" cx="50%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#EC4899" stop-opacity="0.45"/>
+      <stop offset="50%" stop-color="#DB2777" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#190611" stop-opacity="0"/>
     </radialGradient>
-    <radialGradient id="glow" cx="50%" cy="45%" r="40%">
-      <stop offset="0%" stop-color="#EC4899" stop-opacity="0.32"/>
-      <stop offset="100%" stop-color="#EC4899" stop-opacity="0"/>
-    </radialGradient>
+    <filter id="dlBlur" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="30"/>
+    </filter>
   </defs>
-  <rect width="750" height="500" fill="url(#bg)" rx="12"/>
-  <rect width="750" height="500" fill="url(#glow)" rx="12"/>
-  <rect x="1.5" y="1.5" width="747" height="497" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1.5" rx="11"/>
 
-  <!-- Automotive Dial / Speed lines -->
-  <g transform="translate(375, 230)">
-    <circle r="76" fill="none" stroke="#EC4899" stroke-width="1.5" opacity="0.3"/>
-    <path d="M-60 30 A68 68 0 1 1 60 30" fill="none" stroke="#EC4899" stroke-width="3" stroke-linecap="round"/>
-    <line x1="0" y1="0" x2="38" y2="-32" stroke="#F472B6" stroke-width="3" stroke-linecap="round"/>
-    <circle cx="0" cy="0" r="8" fill="#EC4899"/>
-    <circle cx="0" cy="0" r="3" fill="#FFFFFF"/>
+  <!-- Background Base -->
+  <rect width="750" height="500" fill="url(#dlBg)" rx="16"/>
+  <rect x="150" y="80" width="450" height="300" fill="#DB2777" opacity="0.3" filter="url(#dlBlur)"/>
+  <rect width="750" height="500" fill="url(#dlGlow)" rx="16"/>
+
+  <!-- Outer Rim Highlight -->
+  <rect x="2" y="2" width="746" height="496" fill="none" stroke="rgba(236, 72, 153, 0.45)" stroke-width="2" rx="15"/>
+  <rect x="6" y="6" width="738" height="488" fill="none" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1" rx="12"/>
+
+  <!-- Window Header Bar -->
+  <rect x="16" y="16" width="718" height="38" fill="rgba(255, 255, 255, 0.04)" rx="8"/>
+  <circle cx="36" cy="35" r="5" fill="#EF4444"/>
+  <circle cx="52" cy="35" r="5" fill="#F59E0B"/>
+  <circle cx="68" cy="35" r="5" fill="#10B981"/>
+  <text x="92" y="39" font-family="'JetBrains Mono', monospace" font-size="12" fill="rgba(255, 255, 255, 0.6)" letter-spacing="1">dealeros // technician-jobcards.fastapi</text>
+  <rect x="580" y="26" width="140" height="18" fill="rgba(236, 72, 153, 0.25)" rx="4"/>
+  <text x="650" y="39" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#F472B6" text-anchor="middle" letter-spacing="1">12 BAYS ACTIVE</text>
+
+  <!-- Automotive Operations Interface Mockup -->
+  <g transform="translate(45, 75)">
+    <!-- Active Job Cards Board -->
+    <g transform="translate(0, 0)">
+      <!-- Card 1 -->
+      <g transform="translate(0, 0)">
+        <rect width="210" height="230" fill="rgba(48, 13, 32, 0.65)" rx="8" stroke="rgba(236, 72, 153, 0.3)" stroke-width="1"/>
+        <rect x="14" y="14" width="70" height="20" fill="rgba(236, 72, 153, 0.25)" rx="4"/>
+        <text x="49" y="28" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#F472B6" text-anchor="middle">BAY 03</text>
+        <text x="14" y="58" font-family="'Instrument Sans', sans-serif" font-size="15" font-weight="700" fill="#FFFFFF">Brake Overhaul</text>
+        <text x="14" y="78" font-family="'JetBrains Mono', monospace" font-size="11" fill="rgba(255,255,255,0.6)">Chassis: #WBA-8492</text>
+        <text x="14" y="105" font-family="'JetBrains Mono', monospace" font-size="10" fill="#F472B6">PARTS RECONCILED</text>
+        <rect x="14" y="115" width="180" height="6" fill="rgba(255,255,255,0.1)" rx="3"/>
+        <rect x="14" y="115" width="150" height="6" fill="#EC4899" rx="3"/>
+        <rect x="14" y="185" width="182" height="30" fill="rgba(236, 72, 153, 0.2)" rx="6"/>
+        <text x="105" y="205" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#F472B6" text-anchor="middle">IN PROGRESS ▾</text>
+      </g>
+
+      <!-- Card 2 -->
+      <g transform="translate(230, 0)">
+        <rect width="210" height="230" fill="rgba(48, 13, 32, 0.65)" rx="8" stroke="rgba(236, 72, 153, 0.3)" stroke-width="1"/>
+        <rect x="14" y="14" width="70" height="20" fill="rgba(16, 185, 129, 0.25)" rx="4"/>
+        <text x="49" y="28" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#34D399" text-anchor="middle">BAY 07</text>
+        <text x="14" y="58" font-family="'Instrument Sans', sans-serif" font-size="15" font-weight="700" fill="#FFFFFF">Engine Diagnostics</text>
+        <text x="14" y="78" font-family="'JetBrains Mono', monospace" font-size="11" fill="rgba(255,255,255,0.6)">Chassis: #JH4-3109</text>
+        <text x="14" y="105" font-family="'JetBrains Mono', monospace" font-size="10" fill="#34D399">OCR INVOICE DONE</text>
+        <rect x="14" y="115" width="180" height="6" fill="rgba(255,255,255,0.1)" rx="3"/>
+        <rect x="14" y="115" width="180" height="6" fill="#10B981" rx="3"/>
+        <rect x="14" y="185" width="182" height="30" fill="rgba(16, 185, 129, 0.2)" rx="6"/>
+        <text x="105" y="205" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#34D399" text-anchor="middle">READY FOR BILLING ✓</text>
+      </g>
+
+      <!-- Card 3 -->
+      <g transform="translate(460, 0)">
+        <rect width="200" height="230" fill="rgba(48, 13, 32, 0.65)" rx="8" stroke="rgba(236, 72, 153, 0.3)" stroke-width="1"/>
+        <rect x="14" y="14" width="70" height="20" fill="rgba(56, 189, 248, 0.25)" rx="4"/>
+        <text x="49" y="28" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#7DD3FC" text-anchor="middle">BAY 11</text>
+        <text x="14" y="58" font-family="'Instrument Sans', sans-serif" font-size="15" font-weight="700" fill="#FFFFFF">Transmission Flush</text>
+        <text x="14" y="78" font-family="'JetBrains Mono', monospace" font-size="11" fill="rgba(255,255,255,0.6)">Chassis: #SAL-9941</text>
+        <text x="14" y="105" font-family="'JetBrains Mono', monospace" font-size="10" fill="#7DD3FC">LEDGER POSTED</text>
+        <rect x="14" y="115" width="172" height="6" fill="rgba(255,255,255,0.1)" rx="3"/>
+        <rect x="14" y="115" width="90" height="6" fill="#38BDF8" rx="3"/>
+        <rect x="14" y="185" width="172" height="30" fill="rgba(56, 189, 248, 0.2)" rx="6"/>
+        <text x="100" y="205" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#7DD3FC" text-anchor="middle">PARTS PENDING ▾</text>
+      </g>
+    </g>
   </g>
 
-  <!-- Minimal Project Title Overlay -->
-  <text x="40" y="445" font-family="'Instrument Sans', -apple-system, sans-serif" font-size="28" font-weight="700" fill="#FFFFFF" letter-spacing="1">DEALERSHIP PLATFORM</text>
-  <text x="40" y="470" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="500" fill="rgba(255,255,255,0.5)" letter-spacing="1.5">AUTOMOTIVE SERVICE &amp; JOB CARDS</text>
+  <!-- Project Caption Footer -->
+  <rect x="0" y="420" width="750" height="80" fill="rgba(9, 2, 6, 0.9)"/>
+  <line x1="0" y1="420" x2="750" y2="420" stroke="rgba(236, 72, 153, 0.25)" stroke-width="1"/>
+  <text x="40" y="462" font-family="'Syne', -apple-system, sans-serif" font-size="28" font-weight="800" fill="#FFFFFF" letter-spacing="0.5">DEALERSHIP PLATFORM</text>
+  <text x="40" y="484" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="500" fill="#F472B6" letter-spacing="1.5">AUTOMOTIVE SERVICE &amp; JOB CARDS</text>
+  <text x="710" y="468" font-family="'JetBrains Mono', monospace" font-size="14" font-weight="700" fill="#EC4899" text-anchor="end" letter-spacing="1">EXPLORE ↗</text>
 </svg>

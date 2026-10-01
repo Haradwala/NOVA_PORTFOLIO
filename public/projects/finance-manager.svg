@@ -1,28 +1,70 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="750" height="500" viewBox="0 0 750 500">
   <defs>
-    <radialGradient id="bg" cx="50%" cy="50%" r="70%">
-      <stop offset="0%" stop-color="#0c1d2e"/>
-      <stop offset="60%" stop-color="#07111c"/>
-      <stop offset="100%" stop-color="#04080e"/>
+    <linearGradient id="fmBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#091b29"/>
+      <stop offset="50%" stop-color="#050e17"/>
+      <stop offset="100%" stop-color="#02060a"/>
+    </linearGradient>
+    <radialGradient id="fmGlow" cx="50%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.45"/>
+      <stop offset="50%" stop-color="#0284C7" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#050e17" stop-opacity="0"/>
     </radialGradient>
-    <radialGradient id="glow" cx="50%" cy="45%" r="40%">
-      <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.32"/>
-      <stop offset="100%" stop-color="#38BDF8" stop-opacity="0"/>
-    </radialGradient>
+    <filter id="fBlur" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="30"/>
+    </filter>
   </defs>
-  <rect width="750" height="500" fill="url(#bg)" rx="12"/>
-  <rect width="750" height="500" fill="url(#glow)" rx="12"/>
-  <rect x="1.5" y="1.5" width="747" height="497" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1.5" rx="11"/>
 
-  <!-- Isometric Accounting Cubes -->
-  <g transform="translate(375, 230)">
-    <!-- Base Cube -->
-    <path d="M0 -55 L48 -27 L48 27 L0 55 L-48 27 L-48 -27 Z" fill="none" stroke="#38BDF8" stroke-width="2.5"/>
-    <path d="M0 -55 L0 0 L48 27 M0 0 L-48 27" fill="none" stroke="#7DD3FC" stroke-width="2"/>
-    <circle cx="0" cy="0" r="5" fill="#38BDF8"/>
+  <!-- Background Base -->
+  <rect width="750" height="500" fill="url(#fmBg)" rx="16"/>
+  <rect x="150" y="80" width="450" height="300" fill="#0284C7" opacity="0.3" filter="url(#fBlur)"/>
+  <rect width="750" height="500" fill="url(#fmGlow)" rx="16"/>
+
+  <!-- Outer Rim Highlight -->
+  <rect x="2" y="2" width="746" height="496" fill="none" stroke="rgba(56, 189, 248, 0.45)" stroke-width="2" rx="15"/>
+  <rect x="6" y="6" width="738" height="488" fill="none" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1" rx="12"/>
+
+  <!-- Window Header Bar -->
+  <rect x="16" y="16" width="718" height="38" fill="rgba(255, 255, 255, 0.04)" rx="8"/>
+  <circle cx="36" cy="35" r="5" fill="#EF4444"/>
+  <circle cx="52" cy="35" r="5" fill="#F59E0B"/>
+  <circle cx="68" cy="35" r="5" fill="#10B981"/>
+  <text x="92" y="39" font-family="'JetBrains Mono', monospace" font-size="12" fill="rgba(255, 255, 255, 0.6)" letter-spacing="1">ledger-core.io // acid-invariants.bson</text>
+  <rect x="600" y="26" width="120" height="18" fill="rgba(56, 189, 248, 0.25)" rx="4"/>
+  <text x="660" y="39" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#7DD3FC" text-anchor="middle" letter-spacing="1">ACID VERIFIED</text>
+
+  <!-- Center Artwork: Accounting Balance Engine -->
+  <g transform="translate(375, 205)">
+    <!-- Central Isometric Cube -->
+    <path d="M0 -65 L56 -32 L56 32 L0 65 L-56 32 L-56 -32 Z" fill="#0e2a40" stroke="#38BDF8" stroke-width="2.5"/>
+    <path d="M0 -65 L0 0 L56 32 M0 0 L-56 32" fill="none" stroke="#7DD3FC" stroke-width="2"/>
+    <circle cx="0" cy="0" r="7" fill="#38BDF8"/>
+
+    <!-- Dual Balance Trays -->
+    <line x1="-160" y1="10" x2="-60" y2="25" stroke="#38BDF8" stroke-width="2"/>
+    <line x1="60" y1="25" x2="160" y2="10" stroke="#38BDF8" stroke-width="2"/>
+    <circle cx="-160" cy="10" r="5" fill="#10B981"/>
+    <circle cx="160" cy="10" r="5" fill="#38BDF8"/>
   </g>
 
-  <!-- Minimal Project Title Overlay -->
-  <text x="40" y="445" font-family="'Instrument Sans', -apple-system, sans-serif" font-size="28" font-weight="700" fill="#FFFFFF" letter-spacing="1">FINANCE MANAGER</text>
-  <text x="40" y="470" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="500" fill="rgba(255,255,255,0.5)" letter-spacing="1.5">ACCOUNTING ENGINE &amp; LEDGER CORE</text>
+  <!-- Dashboard Metrics Panels -->
+  <g transform="translate(40, 310)">
+    <rect width="200" height="85" fill="rgba(14, 42, 64, 0.65)" rx="8" stroke="rgba(56, 189, 248, 0.3)" stroke-width="1"/>
+    <text x="16" y="26" font-family="'JetBrains Mono', monospace" font-size="10" fill="#7DD3FC">DECIMAL128 INTEGRITY</text>
+    <text x="16" y="52" font-family="'JetBrains Mono', monospace" font-size="20" font-weight="800" fill="#FFFFFF">100.000%</text>
+    <text x="16" y="72" font-family="'JetBrains Mono', monospace" font-size="11" fill="#34D399">ZERO FLOAT DRIFT</text>
+  </g>
+  <g transform="translate(510, 310)">
+    <rect width="200" height="85" fill="rgba(14, 42, 64, 0.65)" rx="8" stroke="rgba(56, 189, 248, 0.3)" stroke-width="1"/>
+    <text x="16" y="26" font-family="'JetBrains Mono', monospace" font-size="10" fill="#7DD3FC">TRANSACTION RATE</text>
+    <text x="16" y="52" font-family="'JetBrains Mono', monospace" font-size="20" font-weight="800" fill="#FFFFFF">24,500/s</text>
+    <text x="16" y="72" font-family="'JetBrains Mono', monospace" font-size="11" fill="#38BDF8">MONGODB MOTOR ASYNC</text>
+  </g>
+
+  <!-- Project Caption Footer -->
+  <rect x="0" y="420" width="750" height="80" fill="rgba(4, 10, 16, 0.9)"/>
+  <line x1="0" y1="420" x2="750" y2="420" stroke="rgba(56, 189, 248, 0.25)" stroke-width="1"/>
+  <text x="40" y="462" font-family="'Syne', -apple-system, sans-serif" font-size="28" font-weight="800" fill="#FFFFFF" letter-spacing="0.5">FINANCE MANAGER</text>
+  <text x="40" y="484" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="500" fill="#7DD3FC" letter-spacing="1.5">ACCOUNTING ENGINE &amp; LEDGER CORE</text>
+  <text x="710" y="468" font-family="'JetBrains Mono', monospace" font-size="14" font-weight="700" fill="#38BDF8" text-anchor="end" letter-spacing="1">EXPLORE ↗</text>
 </svg>

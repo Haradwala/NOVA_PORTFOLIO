@@ -172,10 +172,20 @@ function SpiralScene({
     progress.current += (targetProgress.current - progress.current) * ease;
 
     const factor = Math.max(viewport.factor, 1);
-    const planeWidth = Math.min(cardWidth / factor, viewport.width * 0.225);
+    const isSmall = viewport.width < 7;
+    const planeWidth = Math.min(
+      cardWidth / factor,
+      viewport.width * (isSmall ? 0.44 : 0.225)
+    );
     const planeHeight = planeWidth / cardAspectRatio;
-    const spiralRadius = Math.min(radius / factor, viewport.width * 0.245);
-    const gap = Math.min(verticalGap / factor, viewport.height * 0.082);
+    const spiralRadius = Math.min(
+      radius / factor,
+      viewport.width * (isSmall ? 0.36 : 0.245)
+    );
+    const gap = Math.min(
+      verticalGap / factor,
+      viewport.height * (isSmall ? 0.095 : 0.082)
+    );
     const count = sceneItems.length;
 
     let minAbsPos = Infinity;
@@ -263,7 +273,7 @@ export function Spiral3DSlider({
   verticalGap = 64,
   cardWidth = 255,
   cardAspectRatio = 1.5,
-  autoRotate = false, // user navigation preferred
+  autoRotate = true,
   autoSpeed = 0.13,
   scrollSensitivity = 0.0024,
   smoothing = 0.065,

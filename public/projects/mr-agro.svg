@@ -1,29 +1,83 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="750" height="500" viewBox="0 0 750 500">
   <defs>
-    <radialGradient id="bg" cx="50%" cy="50%" r="70%">
-      <stop offset="0%" stop-color="#0a2618"/>
-      <stop offset="60%" stop-color="#04140c"/>
+    <linearGradient id="mrBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a2a1b"/>
+      <stop offset="50%" stop-color="#05140d"/>
       <stop offset="100%" stop-color="#020805"/>
+    </linearGradient>
+    <radialGradient id="mrGlow" cx="50%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#10B981" stop-opacity="0.45"/>
+      <stop offset="50%" stop-color="#059669" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#05140d" stop-opacity="0"/>
     </radialGradient>
-    <radialGradient id="glow" cx="50%" cy="45%" r="40%">
-      <stop offset="0%" stop-color="#10B981" stop-opacity="0.32"/>
-      <stop offset="100%" stop-color="#10B981" stop-opacity="0"/>
-    </radialGradient>
+    <filter id="mrBlur" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="30"/>
+    </filter>
   </defs>
-  <rect width="750" height="500" fill="url(#bg)" rx="12"/>
-  <rect width="750" height="500" fill="url(#glow)" rx="12"/>
-  <rect x="1.5" y="1.5" width="747" height="497" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1.5" rx="11"/>
 
-  <!-- Agritech Sprout Geometry -->
-  <g transform="translate(375, 230)">
-    <circle r="76" fill="none" stroke="#10B981" stroke-width="1.5" opacity="0.35"/>
-    <path d="M0 60 Q-60 0 0 -60 Q60 0 0 60 Z" fill="none" stroke="#10B981" stroke-width="2.5"/>
-    <line x1="0" y1="60" x2="0" y2="-45" stroke="#6EE7B7" stroke-width="2"/>
-    <path d="M0 10 Q25 -10 35 -5" fill="none" stroke="#6EE7B7" stroke-width="1.8"/>
-    <path d="M0 -15 Q-25 -35 -35 -30" fill="none" stroke="#6EE7B7" stroke-width="1.8"/>
+  <!-- Background Base -->
+  <rect width="750" height="500" fill="url(#mrBg)" rx="16"/>
+  <rect x="150" y="80" width="450" height="300" fill="#059669" opacity="0.3" filter="url(#mrBlur)"/>
+  <rect width="750" height="500" fill="url(#mrGlow)" rx="16"/>
+
+  <!-- Outer Rim Highlight -->
+  <rect x="2" y="2" width="746" height="496" fill="none" stroke="rgba(16, 185, 129, 0.45)" stroke-width="2" rx="15"/>
+  <rect x="6" y="6" width="738" height="488" fill="none" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1" rx="12"/>
+
+  <!-- Window Header Bar -->
+  <rect x="16" y="16" width="718" height="38" fill="rgba(255, 255, 255, 0.04)" rx="8"/>
+  <circle cx="36" cy="35" r="5" fill="#EF4444"/>
+  <circle cx="52" cy="35" r="5" fill="#F59E0B"/>
+  <circle cx="68" cy="35" r="5" fill="#10B981"/>
+  <text x="92" y="39" font-family="'JetBrains Mono', monospace" font-size="12" fill="rgba(255, 255, 255, 0.6)" letter-spacing="1">mragro.in // supply-chain.procurement</text>
+  <rect x="580" y="26" width="140" height="18" fill="rgba(16, 185, 129, 0.25)" rx="4"/>
+  <text x="650" y="39" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#6EE7B7" text-anchor="middle" letter-spacing="1">LOGISTICS ONLINE</text>
+
+  <!-- Logistics Architecture Interface Mockup -->
+  <g transform="translate(45, 75)">
+    <!-- Metrics Cards Row -->
+    <g transform="translate(0, 0)">
+      <rect width="210" height="90" fill="rgba(10, 42, 27, 0.65)" rx="8" stroke="rgba(16, 185, 129, 0.3)" stroke-width="1"/>
+      <text x="16" y="26" font-family="'JetBrains Mono', monospace" font-size="10" fill="#6EE7B7">DISPATCHED BATCHES</text>
+      <text x="16" y="56" font-family="'JetBrains Mono', monospace" font-size="22" font-weight="800" fill="#FFFFFF">1,480 MT</text>
+      <text x="16" y="78" font-family="'JetBrains Mono', monospace" font-size="11" fill="#34D399">100% ROUTE ACCURACY</text>
+    </g>
+    <g transform="translate(230, 0)">
+      <rect width="210" height="90" fill="rgba(10, 42, 27, 0.65)" rx="8" stroke="rgba(16, 185, 129, 0.3)" stroke-width="1"/>
+      <text x="16" y="26" font-family="'JetBrains Mono', monospace" font-size="10" fill="#6EE7B7">WAREHOUSE NODES</text>
+      <text x="16" y="56" font-family="'JetBrains Mono', monospace" font-size="22" font-weight="800" fill="#FFFFFF">18 HUBS</text>
+      <text x="16" y="78" font-family="'JetBrains Mono', monospace" font-size="11" fill="#10B981">OFFLINE TOLERANT</text>
+    </g>
+    <g transform="translate(460, 0)">
+      <rect width="200" height="90" fill="rgba(10, 42, 27, 0.65)" rx="8" stroke="rgba(16, 185, 129, 0.3)" stroke-width="1"/>
+      <text x="16" y="26" font-family="'JetBrains Mono', monospace" font-size="10" fill="#6EE7B7">INVENTORY SYNC</text>
+      <text x="16" y="56" font-family="'JetBrains Mono', monospace" font-size="22" font-weight="800" fill="#FFFFFF">&lt; 50ms</text>
+      <text x="16" y="78" font-family="'JetBrains Mono', monospace" font-size="11" fill="#6EE7B7">POSTGRESQL POOL</text>
+    </g>
+
+    <!-- Supply Pipeline Track -->
+    <g transform="translate(0, 110)">
+      <rect width="660" height="120" fill="rgba(6, 26, 17, 0.55)" rx="8" stroke="rgba(16, 185, 129, 0.2)" stroke-width="1"/>
+      <text x="20" y="32" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="rgba(255,255,255,0.8)">DISTRIBUTION PIPELINE FLOW</text>
+      <!-- Pipeline Nodes -->
+      <circle cx="60" cy="70" r="16" fill="#10B981"/>
+      <text x="60" y="75" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="800" fill="#000" text-anchor="middle">HUB</text>
+      <line x1="76" y1="70" x2="220" y2="70" stroke="#10B981" stroke-width="2"/>
+      <circle cx="236" cy="70" r="16" fill="#059669"/>
+      <text x="236" y="75" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="800" fill="#FFF" text-anchor="middle">TRK</text>
+      <line x1="252" y1="70" x2="420" y2="70" stroke="#10B981" stroke-width="2"/>
+      <circle cx="436" cy="70" r="16" fill="#059669"/>
+      <text x="436" y="75" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="800" fill="#FFF" text-anchor="middle">DEP</text>
+      <line x1="452" y1="70" x2="590" y2="70" stroke="#10B981" stroke-width="2"/>
+      <circle cx="606" cy="70" r="16" fill="#34D399"/>
+      <text x="606" y="75" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="800" fill="#000" text-anchor="middle">DST</text>
+    </g>
   </g>
 
-  <!-- Minimal Project Title Overlay -->
-  <text x="40" y="445" font-family="'Instrument Sans', -apple-system, sans-serif" font-size="28" font-weight="700" fill="#FFFFFF" letter-spacing="1">MR AGRO</text>
-  <text x="40" y="470" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="500" fill="rgba(255,255,255,0.5)" letter-spacing="1.5">AGRICULTURAL SUPPLY LOGISTICS</text>
+  <!-- Project Caption Footer -->
+  <rect x="0" y="420" width="750" height="80" fill="rgba(2, 8, 5, 0.9)"/>
+  <line x1="0" y1="420" x2="750" y2="420" stroke="rgba(16, 185, 129, 0.25)" stroke-width="1"/>
+  <text x="40" y="462" font-family="'Syne', -apple-system, sans-serif" font-size="28" font-weight="800" fill="#FFFFFF" letter-spacing="0.5">MR AGRO</text>
+  <text x="40" y="484" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="500" fill="#6EE7B7" letter-spacing="1.5">AGRICULTURAL SUPPLY LOGISTICS</text>
+  <text x="710" y="468" font-family="'JetBrains Mono', monospace" font-size="14" font-weight="700" fill="#10B981" text-anchor="end" letter-spacing="1">EXPLORE ↗</text>
 </svg>

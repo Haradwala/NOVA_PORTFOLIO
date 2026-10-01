@@ -1,34 +1,75 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="750" height="500" viewBox="0 0 750 500">
   <defs>
-    <radialGradient id="bg" cx="50%" cy="50%" r="70%">
+    <linearGradient id="peBg" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#2c140a"/>
-      <stop offset="60%" stop-color="#140804"/>
+      <stop offset="50%" stop-color="#140803"/>
       <stop offset="100%" stop-color="#080301"/>
+    </linearGradient>
+    <radialGradient id="peGlow" cx="50%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#E8956D" stop-opacity="0.45"/>
+      <stop offset="50%" stop-color="#C2410C" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#140803" stop-opacity="0"/>
     </radialGradient>
-    <radialGradient id="glow" cx="50%" cy="45%" r="40%">
-      <stop offset="0%" stop-color="#E8956D" stop-opacity="0.35"/>
-      <stop offset="100%" stop-color="#E8956D" stop-opacity="0"/>
-    </radialGradient>
+    <filter id="peBlur" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="30"/>
+    </filter>
   </defs>
-  <rect width="750" height="500" fill="url(#bg)" rx="12"/>
-  <rect width="750" height="500" fill="url(#glow)" rx="12"/>
-  <rect x="1.5" y="1.5" width="747" height="497" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1.5" rx="11"/>
 
-  <!-- Blossom Geometric Petals -->
-  <g transform="translate(375, 230)">
-    <g stroke="#E8956D" stroke-width="2" fill="none">
-      <ellipse cx="0" cy="-35" rx="20" ry="32"/>
-      <ellipse cx="30" cy="-17" rx="20" ry="32" transform="rotate(60 30 -17)"/>
-      <ellipse cx="30" cy="17" rx="20" ry="32" transform="rotate(120 30 17)"/>
-      <ellipse cx="0" cy="35" rx="20" ry="32" transform="rotate(180 0 35)"/>
-      <ellipse cx="-30" cy="17" rx="20" ry="32" transform="rotate(240 -30 17)"/>
-      <ellipse cx="-30" cy="-17" rx="20" ry="32" transform="rotate(300 -30 -17)"/>
+  <!-- Background Base -->
+  <rect width="750" height="500" fill="url(#peBg)" rx="16"/>
+  <rect x="150" y="80" width="450" height="300" fill="#C2410C" opacity="0.3" filter="url(#peBlur)"/>
+  <rect width="750" height="500" fill="url(#peGlow)" rx="16"/>
+
+  <!-- Outer Rim Highlight -->
+  <rect x="2" y="2" width="746" height="496" fill="none" stroke="rgba(232, 149, 109, 0.45)" stroke-width="2" rx="15"/>
+  <rect x="6" y="6" width="738" height="488" fill="none" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1" rx="12"/>
+
+  <!-- Window Header Bar -->
+  <rect x="16" y="16" width="718" height="38" fill="rgba(255, 255, 255, 0.04)" rx="8"/>
+  <circle cx="36" cy="35" r="5" fill="#EF4444"/>
+  <circle cx="52" cy="35" r="5" fill="#F59E0B"/>
+  <circle cx="68" cy="35" r="5" fill="#10B981"/>
+  <text x="92" y="39" font-family="'JetBrains Mono', monospace" font-size="12" fill="rgba(255, 255, 255, 0.6)" letter-spacing="1">petalnpins.com // live-production-store</text>
+  <rect x="580" y="26" width="140" height="18" fill="rgba(232, 149, 109, 0.25)" rx="4"/>
+  <text x="650" y="39" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#F2B49A" text-anchor="middle" letter-spacing="1">RAZORPAY VERIFIED</text>
+
+  <!-- E-Commerce Showcase Grid -->
+  <g transform="translate(45, 75)">
+    <!-- Product Card 1 -->
+    <g transform="translate(0, 0)">
+      <rect width="200" height="235" fill="rgba(44, 20, 10, 0.55)" rx="10" stroke="rgba(232, 149, 109, 0.3)" stroke-width="1"/>
+      <rect x="12" y="12" width="176" height="130" fill="rgba(232, 149, 109, 0.15)" rx="8"/>
+      <circle cx="100" cy="77" r="34" fill="none" stroke="#E8956D" stroke-width="2"/>
+      <text x="16" y="165" font-family="'Instrument Sans', sans-serif" font-size="14" font-weight="700" fill="#FFFFFF">Floral Velvet Clutches</text>
+      <text x="16" y="185" font-family="'JetBrains Mono', monospace" font-size="11" fill="rgba(255,255,255,0.6)">Silk Collection</text>
+      <text x="16" y="215" font-family="'JetBrains Mono', monospace" font-size="14" font-weight="800" fill="#F2B49A">₹899</text>
     </g>
-    <circle cx="0" cy="0" r="14" fill="#E8956D"/>
-    <circle cx="0" cy="0" r="6" fill="#F2B49A"/>
+
+    <!-- Product Card 2 -->
+    <g transform="translate(230, 0)">
+      <rect width="200" height="235" fill="rgba(44, 20, 10, 0.55)" rx="10" stroke="rgba(232, 149, 109, 0.3)" stroke-width="1"/>
+      <rect x="12" y="12" width="176" height="130" fill="rgba(232, 149, 109, 0.15)" rx="8"/>
+      <polygon points="100,50 125,105 75,105" fill="none" stroke="#E8956D" stroke-width="2"/>
+      <text x="16" y="165" font-family="'Instrument Sans', sans-serif" font-size="14" font-weight="700" fill="#FFFFFF">Botanical Hair Pins</text>
+      <text x="16" y="185" font-family="'JetBrains Mono', monospace" font-size="11" fill="rgba(255,255,255,0.6)">Gold Plated Set</text>
+      <text x="16" y="215" font-family="'JetBrains Mono', monospace" font-size="14" font-weight="800" fill="#F2B49A">₹1,249</text>
+    </g>
+
+    <!-- Product Card 3 -->
+    <g transform="translate(460, 0)">
+      <rect width="200" height="235" fill="rgba(44, 20, 10, 0.55)" rx="10" stroke="rgba(232, 149, 109, 0.3)" stroke-width="1"/>
+      <rect x="12" y="12" width="176" height="130" fill="rgba(232, 149, 109, 0.15)" rx="8"/>
+      <rect x="75" y="52" width="50" height="50" fill="none" stroke="#E8956D" stroke-width="2" rx="4" transform="rotate(45 100 77)"/>
+      <text x="16" y="165" font-family="'Instrument Sans', sans-serif" font-size="14" font-weight="700" fill="#FFFFFF">Pearl Scrunchie Duo</text>
+      <text x="16" y="185" font-family="'JetBrains Mono', monospace" font-size="11" fill="rgba(255,255,255,0.6)">Handcrafted</text>
+      <text x="16" y="215" font-family="'JetBrains Mono', monospace" font-size="14" font-weight="800" fill="#F2B49A">₹599</text>
+    </g>
   </g>
 
-  <!-- Minimal Project Title Overlay -->
-  <text x="40" y="445" font-family="'Instrument Sans', -apple-system, sans-serif" font-size="28" font-weight="700" fill="#FFFFFF" letter-spacing="1">PETAL N PINS</text>
-  <text x="40" y="470" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="500" fill="rgba(255,255,255,0.5)" letter-spacing="1.5">LIVE E-COMMERCE PLATFORM</text>
+  <!-- Project Caption Footer -->
+  <rect x="0" y="420" width="750" height="80" fill="rgba(8, 3, 1, 0.9)"/>
+  <line x1="0" y1="420" x2="750" y2="420" stroke="rgba(232, 149, 109, 0.25)" stroke-width="1"/>
+  <text x="40" y="462" font-family="'Syne', -apple-system, sans-serif" font-size="28" font-weight="800" fill="#FFFFFF" letter-spacing="0.5">PETAL N PINS</text>
+  <text x="40" y="484" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="500" fill="#F2B49A" letter-spacing="1.5">LIVE E-COMMERCE PLATFORM</text>
+  <text x="710" y="468" font-family="'JetBrains Mono', monospace" font-size="14" font-weight="700" fill="#E8956D" text-anchor="end" letter-spacing="1">EXPLORE ↗</text>
 </svg>

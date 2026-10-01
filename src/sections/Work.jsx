@@ -27,10 +27,6 @@ export default function Work() {
   const isWorkPage = location.pathname === '/work';
 
   const [activeSlide, setActiveSlide] = useState(SPIRAL_PROJECT_SLIDES[0]);
-  const [windowWidth, setWindowWidth] = useState(
-    typeof window !== 'undefined' ? window.innerWidth : 1200
-  );
-
   useEffect(() => {
     const unregister = registerSection('work', sectionRef);
     if (window.__pendingScroll === 'work' || window.__pendingScroll === 'projects') {
@@ -40,11 +36,8 @@ export default function Work() {
       }, 300);
     }
 
-    const handleResize = () => setWindowWidth(window.innerWidth);
-    window.addEventListener('resize', handleResize);
     return () => {
       unregister?.();
-      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
@@ -62,14 +55,6 @@ export default function Work() {
       setActiveSlide(slide);
     }
   }, []);
-
-  // Responsive Spiral Parameters
-  const isMobile = windowWidth < 640;
-  const isTablet = windowWidth >= 640 && windowWidth < 1024;
-
-  const spiralRadius = isMobile ? 165 : isTablet ? 200 : 235;
-  const verticalGap = isMobile ? 48 : isTablet ? 56 : 64;
-  const cardWidth = isMobile ? 185 : isTablet ? 220 : 255;
 
   // ── 1. DEDICATED /work PAGE (Componentry Spiral 3D Slider) ──
   if (isWorkPage) {
@@ -113,20 +98,11 @@ export default function Work() {
         <div className="w-full max-w-5xl mx-auto relative">
           <Spiral3DSlider
             items={SPIRAL_PROJECT_SLIDES}
-            radius={spiralRadius}
-            verticalGap={verticalGap}
-            cardWidth={cardWidth}
-            cardAspectRatio={1.5}
-            autoRotate={false}
+            autoRotate
             autoSpeed={0.13}
-            scrollSensitivity={0.0024}
-            smoothing={0.065}
-            blurStrength={1.65}
-            bend={0.17}
-            fov={44}
+            className="min-h-[720px]"
             onSelectSlide={handleSelectSlide}
             onActiveSlideChange={handleActiveSlideChange}
-            className="bg-black"
           />
 
           {/* Selected Project Title (subtle, below spiral) */}
