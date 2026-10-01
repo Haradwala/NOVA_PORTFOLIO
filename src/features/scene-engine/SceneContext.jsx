@@ -40,12 +40,13 @@ export function SceneProvider({ children }) {
   // Map of { sceneId → DOM element }
   const sectionRefs = useRef(new Map());
   const rafRef      = useRef(null);
+  const dirtyRef    = useRef(true);
 
   // ── Reduced-motion preference ──────────────────────────────────────────────
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
     setReducedMotion(mq.matches);
-    const handler = (e) => setReducedMotion(e.matches);
+    const handler = e => setReducedMotion(e.matches);
     mq.addEventListener('change', handler);
     return () => mq.removeEventListener('change', handler);
   }, []);
@@ -66,14 +67,14 @@ export function SceneProvider({ children }) {
 
   // ── RAF-based scroll progress ──────────────────────────────────────────────
   useEffect(() => {
-    let dirty = false;
-    const onScroll = () => { dirty = true; };
+    dirtyRef.current = true;
+    const onScroll = () => { dirtyRef.current = true; };
     window.addEventListener('scroll', onScroll, { passive: true });
 
     const tick = () => {
       rafRef.current = requestAnimationFrame(tick);
-      if (!dirty) return;
-      dirty = false;
+      if (!dirtyRef.current) return;
+      dirtyRef.current = false;
 
       const vh = window.innerHeight;
       const next = {};
@@ -83,8 +84,10 @@ export function SceneProvider({ children }) {
       sectionRefs.current.forEach((el, id) => {
         if (!el) return;
         const rect = el.getBoundingClientRect();
-        // progress = how far the section has scrolled through the viewport (0→1)
-        const raw = 1 - (rect.top / vh);
+        // Measure continuous progress from when section enters viewport to when it leaves
+        const totalDistance = Math.max(1, rect.height + vh);
+        const scrolled = vh - rect.top;
+        const raw = scrolled / totalDistance;
         next[id] = Math.max(0, Math.min(1, raw));
 
         // Active scene = section with most on-screen presence
@@ -101,6 +104,10 @@ export function SceneProvider({ children }) {
         return changed ? { ...prev, ...next } : prev;
       });
       setActiveScene(mostVisible);
+      if (typeof window !== 'undefined') {
+        window.__SCENE_ACTIVE = mostVisible;
+        window.__SCENE_PROGRESS = next;
+      }
     };
 
     rafRef.current = requestAnimationFrame(tick);
@@ -117,6 +124,7 @@ export function SceneProvider({ children }) {
     } else {
       sectionRefs.current.delete(id);
     }
+    dirtyRef.current = true;
   }, []);
 
   const value = {
@@ -135,3 +143,5 @@ export function useScene() {
   if (!ctx) throw new Error('useScene must be used inside <SceneProvider>');
   return ctx;
 }
+
+export { SceneCtx as SceneContext };

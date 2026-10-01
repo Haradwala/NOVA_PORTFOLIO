@@ -17,6 +17,7 @@
 }
 
 :root {
+  /* ── Original tokens ── */
   --bg: #07070F;
   --bg2: #0F0F18;
   --bg3: #14141F;
@@ -33,6 +34,16 @@
   --border: rgba(255, 255, 255, 0.06);
   --glow-rose: 0 0 60px rgba(232, 149, 109, 0.2);
   --glow-vio: 0 0 60px rgba(139, 92, 246, 0.2);
+
+  /* ── NOVA // ENTER THE SYSTEM additions ── */
+  --uv: #6D28D9;                          /* ultraviolet deep accent */
+  --chrome: rgba(200, 195, 255, 0.9);     /* chrome/glass surface color */
+  --grid: rgba(139, 92, 246, 0.055);      /* thin technical grid lines */
+  --glow-uv: 0 0 80px rgba(109, 40, 217, 0.35);
+  --glow-chrome: 0 0 40px rgba(200, 195, 255, 0.15);
+  --hud-border: rgba(139, 92, 246, 0.2);  /* HUD element borders */
+  --hud-bg: rgba(7, 7, 15, 0.7);          /* HUD panel backgrounds */
+  --mission-line: rgba(167, 139, 250, 0.35);
 }
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -229,4 +240,250 @@ button { cursor: pointer; font-family: 'DM Sans', sans-serif; }
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   NOVA // ENTER THE SYSTEM — New Keyframes & Utilities
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Boot Sequence ── */
+@keyframes bootBlink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+@keyframes systemBoot {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes bootFadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+/* ── HUD Flicker — used on status indicators ── */
+@keyframes hudFlicker {
+  0%   { opacity: 0.7; }
+  2%   { opacity: 1; }
+  4%   { opacity: 0.8; }
+  5%   { opacity: 1; }
+  100% { opacity: 1; }
+}
+
+/* ── Mission Card Reveal ── */
+@keyframes missionReveal {
+  from { opacity: 0; transform: translateX(-18px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ── Enter System — hero CTA trigger ── */
+@keyframes enterSystem {
+  0%   { box-shadow: 0 0 0 0 rgba(139,92,246,0.6); }
+  50%  { box-shadow: 0 0 0 24px rgba(139,92,246,0); }
+  100% { box-shadow: 0 0 0 0 rgba(139,92,246,0); }
+}
+
+/* ── Scanline drift ── */
+@keyframes scanlineMove {
+  from { background-position: 0 0; }
+  to   { background-position: 0 100vh; }
+}
+
+/* ── World panel active state ── */
+@keyframes worldActivate {
+  from { opacity: 0.5; transform: scale(0.98); }
+  to   { opacity: 1;   transform: scale(1); }
+}
+
+/* ── Archive item hover ── */
+@keyframes archiveItemIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ── Process step reveal ── */
+@keyframes processReveal {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ── Terminal cursor blink ── */
+@keyframes terminalBlink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+
+/* ── HUD Label — small uppercase mono status text ── */
+.hud-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(167, 139, 250, 0.7);
+}
+
+/* ── System Tag — HUD section identifier pill ── */
+.system-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.58rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(167, 139, 250, 0.55);
+  border: 1px solid rgba(139, 92, 246, 0.18);
+  padding: 0.3rem 0.75rem;
+  border-radius: 2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.system-tag::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--violet2);
+  box-shadow: 0 0 6px var(--violet2);
+  flex-shrink: 0;
+}
+
+/* ── Mission Number — large mono display number for project cards ── */
+.mission-number {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: rgba(139, 92, 246, 0.15);
+  line-height: 1;
+  user-select: none;
+}
+
+/* ── World Number — large mono display number for capability worlds ── */
+.world-number {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(3rem, 8vw, 7rem);
+  font-weight: 300;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  user-select: none;
+}
+
+/* ── Terminal Line — terminal-style mono line with blinking cursor ── */
+.terminal-line {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.terminal-line::before {
+  content: '>';
+  color: var(--violet2);
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+/* ── Display XL — editorial oversized headline ── */
+.display-xl {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(3.5rem, 9vw, 9rem);
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+}
+
+/* ── Display LG — large editorial heading ── */
+.display-lg {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2.2rem, 5.5vw, 5.5rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+}
+
+/* ── HUD Panel — glassmorphism panel for player profile / terminal ── */
+.hud-panel {
+  background: var(--hud-bg);
+  border: 1px solid var(--hud-border);
+  border-radius: 4px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* ── Stat Block — large HUD metric display ── */
+.stat-number {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  background: linear-gradient(135deg, var(--text) 20%, var(--violet2) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Tech Pill — small technology tag badge ── */
+.tech-pill {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.6rem;
+  border-radius: 2px;
+  border: 1px solid rgba(139, 92, 246, 0.18);
+  color: rgba(167, 139, 250, 0.7);
+  background: rgba(139, 92, 246, 0.06);
+  white-space: nowrap;
+}
+
+/* ── Boot cursor ── */
+.boot-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  background: var(--violet2);
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: bootBlink 0.9s step-end infinite;
+}
+
+/* ── Scanline overlay ── (decorative, pointer-events:none) */
+.scanline-overlay {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.03) 2px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+  z-index: 1;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Reduced-Motion Overrides
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .boot-cursor {
+    animation: none;
+    opacity: 1;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
 

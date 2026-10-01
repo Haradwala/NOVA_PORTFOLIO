@@ -1,15 +1,20 @@
 import { useState, useCallback, useEffect, useRef, lazy, Suspense } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Cursor from './components/Cursor';
-import Welcome from './components/Welcome';
+import BootSequence from './components/BootSequence';
 import Navbar from './components/Navbar';
 import CinematicUniverseCanvas from './features/scene-engine/CinematicUniverseCanvas';
 import { SceneProvider } from './features/scene-engine/SceneContext';
 import Hero from './sections/Hero';
+import Philosophy from './sections/Philosophy';
+import EngineeringCoreSection from './sections/EngineeringCoreSection';
 import About from './sections/About';
 import Capabilities from './sections/Capabilities';
 import Work from './sections/Work';
+import Process from './sections/Process';
+import Archive from './sections/Archive';
 import Contact from './sections/Contact';
+import DepthTransitionOverlay from './components/DepthTransitionOverlay';
 
 const ClientChat      = lazy(() => import('./pages/ClientChat.jsx'));
 const AdminDashboard  = lazy(() => import('./pages/AdminDashboard.jsx'));
@@ -95,26 +100,41 @@ function PageFade({ children }) {
   );
 }
 
-// ── Main portfolio shell (Hero + About + Work + Contact) ──────────────────────
-function PortfolioShell({ showWelcome, onWelcomeDone, novaTrigger, onAskNova }) {
+// ── Main portfolio shell (Hero + Philosophy + Work + Engineering Core + About + Contact) ─
+function PortfolioShell({ showBoot, onBootDone, novaTrigger, onAskNova, onEnterCore }) {
   return (
     <>
-      {showWelcome && <Welcome onDone={onWelcomeDone} />}
+      {/* Boot sequence — plays once per session before everything else */}
+      {showBoot && <BootSequence onDone={onBootDone} />}
       <PageFade>
         <Routes>
           <Route path="/" element={
             <>
-              <Hero novaPanelOpen={novaTrigger} onOpenNova={onAskNova} />
+              {/* 01 — IDENTITY */}
+              <Hero novaPanelOpen={novaTrigger} onOpenNova={onAskNova} onEnterCore={onEnterCore} />
+              {/* 02 — PHILOSOPHY */}
+              <Philosophy onEnterCore={onEnterCore} />
+              {/* 03 — SELECTED WORK */}
+              <Work />
+              {/* 04 — ENGINEERING CORE & 05 — SYSTEM DEEP DIVE */}
+              <EngineeringCoreSection />
+              {/* 06 — ABOUT & CAPABILITIES */}
               <About />
               <Capabilities />
-              <Work />
+              <Process />
+              <Archive />
+              {/* 07 — CONTACT */}
               <Contact />
             </>
           } />
           <Route path="/about"        element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><About /><Capabilities /></div>} />
           <Route path="/capabilities" element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Capabilities /></div>} />
           <Route path="/skills"       element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Capabilities /></div>} />
+          <Route path="/process"      element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Process /></div>} />
           <Route path="/work"         element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Work /></div>} />
+          <Route path="/systems"      element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><EngineeringCoreSection /></div>} />
+          <Route path="/engineering"  element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><EngineeringCoreSection /></div>} />
+          <Route path="/archive"      element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Archive /></div>} />
           <Route path="/contact"      element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Contact /></div>} />
         </Routes>
       </PageFade>
@@ -124,18 +144,24 @@ function PortfolioShell({ showWelcome, onWelcomeDone, novaTrigger, onAskNova }) 
 
 // ── App ───────────────────────────────────────────────────────────────────────
 export default function App() {
-  const [showWelcome, setShowWelcome] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get('nowelcome') === 'true' || params.get('skipWelcome') === 'true') return false;
-    }
+  // Boot sequence: show on first load, BootSequence handles sessionStorage internally
+  const [showBoot, setShowBoot] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('nowelcome') === 'true' || params.get('skipWelcome') === 'true') return false;
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return false;
+    const standalone = ['/chat', '/admin', '/world'];
+    if (standalone.includes(window.location.pathname)) return false;
     return true;
   });
   const [novaTrigger, setNovaTrigger] = useState(0);
+  const [isCoreOpen, setIsCoreOpen]   = useState(false);
   const location = useLocation();
 
-  const onWelcomeDone = useCallback(() => setShowWelcome(false), []);
+  const onBootDone    = useCallback(() => setShowBoot(false), []);
   const onAskNova     = useCallback(() => setNovaTrigger(n => n + 1), []);
+  const onEnterCore   = useCallback(() => setIsCoreOpen(true), []);
+  const onCloseCore   = useCallback(() => setIsCoreOpen(false), []);
 
   // Standalone routes that manage their own full-screen canvas / layout
   const isStandalone = ['/chat', '/admin', '/world'].includes(location.pathname);
@@ -154,7 +180,10 @@ export default function App() {
       <Cursor />
 
       {/* ── Navigation ─────────────────────────────────────────────────── */}
-      {!isStandalone && <Navbar />}
+      {!isStandalone && <Navbar onAskNova={onAskNova} onEnterCore={onEnterCore} />}
+
+      {/* ── Depth Transition Overlay (Engineering Core Layer) ──────────── */}
+      <DepthTransitionOverlay isOpen={isCoreOpen} onClose={onCloseCore} />
 
       <Suspense fallback={
         <div style={{
@@ -186,10 +215,11 @@ export default function App() {
           {/* ── Main portfolio (Phase 1+2 active) ────────────────────── */}
           <Route path="/*" element={
             <PortfolioShell
-              showWelcome={showWelcome}
-              onWelcomeDone={onWelcomeDone}
+              showBoot={showBoot}
+              onBootDone={onBootDone}
               novaTrigger={novaTrigger}
               onAskNova={onAskNova}
+              onEnterCore={onEnterCore}
             />
           } />
 

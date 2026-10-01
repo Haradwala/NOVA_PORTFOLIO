@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ProjectDeepDive, { CASE_STUDIES } from '../components/ProjectDeepDive';
 import { registerSection } from '../utils/sectionRegistry';
+import { LightningIcon, BlossomIcon, MonitorIcon } from '../components/LineIcons';
 
 
 // Project id maps to CASE_STUDIES keys in ProjectDeepDive
@@ -23,7 +24,9 @@ const PROJECTS = [
     bg: 'linear-gradient(135deg,#061a1a,#0a2e28)',
     preview: (
       <div style={{ textAlign:'center', zIndex:1, position:'relative' }}>
-        <div style={{ fontSize:'2.2rem', marginBottom:'.3rem' }}>⚡</div>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom:'.3rem' }}>
+          <LightningIcon size={36} color="#2DD4BF" />
+        </div>
         <div style={{ fontFamily:"'Syne',sans-serif", fontSize:'1.4rem', fontWeight:700, color:'#2DD4BF' }}>FORGE</div>
         <div style={{ fontSize:'.58rem', letterSpacing:'.16em', color:'rgba(45,212,191,.6)', textTransform:'uppercase' }}>Local-First AI Engine</div>
       </div>
@@ -36,7 +39,9 @@ const PROJECTS = [
     bg: 'linear-gradient(135deg,#1a1006,#35180a)',
     preview: (
       <div style={{ textAlign:'center', zIndex:1, position:'relative' }}>
-        <div style={{ fontSize:'2.2rem', marginBottom:'.3rem' }}>🌸</div>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom:'.3rem' }}>
+          <BlossomIcon size={36} color="#E8956D" />
+        </div>
         <div style={{ fontFamily:"'Syne',sans-serif", fontSize:'1.3rem', fontWeight:700, color:'#E8956D' }}>Petal n Pins</div>
         <div style={{ fontSize:'.58rem', letterSpacing:'.16em', color:'rgba(232,149,109,.6)', textTransform:'uppercase' }}>Live E-Commerce</div>
       </div>
@@ -55,7 +60,9 @@ const PROJECTS = [
     bg: 'linear-gradient(135deg,#0f0a20,#1a1035)',
     preview: (
       <div style={{ textAlign:'center', zIndex:1, position:'relative' }}>
-        <div style={{ fontSize:'1.8rem', marginBottom:'.3rem' }}>🖥️</div>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom:'.3rem' }}>
+          <MonitorIcon size={34} color="#A78BFA" />
+        </div>
         <div style={{ fontFamily:"'Syne',sans-serif", fontSize:'1.1rem', fontWeight:700, color:'#A78BFA' }}>NOVA Desktop</div>
         <div style={{ fontSize:'.58rem', letterSpacing:'.14em', color:'rgba(167,139,250,.5)', textTransform:'uppercase' }}>Automation & Vision</div>
       </div>
@@ -211,7 +218,13 @@ export default function Work() {
 
   return (
     <>
-      <section id="work" ref={sectionRef} className="work-section" style={{ position:'relative', zIndex:2, padding:'7rem 3.5rem', background:'transparent' }}>
+      <section
+        id="section-work"
+        data-section="work"
+        ref={sectionRef}
+        className="work-section"
+        style={{ position:'relative', zIndex:2, padding:'7rem 3.5rem', background:'transparent' }}
+      >
         <style>{`
           .work-grid {
             columns: 3;
@@ -238,15 +251,15 @@ export default function Work() {
         <div style={{ position:'relative', zIndex:1 }}>
           <div className="reveal" style={{ maxWidth:1100, margin:'0 auto 3rem', display:'flex', justifyContent:'space-between', alignItems:'flex-end', flexWrap:'wrap', gap:'1rem' }}>
             <div>
-              <div style={{ fontSize:'.6rem', letterSpacing:'.2em', textTransform:'uppercase', color:'var(--rose)', display:'flex', alignItems:'center', gap:'.7rem', marginBottom:'.7rem' }}>
-                <span style={{ display:'block', width:'1.2rem', height:1, background:'var(--rose)' }} />Selected Work
+              {/* Mission section header */}
+              <div style={{ marginBottom:'1rem' }}>
+                <span className="system-tag">SELECTED WORK</span>
               </div>
-              <h2 style={{ fontFamily:"'Syne',sans-serif", fontWeight:800, fontSize:'clamp(1.8rem,3.5vw,2.8rem)', color:'var(--text)', textShadow:'0 0 30px rgba(139,92,246,.3)' }}>
-                Projects that{' '}
-                <span style={{ background:'linear-gradient(90deg,var(--rose),var(--violet2))', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>define</span>
-                {' '}the craft
+              <h2 style={{ fontFamily:"'Syne',sans-serif", fontWeight:800, fontSize:'clamp(1.8rem,4vw,3.5rem)', lineHeight:1.0, letterSpacing:'-0.02em', color:'var(--text)', margin:0 }}>
+                SELECTED<br />
+                <span style={{ background:'linear-gradient(90deg,var(--violet2),var(--rose))', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>MISSIONS</span>
               </h2>
-              <p style={{ fontSize:'.7rem', color:'var(--muted)', marginTop:'.5rem', letterSpacing:'.04em' }}>Click any card to explore the full 3D case study ↗</p>
+              <p style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:'.58rem', color:'var(--muted)', marginTop:'.8rem', letterSpacing:'.12em', textTransform:'uppercase' }}>Click any mission to explore the full case study ↗</p>
             </div>
             <div style={{ display:'flex', gap:'.5rem', flexWrap:'wrap' }}>
               {filters.map(f => (

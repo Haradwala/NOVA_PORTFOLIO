@@ -1,6 +1,41 @@
+/**
+ * Capabilities.jsx — "Your Small World" Systems Section
+ *
+ * Implements the 3 technical systems matching the 3D planetary system:
+ *   1. AI & Cognitive Systems (Inner Neural Moon)
+ *   2. Full-Stack Engineering (Middle Modular Moon)
+ *   3. Interactive 3D & WebGL (Outer Crystalline Moon)
+ *
+ * Connected via two-way event synchronization to CapabilitiesLab.jsx:
+ *   Hovering or focusing a card highlights that moon and pulls it forward in 3D.
+ *   Zero native emojis: all replaced with bespoke accessible line-icon SVGs.
+ */
+
 import { useState, useEffect, useRef } from 'react';
 import { useScene } from '../features/scene-engine/SceneContext';
 import { registerSection, highlightSection } from '../utils/sectionRegistry';
+import {
+  BrainIcon,
+  GearIcon,
+  Cube3dIcon,
+  LightningIcon,
+  BotIcon,
+  CodeBracketIcon,
+  MessageSquareIcon,
+  RadioTowerIcon,
+  AtomIcon,
+  ServerIcon,
+  RocketIcon,
+  DatabaseIcon,
+  LeafIcon,
+  RefreshCwIcon,
+  PaletteIcon,
+  RulerIcon,
+  SparklesIcon,
+  OrbitIcon,
+  MusicIcon,
+  VideoCameraIcon,
+} from '../components/LineIcons';
 
 export default function Capabilities() {
   const sectionRef = useRef(null);
@@ -11,6 +46,16 @@ export default function Capabilities() {
     }
     return null;
   });
+
+  // Notify 3D Planetary Environment of card focus/hover
+  const notify3DFocus = (systemId) => {
+    setActiveSystem(systemId);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('capabilities-system-focus', {
+        detail: { systemId }
+      }));
+    }
+  };
 
   // 1. Register with Scene Engine for 3D Camera / Canvas tracking
   const { registerSection: registerSceneSection } = useScene();
@@ -66,7 +111,7 @@ export default function Capabilities() {
     };
   }, []);
 
-  // 3 distinct technical systems matching the 3D Systems Lab representations
+  // 3 distinct technical systems matching the 3D Planetary Environment
   const systems = [
     {
       id: 'ai-cognitive',
@@ -74,7 +119,7 @@ export default function Capabilities() {
       title: 'AI & Cognitive Systems',
       subtitle: 'Neural Orchestration & Autonomous Agent Pipelines',
       tagline: 'Local-first & cloud LLM pipelines with real-time audio and function execution.',
-      icon: '🧠',
+      icon: <BrainIcon size={22} color="#A78BFA" />,
       accentColor: '#8B5CF6',
       accentGlow: 'rgba(139, 92, 246, 0.25)',
       borderColor: 'rgba(139, 92, 246, 0.35)',
@@ -84,11 +129,11 @@ export default function Capabilities() {
         { label: 'Architecture', val: 'Local-First + Cloud' },
       ],
       techChips: [
-        { name: 'LLM Pipelines', icon: '⚡' },
-        { name: 'Agentic Systems', icon: '🤖' },
-        { name: 'Python & Automation', icon: '🐍' },
-        { name: 'Prompt Engineering', icon: '💬' },
-        { name: 'Hono / tRPC AI Routes', icon: '📡' },
+        { name: 'LLM Pipelines', icon: <LightningIcon size={12} color="#A78BFA" /> },
+        { name: 'Agentic Systems', icon: <BotIcon size={12} color="#A78BFA" /> },
+        { name: 'Python & Automation', icon: <CodeBracketIcon size={12} color="#A78BFA" /> },
+        { name: 'Prompt Engineering', icon: <MessageSquareIcon size={12} color="#A78BFA" /> },
+        { name: 'Hono / tRPC AI Routes', icon: <RadioTowerIcon size={12} color="#A78BFA" /> },
       ],
       affordanceText: 'View AI Systems In Action',
       affordanceTarget: '#projects',
@@ -99,7 +144,7 @@ export default function Capabilities() {
       title: 'Full-Stack Engineering',
       subtitle: 'Modular End-to-End Applications & Microservices',
       tagline: 'End-to-end type-safe architectures with fast edge handlers, serverless APIs, and secure payment verification.',
-      icon: '⚙️',
+      icon: <GearIcon size={22} color="#5EEAD4" />,
       accentColor: '#2DD4BF',
       accentGlow: 'rgba(45, 212, 191, 0.25)',
       borderColor: 'rgba(45, 212, 191, 0.35)',
@@ -109,13 +154,13 @@ export default function Capabilities() {
         { label: 'Deployments', val: 'Vercel / Edge Functions' },
       ],
       techChips: [
-        { name: 'React / Vite', icon: '⚛️' },
-        { name: 'Node.js', icon: '🟢' },
-        { name: 'Hono / tRPC', icon: '🚀' },
-        { name: 'Supabase', icon: '⚡' },
-        { name: 'MongoDB Atlas', icon: '🍃' },
-        { name: 'REST & WebSockets', icon: '🔄' },
-        { name: 'Tailwind CSS', icon: '🎨' },
+        { name: 'React / Vite', icon: <AtomIcon size={12} color="#2DD4BF" /> },
+        { name: 'Node.js', icon: <ServerIcon size={12} color="#2DD4BF" /> },
+        { name: 'Hono / tRPC', icon: <RocketIcon size={12} color="#2DD4BF" /> },
+        { name: 'Supabase', icon: <DatabaseIcon size={12} color="#2DD4BF" /> },
+        { name: 'MongoDB Atlas', icon: <LeafIcon size={12} color="#2DD4BF" /> },
+        { name: 'REST & WebSockets', icon: <RefreshCwIcon size={12} color="#2DD4BF" /> },
+        { name: 'Tailwind CSS', icon: <PaletteIcon size={12} color="#2DD4BF" /> },
       ],
       affordanceText: 'Inspect Platform Architecture',
       affordanceTarget: '#projects',
@@ -126,7 +171,7 @@ export default function Capabilities() {
       title: 'Interactive 3D & WebGL',
       subtitle: 'Real-Time Graphics, Spatial Environments & Custom Shaders',
       tagline: 'Cinematic browser viewports, GLSL shaders, camera lerp choreographies, and hardware-accelerated lattices.',
-      icon: '🌌',
+      icon: <Cube3dIcon size={22} color="#F2B49A" />,
       accentColor: '#E8956D',
       accentGlow: 'rgba(232, 149, 109, 0.25)',
       borderColor: 'rgba(232, 149, 109, 0.35)',
@@ -136,11 +181,11 @@ export default function Capabilities() {
         { label: 'Performance', val: 'Sub-millisecond Frames' },
       ],
       techChips: [
-        { name: 'Three.js / R3F', icon: '📐' },
-        { name: 'WebGL Shaders (GLSL)', icon: '✨' },
-        { name: 'Canvas 2D Physics', icon: '🪐' },
-        { name: 'Audio Reactive Visuals', icon: '🎵' },
-        { name: 'Viewport Projection', icon: '🎥' },
+        { name: 'Three.js / R3F', icon: <RulerIcon size={12} color="#E8956D" /> },
+        { name: 'WebGL Shaders (GLSL)', icon: <SparklesIcon size={12} color="#E8956D" /> },
+        { name: 'Canvas 2D Physics', icon: <OrbitIcon size={12} color="#E8956D" /> },
+        { name: 'Audio Reactive Visuals', icon: <MusicIcon size={12} color="#E8956D" /> },
+        { name: 'Viewport Projection', icon: <VideoCameraIcon size={12} color="#E8956D" /> },
       ],
       affordanceText: 'Examine WebGL Shaders',
       affordanceTarget: '#projects',
@@ -157,7 +202,7 @@ export default function Capabilities() {
         zIndex: 2,
         padding: '7rem 3.5rem',
         overflow: 'hidden',
-        background: 'transparent', // Let 3D Systems Lab show through
+        background: 'transparent', // Let 3D Planetary Environment show through
       }}
     >
       <style>{`
@@ -221,7 +266,7 @@ export default function Capabilities() {
         }
       `}</style>
 
-      {/* Subtle radial atmosphere (maintains contrast over technical 3D wireframes) */}
+      {/* Atmospheric radial gradient */}
       <div
         style={{
           position: 'absolute',
@@ -260,7 +305,7 @@ export default function Capabilities() {
               fontFamily: "'Syne', sans-serif",
               fontWeight: 700
             }}>
-              Systems Lab // Capabilities 02
+              Capabilities // Your Small World
             </span>
           </div>
 
@@ -284,7 +329,7 @@ export default function Capabilities() {
                 maxWidth: 680,
                 lineHeight: 1.6
               }}>
-                Three specialized technical tracks built with verified modern toolchains. Hover or focus any system to examine supporting technologies.
+                Three specialized technical tracks built with verified modern toolchains. Hover or focus any system to interact with its orbiting body.
               </p>
             </div>
 
@@ -295,7 +340,7 @@ export default function Capabilities() {
               color: 'var(--muted)',
               fontFamily: 'monospace'
             }}>
-              INTERACTIVE SYSTEMS LAB · 3 NODES
+              PLANETARY SYSTEM · 3 ORBITING BODIES
             </div>
           </div>
         </div>
@@ -319,10 +364,10 @@ export default function Capabilities() {
                     : '0 12px 32px rgba(0,0,0,0.35)',
                   borderColor: isHovered ? sys.borderColor : 'rgba(139, 92, 246, 0.16)',
                 }}
-                onMouseEnter={() => setActiveSystem(sys.id)}
-                onMouseLeave={() => setActiveSystem(null)}
-                onFocus={() => setActiveSystem(sys.id)}
-                onBlur={() => setActiveSystem(null)}
+                onMouseEnter={() => notify3DFocus(sys.id)}
+                onMouseLeave={() => notify3DFocus(null)}
+                onFocus={() => notify3DFocus(sys.id)}
+                onBlur={() => notify3DFocus(null)}
               >
                 {/* Ambient Top Glow Line */}
                 <div style={{
@@ -353,7 +398,6 @@ export default function Capabilities() {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontSize: '1.15rem',
                         transition: 'all 0.25s ease'
                       }}>
                         {sys.icon}
@@ -381,12 +425,12 @@ export default function Capabilities() {
                     </div>
 
                     <span style={{
-                      fontSize: '0.68rem',
-                      color: isHovered ? sys.accentColor : 'var(--muted)',
+                      display: 'flex',
+                      alignItems: 'center',
                       transform: isHovered ? 'scale(1.2)' : 'none',
                       transition: 'transform 0.2s ease, color 0.2s ease'
                     }}>
-                      ✦
+                      <SparklesIcon size={14} color={isHovered ? sys.accentColor : 'var(--muted)'} />
                     </span>
                   </div>
 
@@ -465,7 +509,7 @@ export default function Capabilities() {
                           style={{
                             display: 'inline-flex',
                             alignItems: 'center',
-                            gap: '0.35rem',
+                            gap: '0.4rem',
                             padding: '0.3rem 0.65rem',
                             borderRadius: 12,
                             background: isHovered ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.03)',
@@ -476,7 +520,7 @@ export default function Capabilities() {
                             fontWeight: 500
                           }}
                         >
-                          <span style={{ fontSize: '0.72rem' }}>{chip.icon}</span>
+                          <span>{chip.icon}</span>
                           <span>{chip.name}</span>
                         </span>
                       ))}

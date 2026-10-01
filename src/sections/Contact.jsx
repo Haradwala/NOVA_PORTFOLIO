@@ -1,3 +1,12 @@
+/**
+ * Contact.jsx — "Open Channel / Secure Terminal" Section
+ *
+ * NOVA // ENTER THE SYSTEM — Phase 9
+ *
+ * Terminal status panel + high-precision glass inquiry form.
+ * Preserves all form state, validation, submission feedback, and section registry.
+ */
+
 import { useState, useEffect, useRef } from 'react';
 import { registerSection } from '../utils/sectionRegistry';
 
@@ -27,7 +36,12 @@ export default function Contact() {
   useEffect(() => {
     const els = sectionRef.current?.querySelectorAll('.reveal') || [];
     const obs = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('vis');
+          obs.unobserve(e.target);
+        }
+      });
     }, { threshold: 0.1 });
     els.forEach(el => obs.observe(el));
     return () => obs.disconnect();
@@ -45,97 +59,383 @@ export default function Contact() {
 
   const inputStyle = {
     width: '100%',
-    padding: '.75rem 1rem',
+    padding: '.8rem 1.1rem',
     borderRadius: 12,
-    background: 'rgba(20, 14, 45, 0.65)',
-    border: '1px solid rgba(139,92,246,.25)',
+    background: 'rgba(15, 12, 35, 0.75)',
+    border: '1px solid rgba(139, 92, 246, 0.25)',
     color: 'var(--text)',
-    fontSize: '.82rem',
+    fontSize: '.85rem',
     fontFamily: 'inherit',
     outline: 'none',
     transition: 'border-color .2s, box-shadow .2s',
+    boxSizing: 'border-box',
   };
 
   const labelStyle = {
     display: 'block',
-    fontSize: '.58rem',
+    fontSize: '.62rem',
     letterSpacing: '.14em',
     textTransform: 'uppercase',
     color: 'var(--muted)',
-    marginBottom: '.35rem',
+    marginBottom: '.4rem',
     textAlign: 'left',
+    fontFamily: "'JetBrains Mono', monospace",
   };
 
   return (
     <>
       <section
-        id="contact"
+        id="section-contact"
+        data-section="contact"
         ref={sectionRef}
-        style={{ position: 'relative', zIndex: 2, padding: '7rem 3.5rem', textAlign: 'center', background: 'transparent' }}
+        style={{
+          position: 'relative',
+          zIndex: 2,
+          padding: '8rem 2rem 5rem',
+          maxWidth: '1280px',
+          margin: '0 auto',
+          boxSizing: 'border-box',
+        }}
       >
-        {/* Section overlay */}
-        <div style={{
-          position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none',
-          background: 'radial-gradient(ellipse 100% 100% at 50% 50%, rgba(7,7,15,.5) 0%, rgba(7,7,15,.75) 100%)',
-        }} />
+        <style>{`
+          .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.35fr;
+            gap: 2.5rem;
+            align-items: start;
+          }
+          @media (max-width: 900px) {
+            .contact-grid {
+              grid-template-columns: 1fr;
+              gap: 2rem;
+            }
+          }
+        `}</style>
 
-        <div style={{ maxWidth: 640, margin: '0 auto', position: 'relative', zIndex: 1 }}>
-          <div className="reveal" style={{
-            fontSize: '.6rem', letterSpacing: '.2em', textTransform: 'uppercase',
-            color: 'var(--rose)', display: 'flex', alignItems: 'center', gap: '.7rem',
-            justifyContent: 'center', marginBottom: '.7rem',
+        {/* Section Header */}
+        <div style={{ marginBottom: '3.5rem', textAlign: 'center' }}>
+          <div className="reveal system-tag" style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '.6rem',
+            marginBottom: '1rem',
+            padding: '4px 14px',
+            borderRadius: '999px',
+            border: '1px solid rgba(139,92,246,0.3)',
+            background: 'rgba(139,92,246,0.08)',
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: '0.62rem',
+            letterSpacing: '0.22em',
+            textTransform: 'uppercase',
+            color: 'var(--rose)',
           }}>
-            <span style={{ display: 'block', width: '1.2rem', height: 1, background: 'var(--rose)' }} />Project Inquiry
+            <span style={{
+              width: 6,
+              height: 6,
+              borderRadius: '50%',
+              background: '#4ADE80',
+              boxShadow: '0 0 8px #4ADE80',
+            }} />
+            OPEN CHANNEL // DIRECT COMM
           </div>
 
           <h2 className="reveal" style={{
-            fontFamily: "'Syne',sans-serif", fontWeight: 800,
-            fontSize: 'clamp(1.8rem,3.5vw,2.8rem)', color: 'var(--text)',
-            marginBottom: '2rem',
-            textShadow: '0 0 40px rgba(139,92,246,.3)',
+            fontFamily: "'Syne', sans-serif",
+            fontWeight: 800,
+            fontSize: 'clamp(2rem, 4.5vw, 3.4rem)',
+            color: 'var(--text)',
+            letterSpacing: '-0.02em',
+            margin: '0 0 1rem',
+            lineHeight: 1.15,
+            textShadow: '0 0 40px rgba(139,92,246,.25)',
           }}>
-            Let's build something{' '}
-            <span style={{ background: 'linear-gradient(90deg,var(--rose),var(--violet2))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-              remarkable
+            Initiate{' '}
+            <span style={{
+              background: 'linear-gradient(90deg, var(--rose), var(--violet2))',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}>
+              Connection
             </span>
           </h2>
 
-          {/* Glass inquiry form card */}
-          <div className="reveal" style={{
-            background: 'rgba(14,10,35,0.6)',
-            backdropFilter: 'blur(24px) saturate(160%)',
-            border: '1px solid rgba(139,92,246,.22)',
-            borderRadius: 24, padding: '2.5rem',
-            position: 'relative', overflow: 'hidden',
-            boxShadow: '0 32px 80px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.05)',
+          <p className="reveal" style={{
+            fontSize: '0.9rem',
+            color: 'var(--textd)',
+            maxWidth: 560,
+            margin: '0 auto',
+            lineHeight: 1.6,
           }}>
-            <div style={{ position: 'absolute', inset: -1, borderRadius: 24, background: 'linear-gradient(135deg,rgba(232,149,109,.08),rgba(139,92,246,.08))', zIndex: -1 }} />
+            Whether you need autonomous AI agents, high-performance web systems, or immersive 3D interfaces, direct communication is open.
+          </p>
+        </div>
 
+        {/* Two-Column Grid: Terminal HUD + Form */}
+        <div className="contact-grid">
+          {/* Left Column: Terminal Diagnostics & Info */}
+          <div className="reveal" style={{
+            background: 'rgba(12, 10, 28, 0.7)',
+            backdropFilter: 'blur(24px) saturate(160%)',
+            border: '1px solid rgba(139, 92, 246, 0.2)',
+            borderRadius: 20,
+            padding: '2rem',
+            position: 'relative',
+            overflow: 'hidden',
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              paddingBottom: '1.2rem',
+              marginBottom: '1.5rem',
+              borderBottom: '1px solid rgba(139, 92, 246, 0.15)',
+            }}>
+              <div style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: '0.68rem',
+                letterSpacing: '0.15em',
+                color: 'var(--violet2)',
+                textTransform: 'uppercase',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+              }}>
+                <span style={{ color: 'var(--rose)' }}>●</span> COMM STATUS
+              </div>
+              <span style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: '0.58rem',
+                color: '#4ADE80',
+                background: 'rgba(74, 222, 128, 0.1)',
+                padding: '2px 8px',
+                borderRadius: 4,
+                border: '1px solid rgba(74, 222, 128, 0.25)',
+              }}>
+                CHANNELS ACTIVE
+              </span>
+            </div>
+
+            {/* Diagnostics Specs */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '0.7rem', color: 'var(--muted)' }}>
+                  SYSTEM AVAILABILITY
+                </span>
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '0.72rem', color: '#4ADE80', fontWeight: 600 }}>
+                  OPEN FOR Q2/Q3
+                </span>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '0.7rem', color: 'var(--muted)' }}>
+                  ESTIMATED RESPONSE
+                </span>
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '0.72rem', color: 'var(--text)' }}>
+                  &lt; 24 HOURS
+                </span>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '0.7rem', color: 'var(--muted)' }}>
+                  PRIMARY TIMEZONE
+                </span>
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '0.72rem', color: 'var(--text)' }}>
+                  IST (UTC+05:30)
+                </span>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '0.7rem', color: 'var(--muted)' }}>
+                  LOCATION
+                </span>
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '0.72rem', color: 'var(--violet2)' }}>
+                  AHMEDABAD, INDIA
+                </span>
+              </div>
+            </div>
+
+            {/* Direct Channels */}
+            <div style={{
+              borderTop: '1px solid rgba(139, 92, 246, 0.15)',
+              paddingTop: '1.5rem',
+            }}>
+              <div style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: '0.62rem',
+                letterSpacing: '0.14em',
+                color: 'var(--muted)',
+                textTransform: 'uppercase',
+                marginBottom: '1rem',
+              }}>
+                DIRECT CHANNELS
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                <a
+                  href="mailto:shadabharadwala@gmail.com"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '0.75rem 1rem',
+                    borderRadius: 10,
+                    background: 'rgba(139,92,246,0.06)',
+                    border: '1px solid rgba(139,92,246,0.18)',
+                    color: 'var(--text)',
+                    textDecoration: 'none',
+                    fontSize: '0.8rem',
+                    transition: 'all 0.2s',
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.borderColor = 'rgba(232,149,109,0.5)';
+                    e.currentTarget.style.background = 'rgba(232,149,109,0.1)';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.borderColor = 'rgba(139,92,246,0.18)';
+                    e.currentTarget.style.background = 'rgba(139,92,246,0.06)';
+                  }}
+                >
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                    <span style={{ color: 'var(--rose)' }}>✉</span> Email
+                  </span>
+                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '0.7rem', color: 'var(--muted)' }}>
+                    shadabharadwala@gmail.com
+                  </span>
+                </a>
+
+                <a
+                  href="https://github.com/Shadab-Haradwala"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '0.75rem 1rem',
+                    borderRadius: 10,
+                    background: 'rgba(139,92,246,0.06)',
+                    border: '1px solid rgba(139,92,246,0.18)',
+                    color: 'var(--text)',
+                    textDecoration: 'none',
+                    fontSize: '0.8rem',
+                    transition: 'all 0.2s',
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.borderColor = 'rgba(167,139,250,0.5)';
+                    e.currentTarget.style.background = 'rgba(167,139,250,0.1)';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.borderColor = 'rgba(139,92,246,0.18)';
+                    e.currentTarget.style.background = 'rgba(139,92,246,0.06)';
+                  }}
+                >
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                    <span style={{ color: 'var(--violet2)' }}>⚡</span> GitHub
+                  </span>
+                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '0.7rem', color: 'var(--muted)' }}>
+                    @Shadab-Haradwala
+                  </span>
+                </a>
+
+                <a
+                  href="https://linkedin.com/in/shadab-haradwala"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '0.75rem 1rem',
+                    borderRadius: 10,
+                    background: 'rgba(139,92,246,0.06)',
+                    border: '1px solid rgba(139,92,246,0.18)',
+                    color: 'var(--text)',
+                    textDecoration: 'none',
+                    fontSize: '0.8rem',
+                    transition: 'all 0.2s',
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.borderColor = 'rgba(45,212,191,0.5)';
+                    e.currentTarget.style.background = 'rgba(45,212,191,0.1)';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.borderColor = 'rgba(139,92,246,0.18)';
+                    e.currentTarget.style.background = 'rgba(139,92,246,0.06)';
+                  }}
+                >
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                    <span style={{ color: 'var(--teal)' }}>◈</span> LinkedIn
+                  </span>
+                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '0.7rem', color: 'var(--muted)' }}>
+                    shadab-haradwala
+                  </span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Glass Inquiry Form */}
+          <div className="reveal" style={{
+            background: 'rgba(14, 10, 35, 0.65)',
+            backdropFilter: 'blur(24px) saturate(160%)',
+            border: '1px solid rgba(139, 92, 246, 0.25)',
+            borderRadius: 24,
+            padding: '2.5rem',
+            position: 'relative',
+            boxShadow: '0 32px 80px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.05)',
+          }}>
             {submitted ? (
-              <div style={{ padding: '2rem 1rem', textAlign: 'center' }}>
-                <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>✦</div>
-                <div style={{ fontFamily: "'Syne',sans-serif", fontSize: '1.4rem', fontWeight: 700, color: 'var(--rose2)', marginBottom: '.5rem' }}>
-                  Inquiry Transmitted
+              <div style={{ padding: '3rem 1rem', textAlign: 'center' }}>
+                <div style={{
+                  fontSize: '3rem',
+                  marginBottom: '1rem',
+                  color: 'var(--rose)',
+                  filter: 'drop-shadow(0 0 16px rgba(232,149,109,0.5))',
+                }}>✦</div>
+                <div style={{
+                  fontFamily: "'Syne', sans-serif",
+                  fontSize: '1.6rem',
+                  fontWeight: 800,
+                  color: 'var(--text)',
+                  marginBottom: '.6rem',
+                }}>
+                  Transmission Received
                 </div>
-                <p style={{ fontSize: '.84rem', color: 'var(--textd)', lineHeight: 1.8, maxWidth: 420, margin: '0 auto 1.5rem' }}>
-                  Thank you for reaching out. Shadab will personally review your project scope and follow up directly.
+                <p style={{
+                  fontSize: '.88rem',
+                  color: 'var(--textd)',
+                  lineHeight: 1.8,
+                  maxWidth: 440,
+                  margin: '0 auto 1.8rem',
+                }}>
+                  Your message has been encrypted and logged to the central dispatch queue. Shadab will personally analyze your project scope and respond within 24 hours.
                 </p>
                 <button
                   type="button"
-                  onClick={() => { setSubmitted(false); setFormData({ name: '', email: '', projectType: 'Full-Stack Web', budget: '$1,000 – $3,000', message: '' }); }}
+                  onClick={() => {
+                    setSubmitted(false);
+                    setFormData({ name: '', email: '', projectType: 'Full-Stack Web', budget: '$1,000 – $3,000', message: '' });
+                  }}
                   style={{
-                    padding: '.65rem 1.6rem', borderRadius: 50,
-                    background: 'rgba(139,92,246,.15)', border: '1px solid rgba(139,92,246,.3)',
-                    color: 'var(--rose)', fontSize: '.68rem', letterSpacing: '.12em',
-                    textTransform: 'uppercase', cursor: 'pointer', transition: 'all .2s',
+                    padding: '.75rem 1.8rem',
+                    borderRadius: 50,
+                    background: 'rgba(139,92,246,.15)',
+                    border: '1px solid rgba(139,92,246,.35)',
+                    color: 'var(--rose)',
+                    fontSize: '.72rem',
+                    letterSpacing: '.14em',
+                    textTransform: 'uppercase',
+                    cursor: 'pointer',
+                    transition: 'all .2s',
                   }}
                 >
-                  Submit Another Inquiry
+                  Send Another Transmission
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.2rem' }}>
                   <div>
                     <label htmlFor="inquiry-name" style={labelStyle}>Your Name *</label>
                     <input
@@ -162,23 +462,23 @@ export default function Contact() {
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.2rem' }}>
                   <div>
-                    <label htmlFor="inquiry-type" style={labelStyle}>Project Type</label>
+                    <label htmlFor="inquiry-type" style={labelStyle}>Project Scope</label>
                     <select
                       id="inquiry-type"
                       value={formData.projectType}
                       onChange={e => setFormData({ ...formData, projectType: e.target.value })}
                       style={{ ...inputStyle, cursor: 'pointer' }}
                     >
-                      <option value="Full-Stack Web" style={{ background: '#0e0a23', color: '#fff' }}>Full-Stack Web</option>
-                      <option value="AI Integration" style={{ background: '#0e0a23', color: '#fff' }}>AI Integration</option>
-                      <option value="3D / WebGL" style={{ background: '#0e0a23', color: '#fff' }}>3D / WebGL</option>
-                      <option value="Other" style={{ background: '#0e0a23', color: '#fff' }}>Other</option>
+                      <option value="Full-Stack Web" style={{ background: '#0e0a23', color: '#fff' }}>Full-Stack Web Application</option>
+                      <option value="AI Integration" style={{ background: '#0e0a23', color: '#fff' }}>Autonomous AI / LLM Pipeline</option>
+                      <option value="3D / WebGL" style={{ background: '#0e0a23', color: '#fff' }}>3D / WebGL Interactive System</option>
+                      <option value="Other" style={{ background: '#0e0a23', color: '#fff' }}>Custom Architecture / Other</option>
                     </select>
                   </div>
                   <div>
-                    <label htmlFor="inquiry-budget" style={labelStyle}>Budget Range</label>
+                    <label htmlFor="inquiry-budget" style={labelStyle}>Budget Allocation</label>
                     <select
                       id="inquiry-budget"
                       value={formData.budget}
@@ -194,12 +494,12 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <label htmlFor="inquiry-message" style={labelStyle}>Message / Project Overview *</label>
+                  <label htmlFor="inquiry-message" style={labelStyle}>Mission Directives / Brief *</label>
                   <textarea
                     id="inquiry-message"
                     required
                     rows={4}
-                    placeholder="Tell me about what you are building, timeline, and goals..."
+                    placeholder="Briefly describe project requirements, deliverables, timeline goals..."
                     value={formData.message}
                     onChange={e => setFormData({ ...formData, message: e.target.value })}
                     style={{ ...inputStyle, resize: 'vertical' }}
@@ -211,22 +511,23 @@ export default function Contact() {
                   disabled={isSubmitting}
                   style={{
                     marginTop: '.5rem',
-                    padding: '.85rem 2.2rem',
+                    padding: '.9rem 2.2rem',
                     borderRadius: 50,
-                    background: 'linear-gradient(135deg,var(--rose),var(--violet))',
+                    background: 'linear-gradient(135deg, var(--rose), var(--violet))',
                     color: '#fff',
-                    fontSize: '.72rem',
-                    fontWeight: 600,
-                    letterSpacing: '.14em',
+                    fontSize: '.75rem',
+                    fontWeight: 700,
+                    letterSpacing: '.16em',
                     textTransform: 'uppercase',
                     border: 'none',
                     cursor: isSubmitting ? 'wait' : 'pointer',
                     boxShadow: '0 8px 32px rgba(232,149,109,.35)',
                     transition: 'transform .2s, box-shadow .2s',
                     opacity: isSubmitting ? 0.7 : 1,
+                    fontFamily: "'Syne', sans-serif",
                   }}
                 >
-                  {isSubmitting ? 'Transmitting...' : 'Send Inquiry ✦'}
+                  {isSubmitting ? 'TRANSMITTING DIRECTIVE...' : 'TRANSMIT DIRECTIVE ✦'}
                 </button>
               </form>
             )}
@@ -234,18 +535,54 @@ export default function Contact() {
         </div>
       </section>
 
-      {/* Footer */}
+      {/* Futuristic HUD Footer */}
       <footer style={{
-        position: 'relative', zIndex: 2,
-        padding: '1.4rem 3.5rem',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        flexWrap: 'wrap', gap: '1rem',
-        background: 'rgba(7,7,15,0.7)',
-        backdropFilter: 'blur(12px)',
-        borderTop: '1px solid rgba(139,92,246,.12)',
+        position: 'relative',
+        zIndex: 2,
+        padding: '2rem 3.5rem',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        gap: '1.5rem',
+        background: 'rgba(7, 7, 15, 0.85)',
+        backdropFilter: 'blur(16px)',
+        borderTop: '1px solid rgba(139, 92, 246, 0.15)',
       }}>
-        <span style={{ fontSize: '.62rem', color: 'var(--muted)', letterSpacing: '.06em' }}>© 2026 Shadab Haradwala — AI Developer & Designer</span>
-        <span style={{ fontSize: '.62rem', color: 'var(--muted)', letterSpacing: '.06em' }}>Powered by NOVA ✦ Ahmedabad, India</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <span style={{
+            fontFamily: "'Syne', sans-serif",
+            fontWeight: 800,
+            fontSize: '0.95rem',
+            color: 'var(--text)',
+            letterSpacing: '0.04em',
+          }}>
+            SHADAB<span style={{ color: 'var(--rose)' }}>.</span>
+          </span>
+          <span style={{
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: '.62rem',
+            color: 'var(--muted)',
+            letterSpacing: '.06em',
+          }}>
+            © 2026 SHADAB HARADWALA // AI SYSTEMS ARCHITECT
+          </span>
+        </div>
+
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '1.5rem',
+          fontFamily: "'JetBrains Mono', monospace",
+          fontSize: '.62rem',
+          color: 'var(--muted)',
+        }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '.4rem' }}>
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#4ADE80' }} />
+            SYSTEM CORE: ONLINE
+          </span>
+          <span>AHMEDABAD, INDIA</span>
+        </div>
       </footer>
     </>
   );

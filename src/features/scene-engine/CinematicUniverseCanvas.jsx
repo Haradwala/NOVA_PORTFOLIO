@@ -121,13 +121,21 @@ export default function CinematicUniverseCanvas() {
         <CameraController reducedMotion={reducedMotion} />
 
         {/* Scene environments */}
-        {(activeScene === 'arrival' || activeScene === undefined) && (
+        {!window?.location?.search?.includes('debugNode=true') && (
+          activeScene === 'arrival' ||
+          activeScene === 'missions' ||
+          activeScene === 'work' ||
+          activeScene === 'archive' ||
+          activeScene === 'process' ||
+          activeScene === 'contact' ||
+          activeScene === undefined
+        ) && (
           <ArrivalObservatory
             qualityTier={qualityTier}
             reducedMotion={reducedMotion}
           />
         )}
-        {activeScene === 'identity' && (
+        {(activeScene === 'identity' || (typeof window !== 'undefined' && window.location.search.includes('debugNode=true'))) && (
           <IdentityChamber
             qualityTier={qualityTier}
             reducedMotion={reducedMotion}
