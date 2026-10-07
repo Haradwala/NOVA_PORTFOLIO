@@ -24,7 +24,7 @@ export default function Navbar({ onAskNova }) {
     if (pathname !== '/') return;
 
     const handleScroll = () => {
-      const sections = ['work', 'about', 'contact'];
+      const sections = ['about', 'work', 'contact'];
       const scrollY = window.scrollY + 250;
 
       for (let i = sections.length - 1; i >= 0; i--) {
@@ -44,10 +44,6 @@ export default function Navbar({ onAskNova }) {
 
   const handleNavClick = (item) => {
     setMenuOpen(false);
-    if (item.path && item.sectionId === 'work') {
-      warpTo('/work');
-      return;
-    }
     if (pathname === '/') {
       const scrolled = scrollToSection(item.sectionId);
       if (!scrolled) {

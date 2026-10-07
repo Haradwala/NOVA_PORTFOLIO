@@ -57,21 +57,21 @@ export default function About() {
 
   // 2. Register with DOM Section Registry for backward-compatible scroll & highlight
   useEffect(() => {
-    const unregisterAbout = registerSection('about', sectionRef);
+    const unregisterIdentity = registerSection('identity', sectionRef);
 
-    if (window.__pendingScroll === 'about') {
+    if (window.__pendingScroll === 'identity') {
       window.__pendingScroll = null;
       setTimeout(() => {
         sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        if (window.__pendingHighlight === 'about') {
+        if (window.__pendingHighlight === 'identity') {
           window.__pendingHighlight = null;
-          highlightSection('about');
+          highlightSection('identity');
         }
       }, 350);
     }
 
     return () => {
-      unregisterAbout();
+      unregisterIdentity();
     };
   }, []);
 
@@ -258,7 +258,8 @@ export default function About() {
 
   return (
     <section
-      id="about"
+      id="identity"
+      data-section="identity"
       ref={sectionRef}
       className="identity-constellation-section"
       style={{

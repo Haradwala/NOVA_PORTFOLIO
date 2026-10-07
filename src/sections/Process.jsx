@@ -87,7 +87,7 @@ export default function Process() {
     <section
       ref={sectionRef}
       data-section="process"
-      id="section-process"
+      id="process"
       style={{
         position: 'relative',
         padding: 'clamp(5rem, 10vh, 9rem) clamp(1.5rem, 6vw, 7rem)',

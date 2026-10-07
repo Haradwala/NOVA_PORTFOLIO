@@ -155,7 +155,7 @@ export default function Archive() {
     <section
       ref={sectionRef}
       data-section="archive"
-      id="section-archive"
+      id="archive"
       style={{
         position: 'relative',
         padding: 'clamp(5rem, 10vh, 9rem) clamp(1.5rem, 6vw, 7rem)',

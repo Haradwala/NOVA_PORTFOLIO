@@ -1,84 +1,124 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="750" height="500" viewBox="0 0 750 500">
   <defs>
-    <linearGradient id="trBg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#241405"/>
-      <stop offset="50%" stop-color="#120a02"/>
-      <stop offset="100%" stop-color="#050301"/>
+    <!-- Card Surface Gradient -->
+    <linearGradient id="cardSurface" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#222330"/>
+      <stop offset="100%" stop-color="#181822"/>
     </linearGradient>
-    <radialGradient id="trGlow" cx="50%" cy="40%" r="55%">
-      <stop offset="0%" stop-color="#F59E0B" stop-opacity="0.45"/>
-      <stop offset="50%" stop-color="#D97706" stop-opacity="0.15"/>
-      <stop offset="100%" stop-color="#120a02" stop-opacity="0"/>
+
+    <!-- Visual Area Viewport Gradient -->
+    <linearGradient id="visualBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#241a12"/>
+      <stop offset="60%" stop-color="#1c140d"/>
+      <stop offset="100%" stop-color="#140f09"/>
+    </linearGradient>
+
+    <!-- Ambient Amber Glow -->
+    <radialGradient id="tradingGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#F59E0B" stop-opacity="0.26"/>
+      <stop offset="60%" stop-color="#D97706" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#D97706" stop-opacity="0"/>
     </radialGradient>
-    <filter id="trBlur" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="30"/>
-    </filter>
+
+    <!-- Area Wave Fill -->
+    <linearGradient id="waveFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F59E0B" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#F59E0B" stop-opacity="0.01"/>
+    </linearGradient>
   </defs>
 
-  <!-- Background Base -->
-  <rect width="750" height="500" fill="url(#trBg)" rx="16"/>
-  <rect x="150" y="80" width="450" height="300" fill="#D97706" opacity="0.3" filter="url(#trBlur)"/>
-  <rect width="750" height="500" fill="url(#trGlow)" rx="16"/>
+  <!-- ── 1. Base Card Surface ── -->
+  <rect width="750" height="500" rx="16" fill="url(#cardSurface)"/>
+  <rect width="750" height="500" rx="16" fill="none" stroke="rgba(255, 255, 255, 0.16)" stroke-width="1.5"/>
 
-  <!-- Outer Rim Highlight -->
-  <rect x="2" y="2" width="746" height="496" fill="none" stroke="rgba(245, 158, 11, 0.45)" stroke-width="2" rx="15"/>
-  <rect x="6" y="6" width="738" height="488" fill="none" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1" rx="12"/>
+  <!-- ── 2. Upper Project Visual Area (~68% of card height) ── -->
+  <g transform="translate(20, 20)">
+    <!-- Visual Canvas Background -->
+    <rect width="710" height="315" rx="10" fill="url(#visualBg)"/>
+    <rect width="710" height="315" rx="10" fill="url(#tradingGlow)"/>
+    <rect width="710" height="315" rx="10" fill="none" stroke="rgba(245, 158, 11, 0.22)" stroke-width="1"/>
 
-  <!-- Window Header Bar -->
-  <rect x="16" y="16" width="718" height="38" fill="rgba(255, 255, 255, 0.04)" rx="8"/>
-  <circle cx="36" cy="35" r="5" fill="#EF4444"/>
-  <circle cx="52" cy="35" r="5" fill="#F59E0B"/>
-  <circle cx="68" cy="35" r="5" fill="#10B981"/>
-  <text x="92" y="39" font-family="'JetBrains Mono', monospace" font-size="12" fill="rgba(255, 255, 255, 0.6)" letter-spacing="1">trading-engine // ccxt-async-regime.py</text>
-  <rect x="590" y="26" width="130" height="18" fill="rgba(245, 158, 11, 0.25)" rx="4"/>
-  <text x="655" y="39" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#FCD34D" text-anchor="middle" letter-spacing="1">REGIME: BREAKOUT</text>
+    <!-- Subtle Technical Trading Grid -->
+    <g stroke="rgba(245, 158, 11, 0.07)" stroke-width="1">
+      <line x1="0" y1="75" x2="710" y2="75"/>
+      <line x1="0" y1="150" x2="710" y2="150"/>
+      <line x1="0" y1="225" x2="710" y2="225"/>
+      <line x1="140" y1="0" x2="140" y2="315"/>
+      <line x1="280" y1="0" x2="280" y2="315"/>
+      <line x1="420" y1="0" x2="420" y2="315"/>
+      <line x1="560" y1="0" x2="560" y2="315"/>
+    </g>
 
-  <!-- Center Artwork: Market Series Chart & Candlesticks -->
-  <g transform="translate(100, 100)">
-    <!-- Grid lines -->
-    <line x1="0" y1="50" x2="550" y2="50" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
-    <line x1="0" y1="110" x2="550" y2="110" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
-    <line x1="0" y1="170" x2="550" y2="170" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+    <!-- Visual Graphic: Quantitative Market Wave & Volatility Envelopes -->
+    <g transform="translate(45, 60)">
+      <!-- Upper Volatility Band (+2 Sigma) -->
+      <path d="M 0 65 Q 90 20, 180 50 T 360 40 T 540 25 T 620 35" fill="none" stroke="rgba(245, 158, 11, 0.3)" stroke-width="1" stroke-dasharray="4 4"/>
 
-    <!-- Candlestick cluster -->
-    <line x1="80" y1="130" x2="80" y2="180" stroke="#10B981" stroke-width="1.5"/>
-    <rect x="74" y="140" width="12" height="30" fill="#10B981" rx="1"/>
+      <!-- Lower Volatility Band (-2 Sigma) -->
+      <path d="M 0 175 Q 90 145, 180 160 T 360 170 T 540 140 T 620 155" fill="none" stroke="rgba(245, 158, 11, 0.25)" stroke-width="1" stroke-dasharray="4 4"/>
 
-    <line x1="130" y1="110" x2="130" y2="170" stroke="#EF4444" stroke-width="1.5"/>
-    <rect x="124" y="120" width="12" height="35" fill="#EF4444" rx="1"/>
+      <!-- Wave Shaded Area -->
+      <path d="M 0 120 Q 90 70, 180 110 T 360 90 T 540 70 T 620 85 L 620 210 L 0 210 Z" fill="url(#waveFill)"/>
 
-    <line x1="180" y1="80" x2="180" y2="150" stroke="#10B981" stroke-width="1.5"/>
-    <rect x="174" y="90" width="12" height="40" fill="#10B981" rx="1"/>
+      <!-- Main Algorithmic Price Trend Wave -->
+      <path d="M 0 120 Q 90 70, 180 110 T 360 90 T 540 70 T 620 85" fill="none" stroke="#F59E0B" stroke-width="2.2"/>
 
-    <line x1="230" y1="60" x2="230" y2="130" stroke="#10B981" stroke-width="1.5"/>
-    <rect x="224" y="70" width="12" height="45" fill="#10B981" rx="1"/>
+      <!-- Quantitative Signal Nodes & Threshold Markers -->
+      <g>
+        <!-- Signal 1: Regime Shift Entry -->
+        <circle cx="180" cy="110" r="5" fill="#FBBF24"/>
+        <circle cx="180" cy="110" r="9" fill="none" stroke="#FBBF24" stroke-width="1" opacity="0.6"/>
+        <line x1="180" y1="110" x2="180" y2="60" stroke="#FBBF24" stroke-width="1" stroke-dasharray="2 3"/>
+        <rect x="150" y="44" width="60" height="15" rx="3" fill="rgba(245, 158, 11, 0.25)"/>
+        <text x="180" y="55" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8.5" fill="#FDE68A">REGIME α</text>
 
-    <line x1="280" y1="40" x2="280" y2="110" stroke="#EF4444" stroke-width="1.5"/>
-    <rect x="274" y="50" width="12" height="30" fill="#EF4444" rx="1"/>
+        <!-- Signal 2: Mean Reversion Lock -->
+        <circle cx="360" cy="90" r="4.5" fill="#F59E0B"/>
+        <line x1="360" y1="90" x2="360" y2="140" stroke="#F59E0B" stroke-width="1" stroke-dasharray="2 3"/>
+        <rect x="330" y="142" width="60" height="15" rx="3" fill="rgba(245, 158, 11, 0.2)"/>
+        <text x="360" y="153" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8.5" fill="#FDE68A">RISK CAP</text>
 
-    <!-- Moving Average / Quantitative Curve -->
-    <path d="M0 160 Q100 140 200 90 T400 40 T550 20" fill="none" stroke="#F59E0B" stroke-width="3"/>
-    <circle cx="550" cy="20" r="6" fill="#FCD34D"/>
+        <!-- Signal 3: Execution Target -->
+        <circle cx="540" cy="70" r="5.5" fill="#10B981"/>
+        <circle cx="540" cy="70" r="10" fill="none" stroke="#10B981" stroke-width="1" opacity="0.6"/>
+        <rect x="510" y="32" width="60" height="15" rx="3" fill="rgba(16, 185, 129, 0.25)"/>
+        <text x="540" y="43" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8.5" fill="#A7F3D0">FILL 99.8%</text>
+      </g>
+    </g>
+
+    <!-- Header Status Badges -->
+    <g transform="translate(24, 24)">
+      <rect width="138" height="22" rx="4" fill="rgba(28, 20, 13, 0.8)" stroke="rgba(245, 158, 11, 0.35)" stroke-width="1"/>
+      <circle cx="12" cy="11" r="3" fill="#F59E0B"/>
+      <text x="22" y="15" font-family="'JetBrains Mono', monospace" font-size="9" fill="#FEF3C7" letter-spacing="1">CCXT SIMULATION</text>
+    </g>
+
+    <g transform="translate(565, 24)">
+      <rect width="120" height="22" rx="4" fill="rgba(28, 20, 13, 0.8)" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1"/>
+      <text x="60" y="15" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(255, 255, 255, 0.6)" letter-spacing="1">ASYNCIO / NUMPY</text>
+    </g>
   </g>
 
-  <!-- Metrics Cards -->
-  <g transform="translate(40, 320)">
-    <rect width="210" height="75" fill="rgba(36, 20, 5, 0.7)" rx="8" stroke="rgba(245, 158, 11, 0.3)" stroke-width="1"/>
-    <text x="16" y="24" font-family="'JetBrains Mono', monospace" font-size="10" fill="#FCD34D">EXECUTION SLIPPAGE</text>
-    <text x="16" y="48" font-family="'JetBrains Mono', monospace" font-size="18" font-weight="800" fill="#FFFFFF">&lt; 0.02 BPS</text>
-    <text x="16" y="66" font-family="'JetBrains Mono', monospace" font-size="11" fill="#34D399">TICK-TO-TRADE: 0.8ms</text>
-  </g>
-  <g transform="translate(500, 320)">
-    <rect width="210" height="75" fill="rgba(36, 20, 5, 0.7)" rx="8" stroke="rgba(245, 158, 11, 0.3)" stroke-width="1"/>
-    <text x="16" y="24" font-family="'JetBrains Mono', monospace" font-size="10" fill="#FCD34D">RISK BOUNDING</text>
-    <text x="16" y="48" font-family="'JetBrains Mono', monospace" font-size="18" font-weight="800" fill="#FFFFFF">ACTIVE VaR</text>
-    <text x="16" y="66" font-family="'JetBrains Mono', monospace" font-size="11" fill="#F59E0B">CCXT SIMULATION</text>
-  </g>
+  <!-- ── 3. Lower Card Typography (~32% of card height) ── -->
+  <line x1="24" y1="352" x2="726" y2="352" stroke="rgba(255, 255, 255, 0.09)" stroke-width="1"/>
 
-  <!-- Project Caption Footer -->
-  <rect x="0" y="420" width="750" height="80" fill="rgba(5, 3, 1, 0.9)"/>
-  <line x1="0" y1="420" x2="750" y2="420" stroke="rgba(245, 158, 11, 0.25)" stroke-width="1"/>
-  <text x="40" y="462" font-family="'Syne', -apple-system, sans-serif" font-size="28" font-weight="800" fill="#FFFFFF" letter-spacing="0.5">TRADING INTELLIGENCE</text>
-  <text x="40" y="484" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="500" fill="#FCD34D" letter-spacing="1.5">QUANTITATIVE MARKET PIPELINE</text>
-  <text x="710" y="468" font-family="'JetBrains Mono', monospace" font-size="14" font-weight="700" fill="#F59E0B" text-anchor="end" letter-spacing="1">EXPLORE ↗</text>
+  <g transform="translate(32, 375)">
+    <!-- Category Tag -->
+    <g transform="translate(0, 0)">
+      <circle cx="4" cy="5" r="3" fill="#F59E0B"/>
+      <text x="14" y="9" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="600" fill="#F59E0B" letter-spacing="2">QUANTITATIVE PIPELINE · 2026</text>
+    </g>
+
+    <!-- Project Title -->
+    <text x="0" y="44" font-family="'Syne', system-ui, sans-serif" font-size="30" font-weight="800" fill="#FFFFFF" letter-spacing="-0.02em">TRADING INTELLIGENCE</text>
+
+    <!-- One-line Descriptor -->
+    <text x="0" y="74" font-family="'DM Sans', system-ui, sans-serif" font-size="15" fill="rgba(255, 255, 255, 0.62)">Autonomous quantitative market pipeline with risk-bounded execution</text>
+
+    <!-- External Link Glyph -->
+    <g transform="translate(650, 28)">
+      <circle cx="16" cy="16" r="16" fill="rgba(255, 255, 255, 0.06)" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1"/>
+      <text x="16" y="21" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" fill="#FFFFFF" opacity="0.8">↗</text>
+    </g>
+  </g>
 </svg>

@@ -1,70 +1,124 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="750" height="500" viewBox="0 0 750 500">
   <defs>
-    <linearGradient id="fmBg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#091b29"/>
-      <stop offset="50%" stop-color="#050e17"/>
-      <stop offset="100%" stop-color="#02060a"/>
+    <!-- Card Surface Gradient -->
+    <linearGradient id="cardSurface" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#222330"/>
+      <stop offset="100%" stop-color="#181822"/>
     </linearGradient>
-    <radialGradient id="fmGlow" cx="50%" cy="40%" r="55%">
-      <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.45"/>
-      <stop offset="50%" stop-color="#0284C7" stop-opacity="0.15"/>
-      <stop offset="100%" stop-color="#050e17" stop-opacity="0"/>
+
+    <!-- Visual Area Viewport Gradient -->
+    <linearGradient id="visualBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141e2e"/>
+      <stop offset="60%" stop-color="#101724"/>
+      <stop offset="100%" stop-color="#0c111c"/>
+    </linearGradient>
+
+    <!-- Ambient Sky Glow -->
+    <radialGradient id="financeGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.25"/>
+      <stop offset="55%" stop-color="#0284C7" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#0284C7" stop-opacity="0"/>
     </radialGradient>
-    <filter id="fBlur" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="30"/>
-    </filter>
+
+    <!-- Ledger Block Gradient -->
+    <linearGradient id="blockGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284C7" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#38BDF8" stop-opacity="0.15"/>
+    </linearGradient>
   </defs>
 
-  <!-- Background Base -->
-  <rect width="750" height="500" fill="url(#fmBg)" rx="16"/>
-  <rect x="150" y="80" width="450" height="300" fill="#0284C7" opacity="0.3" filter="url(#fBlur)"/>
-  <rect width="750" height="500" fill="url(#fmGlow)" rx="16"/>
+  <!-- ── 1. Base Card Surface ── -->
+  <rect width="750" height="500" rx="16" fill="url(#cardSurface)"/>
+  <rect width="750" height="500" rx="16" fill="none" stroke="rgba(255, 255, 255, 0.16)" stroke-width="1.5"/>
 
-  <!-- Outer Rim Highlight -->
-  <rect x="2" y="2" width="746" height="496" fill="none" stroke="rgba(56, 189, 248, 0.45)" stroke-width="2" rx="15"/>
-  <rect x="6" y="6" width="738" height="488" fill="none" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1" rx="12"/>
+  <!-- ── 2. Upper Project Visual Area (~68% of card height) ── -->
+  <g transform="translate(20, 20)">
+    <!-- Visual Canvas Background -->
+    <rect width="710" height="315" rx="10" fill="url(#visualBg)"/>
+    <rect width="710" height="315" rx="10" fill="url(#financeGlow)"/>
+    <rect width="710" height="315" rx="10" fill="none" stroke="rgba(56, 189, 248, 0.22)" stroke-width="1"/>
 
-  <!-- Window Header Bar -->
-  <rect x="16" y="16" width="718" height="38" fill="rgba(255, 255, 255, 0.04)" rx="8"/>
-  <circle cx="36" cy="35" r="5" fill="#EF4444"/>
-  <circle cx="52" cy="35" r="5" fill="#F59E0B"/>
-  <circle cx="68" cy="35" r="5" fill="#10B981"/>
-  <text x="92" y="39" font-family="'JetBrains Mono', monospace" font-size="12" fill="rgba(255, 255, 255, 0.6)" letter-spacing="1">ledger-core.io // acid-invariants.bson</text>
-  <rect x="600" y="26" width="120" height="18" fill="rgba(56, 189, 248, 0.25)" rx="4"/>
-  <text x="660" y="39" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#7DD3FC" text-anchor="middle" letter-spacing="1">ACID VERIFIED</text>
+    <!-- Subtle Ledger Grid Lines -->
+    <g stroke="rgba(56, 189, 248, 0.07)" stroke-width="1">
+      <line x1="0" y1="80" x2="710" y2="80"/>
+      <line x1="0" y1="160" x2="710" y2="160"/>
+      <line x1="0" y1="240" x2="710" y2="240"/>
+      <line x1="180" y1="0" x2="180" y2="315"/>
+      <line x1="355" y1="0" x2="355" y2="315"/>
+      <line x1="530" y1="0" x2="530" y2="315"/>
+    </g>
 
-  <!-- Center Artwork: Accounting Balance Engine -->
-  <g transform="translate(375, 205)">
-    <!-- Central Isometric Cube -->
-    <path d="M0 -65 L56 -32 L56 32 L0 65 L-56 32 L-56 -32 Z" fill="#0e2a40" stroke="#38BDF8" stroke-width="2.5"/>
-    <path d="M0 -65 L0 0 L56 32 M0 0 L-56 32" fill="none" stroke="#7DD3FC" stroke-width="2"/>
-    <circle cx="0" cy="0" r="7" fill="#38BDF8"/>
+    <!-- Visual Graphic: Double-Entry Immutable Ledger Architecture -->
+    <g transform="translate(65, 55)">
+      <!-- Left Column: Assets Ledger Block -->
+      <rect x="0" y="30" width="165" height="150" rx="8" fill="url(#blockGrad)" stroke="rgba(56, 189, 248, 0.45)" stroke-width="1.2"/>
+      <text x="20" y="62" font-family="'Syne', sans-serif" font-size="14" font-weight="700" fill="#38BDF8">ASSETS CORE</text>
+      <line x1="20" y1="74" x2="145" y2="74" stroke="rgba(56, 189, 248, 0.25)" stroke-width="1"/>
+      <text x="20" y="98" font-family="'JetBrains Mono', monospace" font-size="11" fill="rgba(255,255,255,0.7)">+ Cash &amp; Bank</text>
+      <text x="20" y="120" font-family="'JetBrains Mono', monospace" font-size="11" fill="rgba(255,255,255,0.7)">+ Receivables</text>
+      <text x="20" y="142" font-family="'JetBrains Mono', monospace" font-size="11" fill="rgba(255,255,255,0.7)">+ Vault Equity</text>
+      <rect x="20" y="154" width="70" height="16" rx="3" fill="rgba(56, 189, 248, 0.2)"/>
+      <text x="26" y="166" font-family="'JetBrains Mono', monospace" font-size="9" fill="#7DD3FC">DEBIT BAL</text>
 
-    <!-- Dual Balance Trays -->
-    <line x1="-160" y1="10" x2="-60" y2="25" stroke="#38BDF8" stroke-width="2"/>
-    <line x1="60" y1="25" x2="160" y2="10" stroke="#38BDF8" stroke-width="2"/>
-    <circle cx="-160" cy="10" r="5" fill="#10B981"/>
-    <circle cx="160" cy="10" r="5" fill="#38BDF8"/>
+      <!-- Center Consensus Balancing Invariant Hub -->
+      <g transform="translate(290, 105)">
+        <circle r="46" fill="rgba(14, 165, 233, 0.15)" stroke="#38BDF8" stroke-width="1.5"/>
+        <circle r="34" fill="none" stroke="#7DD3FC" stroke-width="1" stroke-dasharray="4 4"/>
+        <text x="0" y="-8" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#38BDF8">Σ Δ = 0</text>
+        <text x="0" y="10" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8.5" fill="#E0F2FE">INVARIANT</text>
+        <text x="0" y="24" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(255,255,255,0.5)">ACID LOCK</text>
+      </g>
+
+      <!-- Connecting Balance Vectors -->
+      <path d="M 165 105 L 244 105" stroke="#38BDF8" stroke-width="1.8" stroke-dasharray="4 4"/>
+      <circle cx="205" cy="105" r="4" fill="#38BDF8"/>
+      <path d="M 336 105 L 415 105" stroke="#38BDF8" stroke-width="1.8" stroke-dasharray="4 4"/>
+      <circle cx="375" cy="105" r="4" fill="#38BDF8"/>
+
+      <!-- Right Column: Liabilities & Equity Ledger Block -->
+      <rect x="415" y="30" width="165" height="150" rx="8" fill="url(#blockGrad)" stroke="rgba(56, 189, 248, 0.45)" stroke-width="1.2"/>
+      <text x="435" y="62" font-family="'Syne', sans-serif" font-size="14" font-weight="700" fill="#38BDF8">LIABILITIES</text>
+      <line x1="435" y1="74" x2="560" y2="74" stroke="rgba(56, 189, 248, 0.25)" stroke-width="1"/>
+      <text x="435" y="98" font-family="'JetBrains Mono', monospace" font-size="11" fill="rgba(255,255,255,0.7)">- Payables</text>
+      <text x="435" y="120" font-family="'JetBrains Mono', monospace" font-size="11" fill="rgba(255,255,255,0.7)">- Shared Capital</text>
+      <text x="435" y="142" font-family="'JetBrains Mono', monospace" font-size="11" fill="rgba(255,255,255,0.7)">- Retained Ops</text>
+      <rect x="435" y="154" width="70" height="16" rx="3" fill="rgba(56, 189, 248, 0.2)"/>
+      <text x="441" y="166" font-family="'JetBrains Mono', monospace" font-size="9" fill="#7DD3FC">CREDIT BAL</text>
+    </g>
+
+    <!-- Header Status Badges -->
+    <g transform="translate(24, 24)">
+      <rect width="138" height="22" rx="4" fill="rgba(12, 17, 28, 0.75)" stroke="rgba(56, 189, 248, 0.35)" stroke-width="1"/>
+      <circle cx="12" cy="11" r="3" fill="#38BDF8"/>
+      <text x="22" y="15" font-family="'JetBrains Mono', monospace" font-size="9" fill="#BAE6FD" letter-spacing="1">DECIMAL128 ENGINE</text>
+    </g>
+
+    <g transform="translate(565, 24)">
+      <rect width="120" height="22" rx="4" fill="rgba(12, 17, 28, 0.75)" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1"/>
+      <text x="60" y="15" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(255, 255, 255, 0.6)" letter-spacing="1">FASTAPI / MOTOR</text>
+    </g>
   </g>
 
-  <!-- Dashboard Metrics Panels -->
-  <g transform="translate(40, 310)">
-    <rect width="200" height="85" fill="rgba(14, 42, 64, 0.65)" rx="8" stroke="rgba(56, 189, 248, 0.3)" stroke-width="1"/>
-    <text x="16" y="26" font-family="'JetBrains Mono', monospace" font-size="10" fill="#7DD3FC">DECIMAL128 INTEGRITY</text>
-    <text x="16" y="52" font-family="'JetBrains Mono', monospace" font-size="20" font-weight="800" fill="#FFFFFF">100.000%</text>
-    <text x="16" y="72" font-family="'JetBrains Mono', monospace" font-size="11" fill="#34D399">ZERO FLOAT DRIFT</text>
-  </g>
-  <g transform="translate(510, 310)">
-    <rect width="200" height="85" fill="rgba(14, 42, 64, 0.65)" rx="8" stroke="rgba(56, 189, 248, 0.3)" stroke-width="1"/>
-    <text x="16" y="26" font-family="'JetBrains Mono', monospace" font-size="10" fill="#7DD3FC">TRANSACTION RATE</text>
-    <text x="16" y="52" font-family="'JetBrains Mono', monospace" font-size="20" font-weight="800" fill="#FFFFFF">24,500/s</text>
-    <text x="16" y="72" font-family="'JetBrains Mono', monospace" font-size="11" fill="#38BDF8">MONGODB MOTOR ASYNC</text>
-  </g>
+  <!-- ── 3. Lower Card Typography (~32% of card height) ── -->
+  <line x1="24" y1="352" x2="726" y2="352" stroke="rgba(255, 255, 255, 0.09)" stroke-width="1"/>
 
-  <!-- Project Caption Footer -->
-  <rect x="0" y="420" width="750" height="80" fill="rgba(4, 10, 16, 0.9)"/>
-  <line x1="0" y1="420" x2="750" y2="420" stroke="rgba(56, 189, 248, 0.25)" stroke-width="1"/>
-  <text x="40" y="462" font-family="'Syne', -apple-system, sans-serif" font-size="28" font-weight="800" fill="#FFFFFF" letter-spacing="0.5">FINANCE MANAGER</text>
-  <text x="40" y="484" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="500" fill="#7DD3FC" letter-spacing="1.5">ACCOUNTING ENGINE &amp; LEDGER CORE</text>
-  <text x="710" y="468" font-family="'JetBrains Mono', monospace" font-size="14" font-weight="700" fill="#38BDF8" text-anchor="end" letter-spacing="1">EXPLORE ↗</text>
+  <g transform="translate(32, 375)">
+    <!-- Category Tag -->
+    <g transform="translate(0, 0)">
+      <circle cx="4" cy="5" r="3" fill="#38BDF8"/>
+      <text x="14" y="9" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="600" fill="#38BDF8" letter-spacing="2">LEDGER &amp; ACCOUNTING · 2026</text>
+    </g>
+
+    <!-- Project Title -->
+    <text x="0" y="44" font-family="'Syne', system-ui, sans-serif" font-size="30" font-weight="800" fill="#FFFFFF" letter-spacing="-0.02em">FINANCE MANAGER</text>
+
+    <!-- One-line Descriptor -->
+    <text x="0" y="74" font-family="'DM Sans', system-ui, sans-serif" font-size="15" fill="rgba(255, 255, 255, 0.62)">High-precision accounting engine &amp; ledger core with strict balance invariants</text>
+
+    <!-- External Link Glyph -->
+    <g transform="translate(650, 28)">
+      <circle cx="16" cy="16" r="16" fill="rgba(255, 255, 255, 0.06)" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1"/>
+      <text x="16" y="21" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" fill="#FFFFFF" opacity="0.8">↗</text>
+    </g>
+  </g>
 </svg>

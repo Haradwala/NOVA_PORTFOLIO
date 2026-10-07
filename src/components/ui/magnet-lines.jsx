@@ -86,11 +86,34 @@ function Line({
   lineColor,
   lineWidth,
   lineHeight,
-  baseAngle,
+  baseAngle = 0,
   active,
 }) {
   const lineRef = useRef(null);
+  const centerRef = useRef(null);
   const [rotate, setRotate] = useState(baseAngle);
+
+  // Cache line center on mount, resize, and scroll to avoid layout thrashing
+  useEffect(() => {
+    const updateCenter = () => {
+      if (lineRef.current) {
+        const rect = lineRef.current.getBoundingClientRect();
+        centerRef.current = {
+          x: rect.left + rect.width / 2,
+          y: rect.top + rect.height / 2,
+        };
+      }
+    };
+
+    updateCenter();
+    window.addEventListener('resize', updateCenter, { passive: true });
+    window.addEventListener('scroll', updateCenter, { passive: true });
+
+    return () => {
+      window.removeEventListener('resize', updateCenter);
+      window.removeEventListener('scroll', updateCenter);
+    };
+  }, []);
 
   useEffect(() => {
     if (!active) {
@@ -105,20 +128,35 @@ function Line({
       pendingEvent = e;
       if (!rafId) {
         rafId = requestAnimationFrame(() => {
-          if (!lineRef.current || !containerRef.current || !pendingEvent) {
+          if (!centerRef.current || !pendingEvent) {
             rafId = null;
             return;
           }
 
-          const rect = lineRef.current.getBoundingClientRect();
-          const centerX = rect.left + rect.width / 2;
-          const centerY = rect.top + rect.height / 2;
+          const distanceX = pendingEvent.clientX - centerRef.current.x;
+          const distanceY = pendingEvent.clientY - centerRef.current.y;
+          const distance = Math.hypot(distanceX, distanceY);
 
-          const distanceX = pendingEvent.clientX - centerX;
-          const distanceY = pendingEvent.clientY - centerY;
+          // Localized magnetic field radius (~320px)
+          const maxDistance = 320;
 
-          const angle = (Math.atan2(distanceY, distanceX) * 180) / Math.PI;
-          setRotate(angle + baseAngle);
+          if (distance > maxDistance) {
+            setRotate(baseAngle);
+          } else {
+            // Smooth magnetic influence falloff
+            const influence = Math.pow(1 - distance / maxDistance, 1.6);
+
+            // Compute angle toward cursor
+            const targetAngle = (Math.atan2(distanceY, distanceX) * 180) / Math.PI;
+
+            // Restrain deflection to organic subtle angle (max +/-18 degrees from baseAngle)
+            let diff = ((targetAngle - baseAngle + 180) % 360) - 180;
+            const maxRotation = 18;
+            const clampedDiff = Math.max(-maxRotation, Math.min(maxRotation, diff));
+
+            setRotate(baseAngle + clampedDiff * influence);
+          }
+
           rafId = null;
         });
       }
@@ -129,19 +167,20 @@ function Line({
       window.removeEventListener('mousemove', handleMouseMove);
       if (rafId) cancelAnimationFrame(rafId);
     };
-  }, [baseAngle, containerRef, active]);
+  }, [baseAngle, active]);
 
   return (
     <motion.div
       ref={lineRef}
       animate={{ rotate }}
-      transition={{ type: 'spring', damping: 22, stiffness: 280 }}
+      transition={{ type: 'spring', damping: 28, stiffness: 190 }}
       style={{
         width: lineWidth,
         height: lineHeight,
         backgroundColor: lineColor,
         borderRadius: '9999px',
         willChange: 'transform',
+        touchAction: 'pan-y',
       }}
     />
   );

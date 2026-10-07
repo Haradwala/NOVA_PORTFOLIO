@@ -1,23 +1,19 @@
 /**
  * Work.jsx
  *
- * Public Work Section & /work Experience.
- * Incorporates the Componentry Spiral 3D Slider for /work.
+ * Canonical project navigator using Componentry Spiral 3D Slider.
+ * Renders on both homepage (/) and /work — same component, no duplication.
  *
- * Requirements:
- *   - /work page is minimal:
- *       WORK
- *       Selected projects I've built.
- *       [Componentry Spiral 3D Slider]
- *       Subtle selected project title below the spiral
- *   - No star field, no particles, no constellation lines, no space environment, no grid
- *   - Homepage (/) remains clean and does NOT render the heavy 3D spiral
+ * Homepage flow:
+ *   Hero → [Work / Spiral Navigator] → Philosophy → Contact
+ *
+ * /work route: full-page standalone spiral with minimal header.
  */
 
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Spiral3DSlider from '../components/ui/spiral-3d-slider';
-import { PROJECTS_DATA, SPIRAL_PROJECT_SLIDES } from '../data/projectsData';
+import { SPIRAL_PROJECT_SLIDES } from '../data/projectsData';
 import { registerSection } from '../utils/sectionRegistry';
 
 export default function Work() {
@@ -27,6 +23,7 @@ export default function Work() {
   const isWorkPage = location.pathname === '/work';
 
   const [activeSlide, setActiveSlide] = useState(SPIRAL_PROJECT_SLIDES[0]);
+
   useEffect(() => {
     const unregister = registerSection('work', sectionRef);
     if (window.__pendingScroll === 'work' || window.__pendingScroll === 'projects') {
@@ -35,48 +32,49 @@ export default function Work() {
         sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 300);
     }
-
-    return () => {
-      unregister?.();
-    };
+    return () => { unregister?.(); };
   }, []);
 
-  const handleSelectSlide = useCallback(
-    (slide) => {
-      if (slide?.slug) {
-        navigate(`/work/${slide.slug}`);
-      }
-    },
-    [navigate]
-  );
+  const handleSelectSlide = useCallback((slide) => {
+    if (slide?.slug) navigate(`/work/${slide.slug}`);
+  }, [navigate]);
 
   const handleActiveSlideChange = useCallback((slide) => {
-    if (slide) {
-      setActiveSlide(slide);
-    }
+    if (slide) setActiveSlide(slide);
   }, []);
 
-  // ── 1. DEDICATED /work PAGE (Componentry Spiral 3D Slider) ──
+  // ── /work STANDALONE PAGE ──
   if (isWorkPage) {
     return (
       <section
         id="section-work"
         data-section="work"
         ref={sectionRef}
-        className="relative z-10 w-full min-h-[calc(100vh-5rem)] bg-black text-white flex flex-col justify-start items-center pt-2 pb-16 px-4"
-        style={{ background: '#000000' }}
+        style={{
+          position: 'relative',
+          zIndex: 10,
+          width: '100%',
+          minHeight: 'calc(100vh - 5rem)',
+          background: 'transparent',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          paddingTop: '2rem',
+          paddingBottom: '4rem',
+        }}
       >
-        {/* Minimal Page Header */}
-        <div className="text-center max-w-xl mx-auto mb-2 mt-2 select-none">
+        {/* Minimal header */}
+        <div style={{ textAlign: 'center', marginBottom: '0.5rem' }}>
           <h1
             style={{
-              fontFamily: "'Syne', -apple-system, sans-serif",
+              fontFamily: "'Syne', sans-serif",
               fontWeight: 800,
-              fontSize: 'clamp(2.5rem, 6vw, 4.2rem)',
+              fontSize: 'clamp(2rem, 5vw, 3.2rem)',
               letterSpacing: '-0.03em',
               color: '#FFFFFF',
               margin: 0,
-              lineHeight: 1.05,
+              lineHeight: 1.0,
             }}
           >
             WORK
@@ -84,9 +82,9 @@ export default function Work() {
           <p
             style={{
               fontFamily: "'DM Sans', sans-serif",
-              fontSize: 'clamp(0.88rem, 1.4vw, 1.05rem)',
-              color: 'rgba(255, 255, 255, 0.55)',
-              marginTop: '0.4rem',
+              fontSize: 'clamp(0.82rem, 1.3vw, 0.96rem)',
+              color: 'rgba(255, 255, 255, 0.45)',
+              marginTop: '0.35rem',
               marginBottom: 0,
             }}
           >
@@ -94,68 +92,17 @@ export default function Work() {
           </p>
         </div>
 
-        {/* Componentry Spiral 3D Slider Container */}
-        <div className="w-full max-w-5xl mx-auto relative">
-          <Spiral3DSlider
-            items={SPIRAL_PROJECT_SLIDES}
-            autoRotate
-            autoSpeed={0.13}
-            className="min-h-[720px]"
-            onSelectSlide={handleSelectSlide}
-            onActiveSlideChange={handleActiveSlideChange}
-          />
-
-          {/* Selected Project Title (subtle, below spiral) */}
-          {activeSlide && (
-            <div className="flex flex-col items-center justify-center text-center mt-2 select-none">
-              <Link
-                to={`/work/${activeSlide.slug}`}
-                className="group inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full transition-all duration-200 hover:bg-white/[0.04]"
-                style={{ textDecoration: 'none' }}
-              >
-                <span
-                  style={{
-                    fontFamily: "'Instrument Sans', 'Syne', sans-serif",
-                    fontWeight: 700,
-                    fontSize: 'clamp(1rem, 1.8vw, 1.25rem)',
-                    letterSpacing: '-0.01em',
-                    background: 'linear-gradient(135deg, #EEEEF5 10%, #A78BFA 55%, #38BDF8 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                  }}
-                >
-                  {activeSlide.title}
-                </span>
-                <span
-                  style={{
-                    fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: '0.72rem',
-                    color: 'rgba(255, 255, 255, 0.45)',
-                    letterSpacing: '0.08em',
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  · {activeSlide.category}
-                </span>
-                <span
-                  style={{
-                    fontSize: '0.85rem',
-                    color: 'rgba(255, 255, 255, 0.4)',
-                    transition: 'all 0.2s ease',
-                  }}
-                  className="group-hover:translate-x-0.5 group-hover:text-white"
-                >
-                  ↗
-                </span>
-              </Link>
-            </div>
-          )}
-        </div>
+        <SpiralContainer
+          activeSlide={activeSlide}
+          onSelectSlide={handleSelectSlide}
+          onActiveSlideChange={handleActiveSlideChange}
+          className="min-h-[720px] sm:min-h-[780px] lg:min-h-[820px]"
+        />
       </section>
     );
   }
 
-  // ── 2. HOMEPAGE (/) WORK SECTION: Minimalist Clean Grid ──
+  // ── HOMEPAGE (/) WORK SECTION ── Spiral is the canonical navigator
   return (
     <section
       id="section-work"
@@ -163,164 +110,134 @@ export default function Work() {
       ref={sectionRef}
       style={{
         position: 'relative',
-        zIndex: 2,
-        padding: 'clamp(4rem, 8vw, 6rem) 1.5rem',
-        maxWidth: 1200,
-        margin: '0 auto',
+        zIndex: 10,
+        width: '100%',
+        padding: 'clamp(3rem, 6vw, 5rem) 0',
+        background: 'transparent',
       }}
     >
-      <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+      {/* Section label */}
+      <div style={{ textAlign: 'center', marginBottom: '0.75rem' }}>
+        <div
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.75rem',
+            marginBottom: '0.5rem',
+          }}
+        >
+          <div style={{ width: 20, height: 1, background: '#A78BFA' }} />
+          <span
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: '0.66rem',
+              letterSpacing: '0.2em',
+              textTransform: 'uppercase',
+              color: '#A78BFA',
+            }}
+          >
+            03 // SELECTED WORK
+          </span>
+          <div style={{ width: 20, height: 1, background: '#A78BFA' }} />
+        </div>
+
         <h2
           style={{
             fontFamily: "'Syne', sans-serif",
             fontWeight: 800,
-            fontSize: 'clamp(2.2rem, 5vw, 3.6rem)',
+            fontSize: 'clamp(1.8rem, 4vw, 2.8rem)',
             letterSpacing: '-0.03em',
             color: '#FFFFFF',
-            margin: '0 0 0.5rem 0',
+            margin: 0,
+            lineHeight: 1.05,
           }}
         >
-          SELECTED WORK
+          PROJECTS
         </h2>
-        <p
-          style={{
-            fontFamily: "'DM Sans', sans-serif",
-            fontSize: '1rem',
-            color: 'rgba(255, 255, 255, 0.5)',
-            margin: '0 auto 1.5rem auto',
-            maxWidth: 520,
-          }}
-        >
-          Key software systems and digital platforms.
-        </p>
-
-        {/* CTA to 3D Spiral on /work */}
-        <Link
-          to="/work"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: '0.72rem',
-            letterSpacing: '0.12em',
-            textTransform: 'uppercase',
-            color: '#FFFFFF',
-            textDecoration: 'none',
-            padding: '0.5rem 1.2rem',
-            borderRadius: 50,
-            background: 'rgba(139, 92, 246, 0.1)',
-            border: '1px solid rgba(167, 139, 250, 0.35)',
-            transition: 'all 0.2s ease',
-          }}
-        >
-          <span>EXPLORE 3D SPIRAL NAVIGATOR</span>
-          <span>↗</span>
-        </Link>
       </div>
 
-      {/* Clean authentic project grid */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-          gap: '1.5rem',
-        }}
-      >
-        {PROJECTS_DATA.map((p) => (
-          <Link
-            key={p.slug}
-            to={`/work/${p.slug}`}
-            style={{
-              textDecoration: 'none',
-              background: '#0d1017',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-              borderRadius: 14,
-              overflow: 'hidden',
-              display: 'flex',
-              flexDirection: 'column',
-              transition: 'all 0.25s ease',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = 'rgba(167, 139, 250, 0.35)';
-              e.currentTarget.style.transform = 'translateY(-4px)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
-              e.currentTarget.style.transform = 'translateY(0)';
-            }}
-          >
-            <div style={{ width: '100%', aspectRatio: '1.5', overflow: 'hidden', background: '#07090e' }}>
-              <img
-                src={`/projects/${p.slug}.svg`}
-                alt={p.title}
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                loading="lazy"
-              />
-            </div>
-            <div style={{ padding: '1.25rem', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-              <div>
-                <div
-                  style={{
-                    fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: '0.62rem',
-                    color: p.color,
-                    letterSpacing: '0.12em',
-                    textTransform: 'uppercase',
-                    marginBottom: '0.35rem',
-                  }}
-                >
-                  {p.category} · {p.year}
-                </div>
-                <h3
-                  style={{
-                    fontFamily: "'Syne', sans-serif",
-                    fontSize: '1.2rem',
-                    fontWeight: 700,
-                    color: '#FFFFFF',
-                    margin: '0 0 0.5rem 0',
-                  }}
-                >
-                  {p.title}
-                </h3>
-                <p
-                  style={{
-                    fontFamily: "'DM Sans', sans-serif",
-                    fontSize: '0.82rem',
-                    color: 'rgba(200, 205, 225, 0.7)',
-                    lineHeight: 1.5,
-                    margin: 0,
-                  }}
-                >
-                  {p.overview}
-                </p>
-              </div>
-              <div
-                style={{
-                  marginTop: '1rem',
-                  paddingTop: '0.75rem',
-                  borderTop: '1px solid rgba(255, 255, 255, 0.06)',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
-              >
-                <span
-                  style={{
-                    fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: '0.65rem',
-                    color: 'rgba(255, 255, 255, 0.45)',
-                    letterSpacing: '0.08em',
-                  }}
-                >
-                  CASE STUDY
-                </span>
-                <span style={{ color: p.accentColor, fontSize: '0.85rem' }}>→</span>
-              </div>
-            </div>
-          </Link>
-        ))}
-      </div>
+      <SpiralContainer
+        activeSlide={activeSlide}
+        onSelectSlide={handleSelectSlide}
+        onActiveSlideChange={handleActiveSlideChange}
+        className="min-h-[700px] sm:min-h-[760px] lg:min-h-[800px]"
+      />
     </section>
+  );
+}
+
+/**
+ * Shared Spiral container — renders Componentry Spiral3DSlider
+ * with active project label below.
+ */
+function SpiralContainer({ activeSlide, onSelectSlide, onActiveSlideChange, className }) {
+  return (
+    <div
+      style={{
+        width: '100%',
+        maxWidth: 'min(92vw, 1380px)',
+        margin: '0 auto',
+        position: 'relative',
+        background: 'transparent',
+      }}
+    >
+      <Spiral3DSlider
+        items={SPIRAL_PROJECT_SLIDES}
+        autoRotate
+        autoSpeed={0.13}
+        cardWidth={380}
+        cardAspectRatio={1.5}
+        radius={340}
+        verticalGap={92}
+        className={className}
+        onSelectSlide={onSelectSlide}
+        onActiveSlideChange={onActiveSlideChange}
+      />
+
+      {activeSlide && (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '0.75rem',
+            marginTop: '0.5rem',
+            padding: '0.4rem 0',
+          }}
+        >
+          <Link
+            to={`/work/${activeSlide.slug}`}
+            style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}
+          >
+            <span
+              style={{
+                fontFamily: "'Syne', sans-serif",
+                fontWeight: 700,
+                fontSize: 'clamp(0.95rem, 1.6vw, 1.15rem)',
+                letterSpacing: '-0.01em',
+                background: 'linear-gradient(135deg, #EEEEF5 10%, #A78BFA 55%, #38BDF8 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
+              {activeSlide.title}
+            </span>
+            <span
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: '0.68rem',
+                color: 'rgba(255,255,255,0.35)',
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+              }}
+            >
+              · {activeSlide.category}
+            </span>
+            <span style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.8rem' }}>↗</span>
+          </Link>
+        </div>
+      )}
+    </div>
   );
 }

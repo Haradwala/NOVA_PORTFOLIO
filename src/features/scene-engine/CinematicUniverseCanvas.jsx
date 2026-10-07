@@ -41,7 +41,7 @@ function WebGLFallback() {
     <div style={{
       position: 'fixed',
       inset: 0,
-      zIndex: 0,
+      zIndex: 1,
       pointerEvents: 'none',
       background: 'radial-gradient(ellipse 80% 60% at 50% 30%, rgba(139,92,246,0.08) 0%, transparent 65%), #07070F',
     }} />
@@ -84,7 +84,7 @@ export default function CinematicUniverseCanvas() {
     /*
      * Wrapper div:
      *  - position: fixed so it covers the full viewport behind all content
-     *  - z-index: 0 — sits below everything including the Core Canvas (z:5)
+     *  - z-index: 1 — sits above body base (z:0) and below Magnet Lines (z:2) and Hero Content (z:5)
      *  - pointer-events: none — MUST NOT intercept clicks for Core nodes or chat
      *  - tabIndex: -1 / aria-hidden: true — excluded from focus/screen-reader
      */
@@ -92,7 +92,7 @@ export default function CinematicUniverseCanvas() {
       style={{
         position: 'fixed',
         inset: 0,
-        zIndex: 0,
+        zIndex: 1,
         pointerEvents: 'none',
       }}
       aria-hidden="true"

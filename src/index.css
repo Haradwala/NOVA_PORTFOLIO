@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #07070F;
+  --color-bg: #0b0b10;
   --color-bg2: #0F0F18;
   --color-bg3: #14141F;
   --color-card: #18182A;
@@ -18,7 +18,7 @@
 
 :root {
   /* ── Original tokens ── */
-  --bg: #07070F;
+  --bg: #0b0b10;
   --bg2: #0F0F18;
   --bg3: #14141F;
   --card: #18182A;
@@ -50,7 +50,7 @@
 html { scroll-behavior: smooth; }
 
 body {
-  background: #07070F; /* deep space base - universe canvas renders on top */
+  background: #0b0b10; /* deep graphite base - universe canvas renders on top */
   color: var(--text);
   font-family: 'DM Sans', sans-serif;
   font-weight: 300;

@@ -1,79 +1,118 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="750" height="500" viewBox="0 0 750 500">
   <defs>
-    <linearGradient id="cardBg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#160e2e"/>
-      <stop offset="50%" stop-color="#0e071f"/>
-      <stop offset="100%" stop-color="#070310"/>
+    <!-- Card Surface Gradient -->
+    <linearGradient id="cardSurface" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#222330"/>
+      <stop offset="100%" stop-color="#181822"/>
     </linearGradient>
-    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#A78BFA"/>
-      <stop offset="50%" stop-color="#8B5CF6"/>
-      <stop offset="100%" stop-color="#38BDF8"/>
+
+    <!-- Visual Area Viewport Gradient -->
+    <linearGradient id="visualBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1832"/>
+      <stop offset="60%" stop-color="#151224"/>
+      <stop offset="100%" stop-color="#110f1c"/>
     </linearGradient>
-    <radialGradient id="coreGlow" cx="50%" cy="45%" r="50%">
-      <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.6"/>
-      <stop offset="40%" stop-color="#8B5CF6" stop-opacity="0.2"/>
-      <stop offset="100%" stop-color="#0e071f" stop-opacity="0"/>
+
+    <!-- Soft Ambient Light Glow -->
+    <radialGradient id="novaCoreGlow" cx="50%" cy="48%" r="45%">
+      <stop offset="0%" stop-color="#A78BFA" stop-opacity="0.32"/>
+      <stop offset="50%" stop-color="#8B5CF6" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#8B5CF6" stop-opacity="0"/>
     </radialGradient>
-    <filter id="blurFilter" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="25"/>
-    </filter>
+
+    <!-- Linear Accent for Rings -->
+    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#A78BFA" stop-opacity="0.75"/>
+      <stop offset="50%" stop-color="#8B5CF6" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#38BDF8" stop-opacity="0.6"/>
+    </linearGradient>
   </defs>
 
-  <!-- Background Base -->
-  <rect width="750" height="500" fill="url(#cardBg)" rx="16"/>
-  <rect x="150" y="80" width="450" height="300" fill="#8B5CF6" opacity="0.35" filter="url(#blurFilter)"/>
-  <rect width="750" height="500" fill="url(#coreGlow)" rx="16"/>
+  <!-- ── 1. Base Card Surface ── -->
+  <rect width="750" height="500" rx="16" fill="url(#cardSurface)"/>
+  <rect width="750" height="500" rx="16" fill="none" stroke="rgba(255, 255, 255, 0.16)" stroke-width="1.5"/>
 
-  <!-- Card Outer Rim Highlight -->
-  <rect x="2" y="2" width="746" height="496" fill="none" stroke="rgba(167, 139, 250, 0.45)" stroke-width="2" rx="15"/>
-  <rect x="6" y="6" width="738" height="488" fill="none" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1" rx="12"/>
+  <!-- ── 2. Upper Project Visual Area (~68% of card height) ── -->
+  <g transform="translate(20, 20)">
+    <!-- Visual Canvas Background -->
+    <rect width="710" height="315" rx="10" fill="url(#visualBg)"/>
+    <rect width="710" height="315" rx="10" fill="url(#novaCoreGlow)"/>
+    <rect width="710" height="315" rx="10" fill="none" stroke="rgba(167, 139, 250, 0.18)" stroke-width="1"/>
 
-  <!-- Window Header Bar -->
-  <rect x="16" y="16" width="718" height="38" fill="rgba(255, 255, 255, 0.04)" rx="8"/>
-  <circle cx="36" cy="35" r="5" fill="#EF4444"/>
-  <circle cx="52" cy="35" r="5" fill="#F59E0B"/>
-  <circle cx="68" cy="35" r="5" fill="#10B981"/>
-  <text x="92" y="39" font-family="'JetBrains Mono', monospace" font-size="12" fill="rgba(255, 255, 255, 0.6)" letter-spacing="1">nova-core.env // living-os.sys</text>
-  <rect x="620" y="26" width="100" height="18" fill="rgba(139, 92, 246, 0.25)" rx="4"/>
-  <text x="670" y="39" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#C4B5FD" text-anchor="middle" letter-spacing="1">AI ACTIVE</text>
+    <!-- Subtle Background Coordinate Grid -->
+    <g stroke="rgba(167, 139, 250, 0.06)" stroke-width="1">
+      <line x1="80" y1="0" x2="80" y2="315"/>
+      <line x1="200" y1="0" x2="200" y2="315"/>
+      <line x1="355" y1="0" x2="355" y2="315"/>
+      <line x1="510" y1="0" x2="510" y2="315"/>
+      <line x1="630" y1="0" x2="630" y2="315"/>
+      <line x1="0" y1="80" x2="710" y2="80"/>
+      <line x1="0" y1="157" x2="710" y2="157"/>
+      <line x1="0" y1="235" x2="710" y2="235"/>
+    </g>
 
-  <!-- Center Artwork: Living Neural Lattice -->
-  <g transform="translate(375, 225)">
-    <!-- Outer ambient orbital tracks -->
-    <ellipse rx="170" ry="85" fill="none" stroke="rgba(167, 139, 250, 0.35)" stroke-width="1.5" transform="rotate(-25)"/>
-    <ellipse rx="170" ry="85" fill="none" stroke="rgba(56, 189, 248, 0.35)" stroke-width="1.5" transform="rotate(35)"/>
-    <ellipse rx="140" ry="140" fill="none" stroke="rgba(139, 92, 246, 0.25)" stroke-width="1.5" stroke-dasharray="6 4"/>
-    
-    <!-- Inner Neural Sphere -->
-    <circle r="72" fill="#1e103d" stroke="#A78BFA" stroke-width="2.5"/>
-    <circle r="52" fill="none" stroke="#8B5CF6" stroke-width="2" stroke-dasharray="8 6"/>
-    <circle r="32" fill="#8B5CF6" opacity="0.8"/>
-    <circle r="16" fill="#FFFFFF"/>
+    <!-- Visual Graphic: Neural Core & Harmonic Living Rings -->
+    <g transform="translate(355, 157)">
+      <!-- Outer Harmonic Orbit -->
+      <circle r="115" fill="none" stroke="url(#ringGrad)" stroke-width="1" stroke-dasharray="6 8" opacity="0.5"/>
+      <!-- Mid Orbit Ellipse -->
+      <ellipse rx="130" ry="55" fill="none" stroke="url(#ringGrad)" stroke-width="1.2" transform="rotate(-22)" opacity="0.65"/>
+      <!-- Inner Orbit Ellipse -->
+      <ellipse rx="85" ry="38" fill="none" stroke="url(#ringGrad)" stroke-width="1.4" transform="rotate(38)" opacity="0.8"/>
+      <!-- Concentric Core Ring -->
+      <circle r="52" fill="none" stroke="#A78BFA" stroke-width="1.5" opacity="0.7"/>
+      <circle r="36" fill="rgba(139, 92, 246, 0.22)" stroke="#C4B5FD" stroke-width="1.5"/>
 
-    <!-- Orbital particle nodes -->
-    <circle cx="-130" cy="-60" r="4" fill="#38BDF8"/>
-    <circle cx="140" cy="50" r="4.5" fill="#C4B5FD"/>
-    <circle cx="70" cy="-90" r="3.5" fill="#A78BFA"/>
-    <circle cx="-80" cy="80" r="4" fill="#38BDF8"/>
+      <!-- Center Singularity Core -->
+      <circle r="16" fill="#EDE9FE"/>
+      <circle r="8" fill="#FFFFFF"/>
+
+      <!-- Neural Radiating Nodes -->
+      <g stroke="#A78BFA" stroke-width="1.2" opacity="0.85">
+        <line x1="0" y1="0" x2="-80" y2="-45"/>
+        <circle cx="-80" cy="-45" r="4" fill="#C4B5FD"/>
+        <line x1="0" y1="0" x2="95" y2="-35"/>
+        <circle cx="95" cy="-35" r="4.5" fill="#38BDF8"/>
+        <line x1="0" y1="0" x2="70" y2="55"/>
+        <circle cx="70" cy="55" r="3.5" fill="#A78BFA"/>
+        <line x1="0" y1="0" x2="-90" y2="40"/>
+        <circle cx="-90" cy="40" r="4" fill="#8B5CF6"/>
+      </g>
+    </g>
+
+    <!-- Technical Status Badge (Clean & Subtle) -->
+    <g transform="translate(24, 24)">
+      <rect width="118" height="22" rx="4" fill="rgba(13, 11, 22, 0.7)" stroke="rgba(167, 139, 250, 0.3)" stroke-width="1"/>
+      <circle cx="12" cy="11" r="3" fill="#A78BFA"/>
+      <text x="22" y="15" font-family="'JetBrains Mono', monospace" font-size="9" fill="#EDE9FE" letter-spacing="1">NEURAL CORE</text>
+    </g>
+
+    <g transform="translate(565, 24)">
+      <rect width="120" height="22" rx="4" fill="rgba(13, 11, 22, 0.7)" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1"/>
+      <text x="60" y="15" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(255, 255, 255, 0.6)" letter-spacing="1">R3F / SHADERS</text>
+    </g>
   </g>
 
-  <!-- Telemetry HUD readout cards inside image -->
-  <g transform="translate(40, 340)">
-    <rect width="180" height="50" fill="rgba(255, 255, 255, 0.05)" rx="8" stroke="rgba(255, 255, 255, 0.1)" stroke-width="1"/>
-    <text x="14" y="24" font-family="'JetBrains Mono', monospace" font-size="10" fill="rgba(255, 255, 255, 0.5)">LATENCY</text>
-    <text x="14" y="42" font-family="'JetBrains Mono', monospace" font-size="16" font-weight="700" fill="#38BDF8">0.4ms</text>
-  </g>
-  <g transform="translate(530, 340)">
-    <rect width="180" height="50" fill="rgba(255, 255, 255, 0.05)" rx="8" stroke="rgba(255, 255, 255, 0.1)" stroke-width="1"/>
-    <text x="14" y="24" font-family="'JetBrains Mono', monospace" font-size="10" fill="rgba(255, 255, 255, 0.5)">VOICE PIPELINE</text>
-    <text x="14" y="42" font-family="'JetBrains Mono', monospace" font-size="16" font-weight="700" fill="#A78BFA">FULL DUPLEX</text>
-  </g>
+  <!-- ── 3. Lower Card Typography (~32% of card height) ── -->
+  <line x1="24" y1="352" x2="726" y2="352" stroke="rgba(255, 255, 255, 0.09)" stroke-width="1"/>
 
-  <!-- Project Caption Footer -->
-  <rect x="0" y="420" width="750" height="80" fill="rgba(7, 3, 16, 0.85)"/>
-  <line x1="0" y1="420" x2="750" y2="420" stroke="rgba(167, 139, 250, 0.25)" stroke-width="1"/>
-  <text x="40" y="462" font-family="'Syne', -apple-system, sans-serif" font-size="28" font-weight="800" fill="#FFFFFF" letter-spacing="0.5">NOVA AI</text>
-  <text x="40" y="484" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="500" fill="#A78BFA" letter-spacing="1.5">LIVING AI OPERATING ENVIRONMENT · 2026</text>
-  <text x="710" y="468" font-family="'JetBrains Mono', monospace" font-size="14" font-weight="700" fill="#38BDF8" text-anchor="end" letter-spacing="1">EXPLORE ↗</text>
+  <g transform="translate(32, 375)">
+    <!-- Category Tag -->
+    <g transform="translate(0, 0)">
+      <circle cx="4" cy="5" r="3" fill="#A78BFA"/>
+      <text x="14" y="9" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="600" fill="#A78BFA" letter-spacing="2">AI SYSTEMS · 2026</text>
+    </g>
+
+    <!-- Project Title -->
+    <text x="0" y="44" font-family="'Syne', system-ui, sans-serif" font-size="30" font-weight="800" fill="#FFFFFF" letter-spacing="-0.02em">NOVA AI</text>
+
+    <!-- One-line Descriptor -->
+    <text x="0" y="74" font-family="'DM Sans', system-ui, sans-serif" font-size="15" fill="rgba(255, 255, 255, 0.62)">Living AI operating environment with neural core &amp; full-duplex voice</text>
+
+    <!-- External Link Glyph -->
+    <g transform="translate(650, 28)">
+      <circle cx="16" cy="16" r="16" fill="rgba(255, 255, 255, 0.06)" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1"/>
+      <text x="16" y="21" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" fill="#FFFFFF" opacity="0.8">↗</text>
+    </g>
+  </g>
 </svg>

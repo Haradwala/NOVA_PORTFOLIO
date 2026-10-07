@@ -6,6 +6,7 @@ import Navbar from './components/Navbar';
 import CinematicUniverseCanvas from './features/scene-engine/CinematicUniverseCanvas';
 import { SceneProvider } from './features/scene-engine/SceneContext';
 import Hero from './sections/Hero';
+import NovaFloatingAssistant from './components/NovaFloatingAssistant';
 import Philosophy from './sections/Philosophy';
 import About from './sections/About';
 import Capabilities from './sections/Capabilities';
@@ -108,25 +109,30 @@ function PortfolioShell({ showBoot, onBootDone, novaTrigger, onAskNova }) {
         <Routes>
           <Route path="/" element={
             <>
-              {/* 01 — IDENTITY */}
-              <Hero novaPanelOpen={novaTrigger} onOpenNova={onAskNova} />
-              {/* 02 — PHILOSOPHY */}
+              {/* 01 — IDENTITY / HERO */}
+              <Hero />
+              {/* 02 — ENGINEERING PHILOSOPHY / ABOUT */}
               <Philosophy />
-              {/* 03 — SELECTED WORK */}
+              {/* 03 — SELECTED WORK / PROJECT SPIRAL */}
               <Work />
-              {/* 04 — ABOUT & CAPABILITIES */}
+              {/* 04 — IDENTITY / CONSTELLATION TIMELINE */}
               <About />
+              {/* 05 — CAPABILITIES / SYSTEMS LAB */}
               <Capabilities />
+              {/* 06 — PROCESS / METHODOLOGY */}
               <Process />
+              {/* 07 — KNOWLEDGE ARCHIVE */}
               <Archive />
-              {/* 05 — CONTACT */}
+              {/* 08 — CONTACT / HUD FOOTER */}
               <Contact />
             </>
           } />
           {/* Public Portfolio Routes */}
-          <Route path="/work"          element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Work /></div>} />
+          <Route path="/work"          element={<Work />} />
           <Route path="/work/:project" element={<WorkProjectPage />} />
           <Route path="/about"         element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Philosophy /></div>} />
+          <Route path="/identity"      element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><About /></div>} />
+          <Route path="/timeline"      element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><About /></div>} />
           <Route path="/capabilities"  element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Capabilities /></div>} />
           <Route path="/skills"        element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Capabilities /></div>} />
           <Route path="/process"       element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Process /></div>} />
@@ -134,6 +140,9 @@ function PortfolioShell({ showBoot, onBootDone, novaTrigger, onAskNova }) {
           <Route path="/contact"       element={<div style={{ minHeight:'100vh', paddingTop:'5rem' }}><Contact /></div>} />
         </Routes>
       </PageFade>
+
+      {/* Global Floating NOVA Assistant */}
+      <NovaFloatingAssistant novaTrigger={novaTrigger} />
     </>
   );
 }

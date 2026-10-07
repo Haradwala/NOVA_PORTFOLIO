@@ -49,6 +49,7 @@ export const fragmentShader = `
   uniform float uImageAspect;
   uniform float uPlaneAspect;
   uniform float uBlur;
+  uniform float uActiveFactor;
   varying vec2 vUv;
 
   vec2 coverUv(vec2 uv) {
@@ -78,10 +79,44 @@ export const fragmentShader = `
     color += texture2D(uTexture, uv - stepSize) * 0.025;
 
     float luminance = dot(color.rgb, vec3(0.2126, 0.7152, 0.0722));
-    color.rgb = mix(vec3(luminance), color.rgb, 1.18);
-    color.rgb = (color.rgb - 0.5) * 1.08 + 0.5;
+    color.rgb = mix(vec3(luminance), color.rgb, 1.15);
+    color.rgb = (color.rgb - 0.5) * 1.06 + 0.5;
     float brightness = 1.04 - min(uBlur * 0.025, 0.07);
-    gl_FragColor = vec4(clamp(color.rgb * brightness, 0.0, 1.0), 1.0);
+    vec3 finalRgb = clamp(color.rgb * brightness, 0.0, 1.0);
+
+    // ── Neutral card surface: rgba(28, 29, 38, 0.92) ──
+    vec3 neutralSurface = vec3(0.1098, 0.1137, 0.1490); // rgb(28, 29, 38)
+    finalRgb = max(mix(neutralSurface, finalRgb, 0.94), neutralSurface * 0.90);
+
+    // Subtle soft light reflection across the card surface
+    float lightReflection = (1.0 - vUv.y) * 0.045 + (1.0 - vUv.x) * 0.025;
+    finalRgb += vec3(lightReflection);
+
+    // Active card brightness & clarity boost (Hero card dominance)
+    finalRgb *= (1.0 + uActiveFactor * 0.14);
+
+    // ── Card border calculation with aspect ratio compensation ──
+    float distY = min(vUv.y, 1.0 - vUv.y);
+    float distX = min(vUv.x, 1.0 - vUv.x) * uPlaneAspect;
+    float edgeDist = min(distX, distY);
+    float borderMask = 1.0 - smoothstep(0.007, 0.013, edgeDist);
+
+    // Base border: rgba(255, 255, 255, 0.16)
+    vec3 baseBorder = vec3(1.0);
+    float baseAlpha = 0.16;
+
+    // Active border: subtle lavender → blue highlight (#A78BFA -> #38BDF8)
+    vec3 lavender = vec3(0.655, 0.545, 0.980);
+    vec3 skyBlue  = vec3(0.220, 0.741, 0.973);
+    vec3 activeBorder = mix(lavender, skyBlue, vUv.x);
+    float activeAlpha = 0.55;
+
+    vec3 borderColor = mix(baseBorder, activeBorder, uActiveFactor);
+    float borderAlpha = mix(baseAlpha, activeAlpha, uActiveFactor);
+
+    finalRgb = mix(finalRgb, borderColor, borderMask * borderAlpha);
+
+    gl_FragColor = vec4(clamp(finalRgb, 0.0, 1.0), 1.0);
   }
 `;
 
@@ -142,6 +177,7 @@ function SpiralScene({
         uPlaneAspect: { value: cardAspectRatio },
         uBlur: { value: 0 },
         uBend: { value: 0 },
+        uActiveFactor: { value: 0 },
       })),
     [cardAspectRatio, textures]
   );
@@ -171,20 +207,20 @@ function SpiralScene({
       : 1 - Math.pow(1 - smoothing, frameScale);
     progress.current += (targetProgress.current - progress.current) * ease;
 
-    const factor = Math.max(viewport.factor, 1);
+    const factor = Math.max(viewport.factor || 1, 1);
     const isSmall = viewport.width < 7;
     const planeWidth = Math.min(
       cardWidth / factor,
-      viewport.width * (isSmall ? 0.44 : 0.225)
+      viewport.width * (isSmall ? 0.75 : 0.36)
     );
     const planeHeight = planeWidth / cardAspectRatio;
     const spiralRadius = Math.min(
       radius / factor,
-      viewport.width * (isSmall ? 0.36 : 0.245)
+      viewport.width * (isSmall ? 0.44 : 0.35)
     );
     const gap = Math.min(
       verticalGap / factor,
-      viewport.height * (isSmall ? 0.095 : 0.082)
+      viewport.height * (isSmall ? 0.12 : 0.095)
     );
     const count = sceneItems.length;
 
@@ -205,7 +241,12 @@ function SpiralScene({
       const angle = position * 0.78;
       const depth = (Math.cos(angle) + 1) / 2;
       const distance = Math.min(Math.abs(position) / (count * 0.43), 1);
-      const scale = 0.74 + depth * 0.26;
+
+      // Active card dominance: active card scale ~1.10 (between 1.08 and 1.12)
+      // Side cards smoothly taper down to ~0.94, back cards to ~0.72
+      const activeFactor = Math.max(0, 1 - absPos * 1.25);
+      const baseScale = 0.72 + depth * 0.26;
+      const scale = baseScale + activeFactor * 0.12;
 
       mesh.position.set(
         Math.sin(angle) * spiralRadius,
@@ -218,6 +259,7 @@ function SpiralScene({
       material.uniforms.uBlur.value = Math.pow(distance, 1.28) * blurStrength;
       material.uniforms.uBend.value = planeWidth * bend;
       material.uniforms.uPlaneAspect.value = cardAspectRatio;
+      material.uniforms.uActiveFactor.value = activeFactor;
     });
 
     if (closestIdx !== lastActiveIndex.current) {
@@ -269,9 +311,9 @@ function SpiralScene({
 export function Spiral3DSlider({
   items,
   className,
-  radius = 235,
-  verticalGap = 64,
-  cardWidth = 255,
+  radius = 340,
+  verticalGap = 92,
+  cardWidth = 380,
   cardAspectRatio = 1.5,
   autoRotate = true,
   autoSpeed = 0.13,
@@ -387,7 +429,7 @@ export function Spiral3DSlider({
       role="region"
       aria-label={ariaLabel}
       className={cn(
-        'relative min-h-[38rem] sm:min-h-[42rem] w-full overflow-hidden bg-black transition-colors duration-300 select-none',
+        'relative min-h-[38rem] sm:min-h-[42rem] w-full overflow-hidden bg-transparent transition-colors duration-300 select-none',
         className
       )}
       onWheel={handleWheel}
@@ -406,6 +448,7 @@ export function Spiral3DSlider({
           <Canvas
             dpr={[1, 1.75]}
             camera={{ position: [0, 0, 10], fov, near: 0.1, far: 100 }}
+            style={{ background: 'transparent' }}
             gl={{
               alpha: true,
               antialias: true,

@@ -1,176 +1,35 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
-import NovaCoreV2 from './NovaCoreV2';
-import { ConversationBubble } from './ConversationBubble';
-import { NovaCards } from './NovaCards';
-import { useNovaContext } from './useNovaContext';
-import { useNovaVoiceState } from './useNovaVoiceState';
-import { useNovaNavigation, detectReferencedSection } from './useNovaNavigation';
-import NovaPanel from '../../components/NovaPanel';
-import { useNOVA } from '../../hooks/useNOVA';
-import { useNOVAMemory } from '../../hooks/useNOVAMemory';
-import { useFullDuplex } from '../../hooks/useFullDuplex';
-import { useSTT } from '../../hooks/useSTT';
-import NovaDebugPanel from '../../components/NovaDebugPanel';
-import { scrollToSection, highlightSection } from '../../utils/sectionRegistry';
+import { useState, useEffect, useRef } from 'react';
 import { useScene } from '../../features/scene-engine/SceneContext';
+import MagnetLines from '../../components/ui/magnet-lines';
 
-const FIRST_GREETING = "Hey! I'm NOVA 👋 Shadab's AI assistant. Ask me about my projects, skills, or experience!";
-
-export default function Hero({ novaPanelOpen, onOpenNova }) {
-  const [chatOpen, setChatOpen] = useState(false);
-  const [time,     setTime]     = useState('');
-  const [showDebug, setShowDebug] = useState(false);
-  const [interacted, setInteracted] = useState(false);
-  const greeted    = useRef(false);
-  const bumpedRef  = useRef(false);
+export default function Hero() {
+  const [windowWidth, setWindowWidth] = useState(
+    typeof window !== 'undefined' ? window.innerWidth : 1200
+  );
   const sectionRef = useRef(null);
 
-  // Register this section as 'arrival' in the SceneContext for scroll progress tracking
+  // SceneContext registration for scroll tracking
   const { registerSection } = useScene();
   useEffect(() => {
     registerSection('arrival', sectionRef.current);
     return () => registerSection('arrival', null);
   }, [registerSection]);
 
+  // Window resize listener
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      setShowDebug(params.get('debug') === 'true');
-    }
+    if (typeof window === 'undefined') return;
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Parallax cursor tracking
-  const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 });
-  useEffect(() => {
-    const handleMove = (e) => {
-      setMouseOffset({
-        x: (e.clientX / window.innerWidth - 0.5),
-        y: (e.clientY / window.innerHeight - 0.5)
-      });
-    };
-    window.addEventListener('mousemove', handleMove);
-    return () => window.removeEventListener('mousemove', handleMove);
-  }, []);
-
-  // Context & Database lookups
-  const novaContext = useNovaContext();
-  const { messages, isLoading, sendMessage, addExchange, markRead, addGreeting, setTopicRecorder } = useNOVA();
-  const { memory, bumpVisit, recordTopic, buildGreeting } = useNOVAMemory();
-
-  useEffect(() => { setTopicRecorder(recordTopic); }, [setTopicRecorder, recordTopic]);
-  useEffect(() => {
-    if (memory && !bumpedRef.current) {
-      bumpedRef.current = true;
-      bumpVisit();
-    }
-  }, [memory, bumpVisit]);
-
-  const speakFnRef = useRef(null);
-  const navigationRef = useRef(null);
-  const lastReferencedSectionRef = useRef(null);
-  
-  // Custom send handler routing local intents first
-  const handleSend = useCallback(async (text, options = {}) => {
-    const { speakReply = true } = options;
-    if (!text?.trim()) return null;
-    setInteracted(true);
-    setChatOpen(true);
-    greeted.current = true;
-
-    const localReply = await navigationRef.current?.handleQueryIntent(text);
-    if (localReply) {
-      addExchange(text, localReply);
-      if (speakReply && speakFnRef.current) {
-        speakFnRef.current(localReply);
-      }
-      return localReply;
-    }
-
-    const reply = await sendMessage(text);
-    if (reply) {
-      const section = detectReferencedSection(reply);
-      if (section) {
-        lastReferencedSectionRef.current = section;
-      }
-
-      if (speakReply && speakFnRef.current) {
-        speakFnRef.current(reply);
-      }
-    }
-    return reply;
-  }, [sendMessage, addExchange]);
-
-  const duplex = useFullDuplex({
-    onReply: (text) => handleSend(text, { speakReply: false }),
-  });
-
-  const speakReply = duplex.speakReply;
-  const navigation = useNovaNavigation({
-    novaContext,
-    speakReply,
-    lastReferencedSectionRef,
-  });
-  navigationRef.current = navigation;
-
-  const { isListening, toggleListening, isSupported: sttSupported, lastError: sttError, mode: sttMode } = useSTT({
-    onResult: (text) => handleSend(text),
-    onError:  (msg)  => { addGreeting(`⚠️ ${msg}`); setChatOpen(true); },
-  });
-
-  const ds             = duplex.duplexState;
-  const spokenText     = duplex.spokenText;
-  const { isSpeaking, isThinking, voiceState } = useNovaVoiceState(ds);
-
-  useEffect(() => {
-    if (voiceState !== 'idle') {
-      setInteracted(true);
-    }
-  }, [voiceState]);
-
-  useEffect(() => {
-    const iv = setInterval(() =>
-      setTime(new Date().toLocaleTimeString('en-US', {
-        hour: '2-digit', minute: '2-digit', second: '2-digit',
-      })), 1000);
-    return () => clearInterval(iv);
-  }, []);
-
-  const doGreet = useCallback(() => {
-    if (greeted.current) return;
-    greeted.current = true;
-    setTimeout(() => {
-      const text = (memory ? buildGreeting(memory) : null) || FIRST_GREETING;
-      addGreeting(text);
-      duplex.speakReply(text);
-    }, 350);
-  }, [memory, buildGreeting, addGreeting, duplex]);
-
-  useEffect(() => {
-    if (novaPanelOpen > 0) { setChatOpen(true); doGreet(); }
-  }, [novaPanelOpen]); // eslint-disable-line
-
-  useEffect(() => {
-    speakFnRef.current = duplex.speakReply;
-  }, [duplex.speakReply]);
-
-  // ENTER NOVA interaction: pulse the core + scroll to about
-  const handleEnterNova = useCallback(() => {
-    // Dispatch pulse event for NovaCoreV2 to react to
-    window.dispatchEvent(new CustomEvent('nova-enter'));
-    // Brief delay then scroll
-    setTimeout(() => {
-      const aboutEl = document.getElementById('section-about') || document.querySelector('[data-section="about"]');
-      if (aboutEl) {
-        aboutEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      } else {
-        window.scrollBy({ top: window.innerHeight, behavior: 'smooth' });
-      }
-    }, 320);
-  }, []);
+  const isMobile = windowWidth < 768;
+  const isTablet = windowWidth >= 768 && windowWidth < 1200;
 
   return (
     <section
       ref={sectionRef}
+      id="arrival"
       data-section="arrival"
       style={{
         position: 'relative',
@@ -179,347 +38,310 @@ export default function Hero({ novaPanelOpen, onOpenNova }) {
         flexDirection: 'column',
         justifyContent: 'center',
         overflow: 'hidden',
-        paddingTop: '5rem',
-        paddingBottom: '3rem',
+        overflowX: 'clip',
+        maxWidth: '100%',
+        paddingTop: '6rem',
+        paddingBottom: '4.5rem',
       }}
     >
       <style>{`
-        @keyframes pulseDots { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
-        @keyframes novaPulseRing {
-          0%   { transform: scale(0.9); opacity: 0.9; }
-          100% { transform: scale(1.6); opacity: 0;   }
-        }
-        @keyframes heroNameReveal {
-          from { opacity: 0; transform: translateY(28px) skewY(1deg); }
+        @keyframes heroFadeUp {
+          from { opacity: 0; transform: translateY(22px); }
           to   { opacity: 1; transform: none; }
         }
-        @keyframes heroLineReveal {
-          from { opacity: 0; transform: translateX(-16px); }
-          to   { opacity: 1; transform: none; }
+        @keyframes heroFadeIn {
+          from { opacity: 0; }
+          to   { opacity: 1; }
         }
-        @keyframes heroCoreReveal {
-          from { opacity: 0; transform: scale(0.92); }
-          to   { opacity: 1; transform: scale(1); }
+        .hero-cta-primary:hover {
+          background: rgba(255, 255, 255, 0.1) !important;
+          border-color: rgba(255, 255, 255, 0.32) !important;
+          color: #FFFFFF !important;
         }
-        .hero-enter-btn:hover {
-          background: rgba(139,92,246,0.22) !important;
-          box-shadow: 0 0 40px rgba(139,92,246,0.4), 0 0 80px rgba(139,92,246,0.12) !important;
-          border-color: rgba(167,139,250,0.5) !important;
+        .hero-cta-secondary:hover {
+          background: rgba(139, 92, 246, 0.12) !important;
+          border-color: rgba(167, 139, 250, 0.55) !important;
+          color: #DDD6FE !important;
         }
-        .hero-view-btn:hover {
-          background: rgba(255,255,255,0.06) !important;
-          border-color: rgba(255,255,255,0.18) !important;
-        }
-        @media (max-width: 900px) {
-          .hero-grid { flex-direction: column-reverse !important; align-items: center !important; padding: 1rem 1.2rem !important; gap: 2.5rem !important; }
-          .hero-left  { align-items: center !important; text-align: center !important; max-width: 100% !important; width: 100% !important; }
-          .hero-name  { font-size: clamp(1.65rem, 8vw, 3.2rem) !important; letter-spacing: -0.02em !important; }
-          .hero-headline { font-size: clamp(1.05rem, 4.2vw, 1.8rem) !important; }
-          .hero-right { width: min(88vw, 340px) !important; height: min(75vw, 280px) !important; margin-bottom: 2rem !important; }
-          .hero-hud-bottom { display: none !important; }
+        @media (max-width: 860px) {
+          .hero-inner {
+            padding: 0 1.5rem !important;
+          }
+          .hero-name-display {
+            font-size: clamp(2rem, 7.8vw, 3.4rem) !important;
+            line-height: 0.96 !important;
+            white-space: nowrap !important;
+          }
+          .hero-statement {
+            font-size: clamp(1.1rem, 4.5vw, 1.5rem) !important;
+          }
+          .hero-cta-row {
+            flex-direction: column !important;
+            width: 100% !important;
+            max-width: 280px !important;
+          }
+          .hero-cta-primary,
+          .hero-cta-secondary {
+            width: 100% !important;
+            justify-content: center !important;
+            text-align: center !important;
+          }
         }
       `}</style>
 
-      {/* Radial vignette over the background canvas */}
-      <div style={{
-        position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1,
-        background: 'radial-gradient(ellipse 80% 80% at 60% 50%, transparent 20%, rgba(7,7,15,.35) 60%, rgba(7,7,15,.8) 100%)',
-      }} />
-
-      {/* ── Two-column hero grid ── */}
+      {/* ── Magnet Lines — Clearly Visible Architectural Field Behind Typography (z-index: 2) ── */}
       <div
-        className="hero-grid"
+        aria-hidden="true"
+        className="hero-magnet-lines-field"
         style={{
-          position: 'relative', zIndex: 5,
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '100%',
-          maxWidth: '1400px',
-          margin: '0 auto',
-          padding: '0 clamp(2rem, 6vw, 7rem)',
-          gap: 'clamp(2rem, 5vw, 6rem)',
+          position: 'absolute',
+          left: isMobile
+            ? 'auto'
+            : isTablet
+            ? '52vw'
+            : 'clamp(48vw, 50vw, 52vw)',
+          right: isMobile ? '0vw' : 'auto',
+          top: isMobile ? '18%' : '16%',
+          width: isMobile
+            ? '48vw'
+            : isTablet
+            ? '46vw'
+            : 'clamp(480px, 55vw, 880px)',
+          height: isMobile
+            ? '36vh'
+            : isTablet
+            ? '50vh'
+            : 'clamp(420px, 58vh, 650px)',
+          zIndex: 2,
+          pointerEvents: 'none',
+          overflow: 'hidden',
+          // Single primary soft elliptical mask preserving ~55% left, ~75% overlap, 100% center, ~70% right, and natural outer edge fade
+          maskImage:
+            'radial-gradient(ellipse 82% 72% at 54% 48%, rgba(0,0,0,1) 45%, rgba(0,0,0,0.72) 76%, rgba(0,0,0,0) 100%)',
+          WebkitMaskImage:
+            'radial-gradient(ellipse 82% 72% at 54% 48%, rgba(0,0,0,1) 45%, rgba(0,0,0,0.72) 76%, rgba(0,0,0,0) 100%)',
         }}
       >
-        {/* ──── LEFT COLUMN — Editorial text ──── */}
-        <div
-          className="hero-left"
-          style={{
-            display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
-            gap: '1.6rem', flex: '1 1 auto', maxWidth: '620px',
-          }}
-        >
-          {/* System status tag */}
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: '0.6rem',
-            animation: 'heroLineReveal 0.5s 0.1s ease both', opacity: 0,
-          }}>
-            <span className="system-tag">AI ENGINEER & SYSTEM BUILDER</span>
-          </div>
-
-          {/* SHADAB HARADWALA — display headline */}
-          <div style={{ animation: 'heroNameReveal 0.7s 0.25s ease both', opacity: 0 }}>
-            <h1
-              className="hero-name"
-              style={{
-                fontFamily: "'Syne', sans-serif",
-                fontWeight: 800,
-                fontSize: 'clamp(2.8rem, 6.8vw, 7.2rem)',
-                lineHeight: 0.92,
-                letterSpacing: '-0.03em',
-                color: 'var(--text)',
-                margin: 0,
-              }}
-            >
-              SHADAB<br />
-              <span style={{
-                background: 'linear-gradient(135deg, #EEEEF5 10%, #A78BFA 55%, #38BDF8 100%)',
-                WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
-                filter: 'drop-shadow(0 0 32px rgba(139,92,246,0.35))',
-              }}>HARADWALA</span>
-            </h1>
-          </div>
-
-          {/* Role subtitle — 3 pillars */}
-          <div style={{
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: 'clamp(0.68rem, 1.4vw, 0.85rem)',
-            letterSpacing: '0.22em',
-            color: 'rgba(167,139,250,0.85)',
-            textTransform: 'uppercase',
-            animation: 'heroLineReveal 0.5s 0.4s ease both', opacity: 0,
-          }}>
-            AI ENGINEER &nbsp;·&nbsp; SOFTWARE ENGINEER &nbsp;·&nbsp; SYSTEM BUILDER
-          </div>
-
-          {/* Main editorial headline */}
-          <div style={{ animation: 'heroLineReveal 0.6s 0.55s ease both', opacity: 0 }}>
-            <p
-              className="hero-headline"
-              style={{
-                fontFamily: "'Syne', sans-serif",
-                fontWeight: 800,
-                fontSize: 'clamp(1.4rem, 3.4vw, 2.7rem)',
-                lineHeight: 1.1,
-                letterSpacing: '-0.01em',
-                color: 'var(--text)',
-                margin: 0,
-                maxWidth: '560px',
-              }}
-            >
-              I BUILD INTELLIGENT SOFTWARE SYSTEMS,<br />
-              <span style={{ color: 'var(--violet2)' }}>FROM FINANCIAL ENGINES TO AUTONOMOUS AI.</span>
-            </p>
-          </div>
-
-          {/* Supporting copy */}
-          <p style={{
-            fontFamily: "'DM Sans', sans-serif",
-            fontWeight: 300,
-            fontSize: 'clamp(0.85rem, 1.4vw, 1.02rem)',
-            color: 'rgba(160,160,192,0.85)',
-            lineHeight: 1.7,
-            maxWidth: '500px',
-            margin: 0,
-            animation: 'heroLineReveal 0.5s 0.7s ease both', opacity: 0,
-          }}>
-            AI engineer and systems builder creating autonomous engines, distributed platforms, and quantitative architectures.
-          </p>
-
-          {/* CTA buttons */}
-          <div style={{
-            display: 'flex', flexWrap: 'wrap', gap: '0.9rem',
-            animation: 'heroLineReveal 0.5s 0.85s ease both', opacity: 0,
-          }}>
-            {/* EXPLORE MY WORK — primary visible action */}
-            <button
-              className="hero-view-btn"
-              onClick={() => {
-                const workEl = document.getElementById('work') || document.getElementById('section-work') || document.querySelector('[data-section="work"]');
-                if (workEl) workEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }}
-              aria-label="Explore My Work — scroll to selected work"
-              style={{
-                display: 'flex', alignItems: 'center', gap: '0.65rem',
-                padding: '0.9rem 2rem',
-                background: 'rgba(255,255,255,0.06)',
-                border: '1px solid rgba(255,255,255,0.18)',
-                borderRadius: '4px',
-                color: '#EEEEF5',
-                fontFamily: "'JetBrains Mono', monospace",
-                fontSize: '0.74rem',
-                letterSpacing: '0.16em',
-                textTransform: 'uppercase',
-                cursor: 'pointer',
-                transition: 'all 0.22s ease',
-              }}
-            >
-              EXPLORE MY WORK
-            </button>
-
-            {/* CONTACT ME */}
-            <button
-              onClick={() => {
-                const contactEl = document.getElementById('contact') || document.getElementById('section-contact') || document.querySelector('[data-section="contact"]');
-                if (contactEl) contactEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }}
-              style={{
-                display: 'flex', alignItems: 'center', gap: '0.65rem',
-                padding: '0.9rem 2rem',
-                background: 'transparent',
-                border: '1px solid rgba(139,92,246,0.3)',
-                borderRadius: '4px',
-                color: 'var(--violet2)',
-                fontFamily: "'JetBrains Mono', monospace",
-                fontSize: '0.74rem',
-                letterSpacing: '0.16em',
-                textTransform: 'uppercase',
-                cursor: 'pointer',
-                transition: 'all 0.22s ease',
-              }}
-            >
-              GET IN TOUCH →
-            </button>
-          </div>
-
-          {/* Bottom scroll indicator — desktop only */}
-          <div
-            className="hero-hud-bottom"
-            style={{
-              display: 'flex', alignItems: 'center', gap: '0.7rem', marginTop: '1rem',
-              animation: 'heroLineReveal 0.5s 1.1s ease both', opacity: 0,
-            }}
-          >
-            <div style={{
-              width: 1, height: 36,
-              background: 'linear-gradient(to bottom, transparent, rgba(139,92,246,0.6))',
-            }} />
-            <span style={{
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: '0.55rem', letterSpacing: '0.2em',
-              color: 'rgba(139,92,246,0.45)', textTransform: 'uppercase',
-            }}>
-              SCROLL TO EXPLORE
-            </span>
-          </div>
-        </div>
-
-        {/* ──── RIGHT COLUMN — NOVA Core ──── */}
-        <div
-          className="hero-right"
-          style={{
-            position: 'relative',
-            width: 'clamp(300px, 38vw, 560px)',
-            height: 'clamp(300px, 38vw, 560px)',
-            flexShrink: 0,
-            animation: 'heroCoreReveal 0.9s 0.3s ease both', opacity: 0,
-          }}
-        >
-          {/* HUD frame corners around the core */}
-          {['topLeft', 'topRight', 'bottomLeft', 'bottomRight'].map((corner) => {
-            const isTop    = corner.startsWith('top');
-            const isLeft   = corner.endsWith('Left');
-            return (
-              <div key={corner} style={{
-                position: 'absolute',
-                [isTop ? 'top' : 'bottom']: '8%',
-                [isLeft ? 'left' : 'right']: '8%',
-                width: 20, height: 20,
-                borderTop:    isTop    ? '1px solid rgba(139,92,246,0.35)' : 'none',
-                borderBottom: !isTop   ? '1px solid rgba(139,92,246,0.35)' : 'none',
-                borderLeft:   isLeft   ? '1px solid rgba(139,92,246,0.35)' : 'none',
-                borderRight:  !isLeft  ? '1px solid rgba(139,92,246,0.35)' : 'none',
-                pointerEvents: 'none', zIndex: 10,
-              }} />
-            );
-          })}
-
-          {/* NOVA Core label — top right */}
-          <div style={{
-            position: 'absolute', top: 'calc(8% - 20px)', right: '8%', zIndex: 10,
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: '0.52rem', letterSpacing: '0.18em',
-            color: 'rgba(139,92,246,0.45)', textTransform: 'uppercase',
-          }}>
-            NOVA CORE v2
-          </div>
-
-          {/* Neural link status — bottom left */}
-          <div style={{
-            position: 'absolute', bottom: 'calc(8% - 18px)', left: '8%', zIndex: 10,
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: '0.5rem', letterSpacing: '0.15em',
-            color: 'rgba(45,212,191,0.55)', textTransform: 'uppercase',
-            display: 'flex', alignItems: 'center', gap: '0.4rem',
-          }}>
-            <span style={{ width: 4, height: 4, borderRadius: '50%', background: '#4ADE80', boxShadow: '0 0 5px #4ADE80' }} />
-            NEURAL LINK: ACTIVE
-          </div>
-
-          {/* HUD Clock */}
-          <div style={{
-            position: 'absolute', bottom: 'calc(8% - 18px)', right: '8%', zIndex: 10,
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: '0.5rem', letterSpacing: '0.12em',
-            color: 'rgba(167,139,250,0.4)', textTransform: 'uppercase',
-          }}>
-            {time}
-          </div>
-
-          {/* Conversation + NOVA Core (both untouched) */}
-          <div style={{
-            position: 'absolute', inset: 0,
-            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <ConversationBubble
-              text={spokenText} isSpeaking={isSpeaking} isThinking={isThinking}
-              previewCard={novaContext.previewCard}
-              onOpenPreview={(route, name) => navigation.executeNavigation(route, name)}
-            />
-            <NovaCoreV2
-              duplexState={voiceState}
-              onCoreClick={duplex.isSupported
-                ? duplex.handleTap
-                : () => { setChatOpen(true); doGreet(); }
-              }
-              onClickNode={(label) => {
-                novaContext.setHighlightedNode(label);
-                setTimeout(() => {
-                  novaContext.setHighlightedNode((current) => (current === label ? null : current));
-                }, 3000);
-                window.dispatchEvent(new CustomEvent('nova-nav', { detail: { label } }));
-                setTimeout(() => {
-                  if (label === 'About') {
-                    scrollToSection('about');
-                  } else if (label === 'Skills') {
-                    scrollToSection('skills');
-                    highlightSection('skills');
-                  } else if (label === 'Projects') {
-                    scrollToSection('projects');
-                  } else if (label === 'Contact') {
-                    scrollToSection('contact');
-                  }
-                }, 300);
-              }}
-              activeSubNodes={novaContext.activeSubNodes}
-              highlightedNode={novaContext.highlightedNode}
-              setHighlightedNode={novaContext.setHighlightedNode}
-            />
-          </div>
-        </div>
+        <MagnetLines
+          rows={isMobile ? 5 : isTablet ? 7 : 8}
+          columns={isMobile ? 5 : isTablet ? 8 : 10}
+          style={{ width: '100%', height: '100%' }}
+          lineColor={
+            isMobile
+              ? 'rgba(176, 165, 255, 0.12)'
+              : isTablet
+              ? 'rgba(176, 165, 255, 0.22)'
+              : 'rgba(176, 165, 255, 0.28)'
+          }
+          lineWidth="0.14vmin"
+          lineHeight={isMobile ? '2.8vmin' : '3.8vmin'}
+          baseAngle={0}
+        />
       </div>
 
-      {/* ── NOVA Panel (chat) ── */}
-      <NovaPanel
-        messages={messages} isLoading={isLoading} onSend={handleSend} onMarkRead={markRead}
-        isSpeaking={isSpeaking} isListening={isListening || ds === 'listening'}
-        onToggleMic={sttSupported ? toggleListening : () => { addGreeting('⚠️ Voice input needs Chrome.'); setChatOpen(true); }}
-        isOpen={chatOpen} onToggle={() => setChatOpen(c => !c)}
-      />
-      {showDebug && <NovaDebugPanel />}
+      {/* ── Minimal Editorial Typography Content ── */}
+      <div
+        className="hero-inner"
+        style={{
+          position: 'relative',
+          zIndex: 5,
+          width: '100%',
+          maxWidth: '1240px',
+          margin: '0 auto',
+          padding: '0 clamp(1.5rem, 5.5vw, 4.5rem)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+        }}
+      >
+        {/* Eyebrow */}
+        <div
+          style={{
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: 'clamp(0.62rem, 1.1vw, 0.74rem)',
+            letterSpacing: '0.22em',
+            color: 'rgba(167, 139, 250, 0.85)',
+            textTransform: 'uppercase',
+            marginBottom: '1.4rem',
+            animation: 'heroFadeIn 0.6s 0.1s ease both',
+            opacity: 0,
+          }}
+        >
+          AI ENGINEER&nbsp;·&nbsp;SOFTWARE ENGINEER&nbsp;·&nbsp;SYSTEM BUILDER
+        </div>
+
+        {/* Name — fitted completely within viewport */}
+        <div
+          style={{
+            animation: 'heroFadeUp 0.7s 0.25s ease both',
+            opacity: 0,
+            marginBottom: '1.35rem',
+          }}
+        >
+          <h1
+            className="hero-name-display"
+            style={{
+              fontFamily: "'Syne', sans-serif",
+              fontWeight: 800,
+              fontSize: 'clamp(2.75rem, 6.2vw, 5.2rem)',
+              lineHeight: 0.95,
+              letterSpacing: '-0.04em',
+              color: 'var(--text, #EEEEF5)',
+              margin: 0,
+              whiteSpace: 'nowrap',
+            }}
+          >
+            SHADAB<br />
+            <span
+              style={{
+                background:
+                  'linear-gradient(135deg, #EEEEF5 10%, #A78BFA 52%, #38BDF8 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
+              HARADWALA
+            </span>
+          </h1>
+        </div>
+
+        {/* Statement line */}
+        <div
+          style={{
+            animation: 'heroFadeUp 0.6s 0.45s ease both',
+            opacity: 0,
+            marginBottom: '1.1rem',
+          }}
+        >
+          <p
+            className="hero-statement"
+            style={{
+              fontFamily: "'Syne', sans-serif",
+              fontWeight: 700,
+              fontSize: 'clamp(1.15rem, 2.3vw, 1.85rem)',
+              lineHeight: 1.2,
+              letterSpacing: '-0.015em',
+              color: '#F4F4F8',
+              margin: 0,
+              maxWidth: '580px',
+            }}
+          >
+            I BUILD INTELLIGENT<br />SOFTWARE SYSTEMS.
+          </p>
+        </div>
+
+        {/* Supporting Copy */}
+        <p
+          style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontWeight: 300,
+            fontSize: 'clamp(0.88rem, 1.3vw, 1rem)',
+            color: 'rgba(160, 160, 192, 0.78)',
+            lineHeight: 1.65,
+            maxWidth: '460px',
+            margin: '0 0 2.4rem 0',
+            animation: 'heroFadeIn 0.6s 0.65s ease both',
+            opacity: 0,
+          }}
+        >
+          AI systems, financial software, automation, and experimental interfaces.
+        </p>
+
+        {/* CTA Buttons */}
+        <div
+          className="hero-cta-row"
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '0.85rem',
+            animation: 'heroFadeIn 0.5s 0.8s ease both',
+            opacity: 0,
+          }}
+        >
+          <button
+            className="hero-cta-primary"
+            onClick={() => {
+              const el =
+                document.getElementById('section-work') ||
+                document.querySelector('[data-section="work"]');
+              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }}
+            style={{
+              padding: '0.85rem 1.85rem',
+              background: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid rgba(255, 255, 255, 0.16)',
+              borderRadius: '4px',
+              color: '#EEEEF5',
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: '0.72rem',
+              letterSpacing: '0.16em',
+              textTransform: 'uppercase',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+            }}
+          >
+            VIEW SELECTED WORK
+          </button>
+
+          <button
+            className="hero-cta-secondary"
+            onClick={() => {
+              const el =
+                document.getElementById('about') ||
+                document.querySelector('[data-section="about"]');
+              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }}
+            style={{
+              padding: '0.85rem 1.85rem',
+              background: 'transparent',
+              border: '1px solid rgba(139, 92, 246, 0.32)',
+              borderRadius: '4px',
+              color: 'rgba(167, 139, 250, 0.9)',
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: '0.72rem',
+              letterSpacing: '0.16em',
+              textTransform: 'uppercase',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+            }}
+          >
+            ABOUT ME
+          </button>
+        </div>
+
+        {/* Scroll Indicator */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.65rem',
+            marginTop: '3.5rem',
+            animation: 'heroFadeIn 0.5s 1.1s ease both',
+            opacity: 0,
+          }}
+        >
+          <div
+            style={{
+              width: 1,
+              height: 30,
+              background:
+                'linear-gradient(to bottom, transparent, rgba(139,92,246,0.45))',
+            }}
+          />
+          <span
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: '0.55rem',
+              letterSpacing: '0.2em',
+              color: 'rgba(139, 92, 246, 0.45)',
+              textTransform: 'uppercase',
+            }}
+          >
+            SCROLL TO EXPLORE
+          </span>
+        </div>
+      </div>
     </section>
   );
 }
-
-
