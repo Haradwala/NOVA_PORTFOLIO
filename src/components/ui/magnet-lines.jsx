@@ -4,12 +4,16 @@ import React, { useRef, useEffect } from 'react';
 
 /**
  * MagnetLines
- * High-performance magnetic lines field.
+ * High-performance magnetic lines field with proximity illumination and cursor glow.
  *
  * Architecture:
  * - Single requestAnimationFrame loop driven by time delta factor `1 - exp(-dt * 12)`.
  * - Window-level pointermove listener writes strictly to ref without triggering React state or DOM writes.
  * - Center coordinates are measured in batch on mount, resize, and scroll (no per-frame layout thrashing).
+ * - Per-frame proximity to cursor via smoothstep (R = 280px):
+ *   * Near lines: opacity ~0.9, violet tint (#A78BFA), slightly thicker (scale 1.12x).
+ *   * Far lines: opacity ~0.20, dim grey-blue.
+ * - Soft violet radial glow smoothly tracks behind lines using same easing.
  * - Loop automatically suspends when all lines settle (|delta| <= 0.05 deg) and restarts on pointer move.
  * - Idle / reduced-motion renders a static radial swirl aimed at container center without running the rAF loop.
  */
@@ -17,7 +21,6 @@ export function MagnetLines({
   rows = 9,
   columns = 14,
   containerSize = '100%',
-  lineColor = 'currentColor',
   lineWidth = '5.5px',
   lineHeight = '58px',
   baseAngle = 0,
@@ -25,10 +28,13 @@ export function MagnetLines({
   style = {},
 }) {
   const containerRef = useRef(null);
+  const glowRef = useRef(null);
   const lineElsRef = useRef([]);
   const centersRef = useRef([]);
   const anglesRef = useRef([]);
+  const containerRectRef = useRef(null);
   const pointerRef = useRef({ x: null, y: null, active: false });
+  const glowPosRef = useRef({ x: 0, y: 0 });
   const animatingRef = useRef(false);
   const rafIdRef = useRef(null);
   const lastTimeRef = useRef(0);
@@ -55,11 +61,15 @@ export function MagnetLines({
     };
     motionQuery.addEventListener('change', handleMotionChange);
 
-    // 2. Measure centers in batch (READ phase), then initialize angles (WRITE phase)
+    // 2. Measure centers in batch (READ phase), then initialize angles & styles (WRITE phase)
     const measureAndInit = () => {
       if (!containerRef.current) return;
       const count = rows * columns;
       const centers = [];
+
+      // Cache container bounding rect once
+      const containerRect = containerRef.current.getBoundingClientRect();
+      containerRectRef.current = containerRect;
 
       // Batch read all line centers (no interleaving with writes)
       for (let i = 0; i < count; i++) {
@@ -75,24 +85,46 @@ export function MagnetLines({
       centersRef.current = centers;
 
       // Determine initial target: pointer if active, otherwise container center
-      const containerRect = containerRef.current.getBoundingClientRect();
+      const centerX = containerRect.left + containerRect.width / 2;
+      const centerY = containerRect.top + containerRect.height / 2;
       const targetX = pointerRef.current.active && pointerRef.current.x !== null
         ? pointerRef.current.x
-        : containerRect.left + containerRect.width / 2;
+        : centerX;
       const targetY = pointerRef.current.active && pointerRef.current.y !== null
         ? pointerRef.current.y
-        : containerRect.top + containerRect.height / 2;
+        : centerY;
 
-      // Batch write initial transforms
+      glowPosRef.current = { x: targetX, y: targetY };
+      if (glowRef.current) {
+        const relX = targetX - containerRect.left - 280;
+        const relY = targetY - containerRect.top - 280;
+        glowRef.current.style.transform = `translate3d(${relX.toFixed(1)}px, ${relY.toFixed(1)}px, 0)`;
+      }
+
+      // Batch write initial transforms & proximity colors
+      const R = 280;
       for (let i = 0; i < count; i++) {
         const c = centers[i];
         const el = lineElsRef.current[i];
         if (c && el) {
           const dx = targetX - c.x;
           const dy = targetY - c.y;
+          const dist = Math.hypot(dx, dy);
+
+          // Smoothstep Hermite curve: 1 at center, 0 at R
+          const x = Math.max(0, Math.min(1, 1 - dist / R));
+          const p = x * x * (3 - 2 * x);
+
+          const r = Math.round(155 + (167 - 155) * p);
+          const g = Math.round(165 + (139 - 165) * p);
+          const b = Math.round(195 + (250 - 195) * p);
+          const a = (0.20 + (0.90 - 0.20) * p).toFixed(2);
+          const scale = (1 + 0.12 * p).toFixed(2);
+
           const angle = (Math.atan2(dy, dx) * 180) / Math.PI + baseAngle;
           anglesRef.current[i] = angle;
-          el.style.transform = `rotate(${angle.toFixed(2)}deg)`;
+          el.style.transform = `rotate(${angle.toFixed(2)}deg) scale(${scale})`;
+          el.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${a})`;
         }
       }
     };
@@ -107,13 +139,13 @@ export function MagnetLines({
 
       const count = rows * columns;
       const centers = centersRef.current;
+      const containerRect = containerRectRef.current;
 
       let targetX, targetY;
       if (pointerRef.current.active && pointerRef.current.x !== null) {
         targetX = pointerRef.current.x;
         targetY = pointerRef.current.y;
       } else {
-        const containerRect = containerRef.current?.getBoundingClientRect();
         if (containerRect) {
           targetX = containerRect.left + containerRect.width / 2;
           targetY = containerRect.top + containerRect.height / 2;
@@ -123,9 +155,19 @@ export function MagnetLines({
         }
       }
 
-      let hasMovingLines = false;
+      // Smooth glow position following target
+      glowPosRef.current.x += (targetX - glowPosRef.current.x) * factor;
+      glowPosRef.current.y += (targetY - glowPosRef.current.y) * factor;
+      if (glowRef.current && containerRect) {
+        const relX = glowPosRef.current.x - containerRect.left - 280;
+        const relY = glowPosRef.current.y - containerRect.top - 280;
+        glowRef.current.style.transform = `translate3d(${relX.toFixed(1)}px, ${relY.toFixed(1)}px, 0)`;
+      }
 
-      // Write transforms only when delta > 0.05
+      let hasMovingLines = false;
+      const R = 280;
+
+      // Update lines
       for (let i = 0; i < count; i++) {
         const c = centers[i];
         const el = lineElsRef.current[i];
@@ -133,6 +175,18 @@ export function MagnetLines({
 
         const dx = targetX - c.x;
         const dy = targetY - c.y;
+        const dist = Math.hypot(dx, dy);
+
+        // Smoothstep proximity
+        const x = Math.max(0, Math.min(1, 1 - dist / R));
+        const p = x * x * (3 - 2 * x);
+
+        const r = Math.round(155 + (167 - 155) * p);
+        const g = Math.round(165 + (139 - 165) * p);
+        const b = Math.round(195 + (250 - 195) * p);
+        const a = (0.20 + (0.90 - 0.20) * p).toFixed(2);
+        const scale = (1 + 0.12 * p).toFixed(2);
+
         const target = (Math.atan2(dy, dx) * 180) / Math.PI + baseAngle;
         let current = anglesRef.current[i];
         if (typeof current !== 'number') {
@@ -143,10 +197,11 @@ export function MagnetLines({
         // Shortest angular path across +-180
         const delta = ((target - current + 540) % 360) - 180;
 
-        if (Math.abs(delta) > 0.05) {
+        if (Math.abs(delta) > 0.05 || pointerRef.current.active) {
           current += delta * factor;
           anglesRef.current[i] = current;
-          el.style.transform = `rotate(${current.toFixed(2)}deg)`;
+          el.style.transform = `rotate(${current.toFixed(2)}deg) scale(${scale})`;
+          el.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${a})`;
           hasMovingLines = true;
         }
       }
@@ -235,10 +290,31 @@ export function MagnetLines({
         gridTemplateRows: `repeat(${rows}, 1fr)`,
         width: containerSize,
         height: containerSize,
+        position: 'relative',
+        overflow: 'hidden',
         ...style,
       }}
       aria-hidden="true"
     >
+      {/* Soft violet radial glow following cursor behind lines */}
+      <div
+        ref={glowRef}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '560px',
+          height: '560px',
+          borderRadius: '50%',
+          background:
+            'radial-gradient(circle at center, rgba(167, 139, 250, 0.15) 0%, rgba(139, 92, 246, 0.05) 45%, transparent 70%)',
+          filter: 'blur(45px)',
+          pointerEvents: 'none',
+          willChange: 'transform',
+          transform: 'translate3d(-9999px, -9999px, 0)',
+          zIndex: 0,
+        }}
+      />
       {spans.map((i) => (
         <div
           key={i}
@@ -248,10 +324,11 @@ export function MagnetLines({
           style={{
             width: lineWidth,
             height: lineHeight,
-            backgroundColor: lineColor,
+            backgroundColor: 'rgba(155, 165, 195, 0.20)',
             borderRadius: '9999px',
             willChange: 'transform',
             pointerEvents: 'none',
+            zIndex: 1,
           }}
           aria-hidden="true"
         />

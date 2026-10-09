@@ -47,13 +47,27 @@ export default function Hero() {
       }}
     >
       <style>{`
-        @keyframes heroFadeUp {
-          from { opacity: 0; transform: translateY(22px); }
+        @keyframes heroFadeIn {
+          from { opacity: 0; transform: translateY(12px); }
           to   { opacity: 1; transform: none; }
         }
-        @keyframes heroFadeIn {
-          from { opacity: 0; }
-          to   { opacity: 1; }
+        @keyframes heroSlideUp {
+          from { opacity: 0; transform: translateY(105%); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes heroGridReveal {
+          from { opacity: 0; transform: scale(0.96); }
+          to   { opacity: 1; transform: scale(1); }
+        }
+        @keyframes headlineSheen {
+          0%   { background-position: 0% 50%; }
+          50%  { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+        @keyframes scrollPulse {
+          0%   { transform: translateY(0); opacity: 0.25; }
+          50%  { transform: translateY(6px); opacity: 0.95; }
+          100% { transform: translateY(0); opacity: 0.25; }
         }
         .hero-cta-primary:hover {
           background: rgba(255, 255, 255, 0.1) !important;
@@ -70,7 +84,7 @@ export default function Hero() {
             padding: 0 1.5rem !important;
           }
           .hero-name-display {
-            font-size: clamp(2rem, 7.8vw, 3.4rem) !important;
+            font-size: clamp(2.1rem, 8vw, 3.4rem) !important;
             line-height: 0.96 !important;
             white-space: nowrap !important;
           }
@@ -89,6 +103,24 @@ export default function Hero() {
             text-align: center !important;
           }
         }
+        @media (prefers-reduced-motion: reduce) {
+          .hero-grid-wrapper,
+          .hero-eyebrow,
+          .hero-title-line-1,
+          .hero-title-line-2,
+          .hero-statement-wrapper,
+          .hero-copy,
+          .hero-cta-row,
+          .hero-scroll-cue,
+          .hero-scroll-line {
+            animation: none !important;
+            opacity: 1 !important;
+            transform: none !important;
+          }
+          .hero-name-gradient {
+            animation: none !important;
+          }
+        }
       `}</style>
 
       {/* ── LAYER 1 (z-0): Existing space background (stars etc.) — pointer-events: none ── */}
@@ -105,19 +137,14 @@ export default function Hero() {
       {/* ── LAYER 2 (z-10): MagnetLines decorative interactive layer ── */}
       <div
         aria-hidden="true"
-        className="hero-magnet-lines-field"
+        className="hero-grid-wrapper"
         style={{
           position: 'absolute',
           inset: 0,
           zIndex: 10,
           pointerEvents: 'none',
           overflow: 'hidden',
-          color: '#FFFFFF',
-          opacity: 0.35,
-          maskImage:
-            'radial-gradient(ellipse at 35% 50%, rgba(0,0,0,0.25) 0%, black 60%)',
-          WebkitMaskImage:
-            'radial-gradient(ellipse at 35% 50%, rgba(0,0,0,0.25) 0%, black 60%)',
+          animation: 'heroGridReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) both',
         }}
       >
         <MagnetLines
@@ -125,14 +152,52 @@ export default function Hero() {
           columns={isMobile ? 8 : isTablet ? 11 : 14}
           containerSize="100%"
           style={{ width: '100%', height: '100%' }}
-          lineColor="currentColor"
           lineWidth={isMobile ? '4.5px' : '5.5px'}
           lineHeight={isMobile ? '38px' : '58px'}
           baseAngle={0}
         />
       </div>
 
-      {/* ── LAYER 3 (z-20): Hero text, buttons, nav content ── */}
+      {/* ── LAYER 2.5 (z-14): Soft dark scrim behind text block for maximum readability ── */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          zIndex: 14,
+          pointerEvents: 'none',
+          background:
+            'radial-gradient(ellipse 68% 62% at 30% 46%, rgba(5, 5, 12, 0.85) 0%, rgba(5, 5, 12, 0.65) 45%, rgba(5, 5, 12, 0) 80%)',
+        }}
+      />
+
+      {/* ── LAYER 2.6 (z-16): Subtle edge vignette ── */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          zIndex: 16,
+          pointerEvents: 'none',
+          background:
+            'radial-gradient(ellipse 90% 85% at 50% 50%, transparent 55%, rgba(3, 3, 8, 0.6) 100%)',
+        }}
+      />
+
+      {/* ── LAYER 2.7 (z-17): Faint cinematic grain overlay (3.5% opacity) ── */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          zIndex: 17,
+          pointerEvents: 'none',
+          opacity: 0.035,
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+        }}
+      />
+
+      {/* ── LAYER 3 (z-20): Editorial Typography Content (Staged Reveal) ── */}
       <div
         className="hero-inner"
         style={{
@@ -150,28 +215,23 @@ export default function Hero() {
       >
         {/* Eyebrow */}
         <div
+          className="hero-eyebrow"
           style={{
             fontFamily: "'JetBrains Mono', monospace",
             fontSize: 'clamp(0.62rem, 1.1vw, 0.74rem)',
             letterSpacing: '0.22em',
-            color: 'rgba(167, 139, 250, 0.85)',
+            color: 'rgba(196, 181, 253, 0.95)',
             textTransform: 'uppercase',
             marginBottom: '1.4rem',
-            animation: 'heroFadeIn 0.6s 0.1s ease both',
+            animation: 'heroFadeIn 0.6s 0.08s cubic-bezier(0.16, 1, 0.3, 1) both',
             opacity: 0,
           }}
         >
           AI ENGINEER&nbsp;·&nbsp;SOFTWARE ENGINEER&nbsp;·&nbsp;SYSTEM BUILDER
         </div>
 
-        {/* Name — fitted completely within viewport */}
-        <div
-          style={{
-            animation: 'heroFadeUp 0.7s 0.25s ease both',
-            opacity: 0,
-            marginBottom: '1.35rem',
-          }}
-        >
+        {/* Name — fitted completely within viewport with staged mask reveals */}
+        <div style={{ marginBottom: '1.35rem' }}>
           <h1
             className="hero-name-display"
             style={{
@@ -185,48 +245,81 @@ export default function Hero() {
               whiteSpace: 'nowrap',
             }}
           >
-            SHADAB<br />
-            <span
-              style={{
-                background:
-                  'linear-gradient(135deg, #EEEEF5 10%, #A78BFA 52%, #38BDF8 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}
-            >
-              HARADWALA
-            </span>
+            {/* Line 1: SHADAB with mask reveal */}
+            <div style={{ overflow: 'hidden' }}>
+              <div
+                className="hero-title-line-1"
+                style={{
+                  animation:
+                    'heroSlideUp 0.75s 0.18s cubic-bezier(0.16, 1, 0.3, 1) both',
+                  opacity: 0,
+                }}
+              >
+                SHADAB
+              </div>
+            </div>
+
+            {/* Line 2: HARADWALA with mask reveal, smooth extended gradient, and subtle sheen */}
+            <div style={{ overflow: 'hidden', marginTop: '0.08em' }}>
+              <div
+                className="hero-title-line-2"
+                style={{
+                  animation:
+                    'heroSlideUp 0.75s 0.30s cubic-bezier(0.16, 1, 0.3, 1) both',
+                  opacity: 0,
+                }}
+              >
+                <span
+                  className="hero-name-gradient"
+                  style={{
+                    background:
+                      'linear-gradient(135deg, #FFFFFF 0%, #E2E8F0 15%, #C4B5FD 40%, #A78BFA 65%, #38BDF8 90%, #C4B5FD 100%)',
+                    backgroundSize: '220% auto',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    animation: 'headlineSheen 7s ease-in-out infinite',
+                    display: 'inline-block',
+                  }}
+                >
+                  HARADWALA
+                </span>
+              </div>
+            </div>
           </h1>
         </div>
 
-        {/* Statement line */}
-        <div
-          style={{
-            animation: 'heroFadeUp 0.6s 0.45s ease both',
-            opacity: 0,
-            marginBottom: '1.1rem',
-          }}
-        >
-          <p
-            className="hero-statement"
+        {/* Statement line with mask reveal */}
+        <div style={{ overflow: 'hidden', marginBottom: '1.1rem' }}>
+          <div
+            className="hero-statement-wrapper"
             style={{
-              fontFamily: "'Syne', sans-serif",
-              fontWeight: 700,
-              fontSize: 'clamp(1.15rem, 2.3vw, 1.85rem)',
-              lineHeight: 1.2,
-              letterSpacing: '-0.015em',
-              color: '#F4F4F8',
-              margin: 0,
-              maxWidth: '580px',
+              animation:
+                'heroSlideUp 0.7s 0.42s cubic-bezier(0.16, 1, 0.3, 1) both',
+              opacity: 0,
             }}
           >
-            I BUILD INTELLIGENT<br />SOFTWARE SYSTEMS.
-          </p>
+            <p
+              className="hero-statement"
+              style={{
+                fontFamily: "'Syne', sans-serif",
+                fontWeight: 700,
+                fontSize: 'clamp(1.15rem, 2.3vw, 1.85rem)',
+                lineHeight: 1.2,
+                letterSpacing: '-0.015em',
+                color: '#F4F4F8',
+                margin: 0,
+                maxWidth: '580px',
+              }}
+            >
+              I BUILD INTELLIGENT<br />SOFTWARE SYSTEMS.
+            </p>
+          </div>
         </div>
 
         {/* Supporting Copy */}
         <p
+          className="hero-copy"
           style={{
             fontFamily: "'DM Sans', sans-serif",
             fontWeight: 300,
@@ -235,7 +328,7 @@ export default function Hero() {
             lineHeight: 1.65,
             maxWidth: '460px',
             margin: '0 0 2.4rem 0',
-            animation: 'heroFadeIn 0.6s 0.65s ease both',
+            animation: 'heroFadeIn 0.65s 0.54s ease both',
             opacity: 0,
           }}
         >
@@ -249,7 +342,7 @@ export default function Hero() {
             display: 'flex',
             flexWrap: 'wrap',
             gap: '0.85rem',
-            animation: 'heroFadeIn 0.5s 0.8s ease both',
+            animation: 'heroFadeIn 0.6s 0.66s ease both',
             opacity: 0,
           }}
         >
@@ -306,34 +399,38 @@ export default function Hero() {
 
         {/* Scroll Indicator */}
         <div
+          className="hero-scroll-cue"
           style={{
             display: 'flex',
-            alignItems: 'center',
+            flexDirection: 'column',
+            alignItems: 'flex-start',
             gap: '0.65rem',
             marginTop: '3.5rem',
-            animation: 'heroFadeIn 0.5s 1.1s ease both',
+            animation: 'heroFadeIn 0.6s 0.78s ease both',
             opacity: 0,
           }}
         >
-          <div
-            style={{
-              width: 1,
-              height: 30,
-              background:
-                'linear-gradient(to bottom, transparent, rgba(139,92,246,0.45))',
-            }}
-          />
           <span
             style={{
               fontFamily: "'JetBrains Mono', monospace",
-              fontSize: '0.55rem',
-              letterSpacing: '0.2em',
-              color: 'rgba(139, 92, 246, 0.45)',
+              fontSize: '0.58rem',
+              letterSpacing: '0.22em',
+              color: 'rgba(238, 238, 245, 0.62)',
               textTransform: 'uppercase',
             }}
           >
             SCROLL TO EXPLORE
           </span>
+          <div
+            className="hero-scroll-line"
+            style={{
+              width: 1,
+              height: 32,
+              background:
+                'linear-gradient(to bottom, rgba(167, 139, 250, 0.8), transparent)',
+              animation: 'scrollPulse 2.4s ease-in-out infinite',
+            }}
+          />
         </div>
       </div>
     </section>
