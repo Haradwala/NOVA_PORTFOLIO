@@ -1,41 +1,203 @@
 'use client';
 
-import React, { useRef, useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import React, { useRef, useEffect } from 'react';
 
 /**
  * MagnetLines
- * Official Componentry Magnet Lines component.
- * Reference: @componentry/magnet-lines
+ * High-performance magnetic lines field.
  *
- * A grid of lines that rotate to face the cursor, creating a magnetic field effect.
+ * Architecture:
+ * - Single requestAnimationFrame loop driven by time delta factor `1 - exp(-dt * 12)`.
+ * - Window-level pointermove listener writes strictly to ref without triggering React state or DOM writes.
+ * - Center coordinates are measured in batch on mount, resize, and scroll (no per-frame layout thrashing).
+ * - Loop automatically suspends when all lines settle (|delta| <= 0.05 deg) and restarts on pointer move.
+ * - Idle / reduced-motion renders a static radial swirl aimed at container center without running the rAF loop.
  */
 export function MagnetLines({
   rows = 9,
-  columns = 9,
-  containerSize = '80vmin',
-  lineColor = '#efefef',
-  lineWidth = '1vmin',
-  lineHeight = '6vmin',
+  columns = 14,
+  containerSize = '100%',
+  lineColor = 'currentColor',
+  lineWidth = '5.5px',
+  lineHeight = '58px',
   baseAngle = 0,
   className = '',
   style = {},
 }) {
   const containerRef = useRef(null);
-  const [isVisible, setIsVisible] = useState(true);
-  const [reducedMotion, setReducedMotion] = useState(false);
+  const lineElsRef = useRef([]);
+  const centersRef = useRef([]);
+  const anglesRef = useRef([]);
+  const pointerRef = useRef({ x: null, y: null, active: false });
+  const animatingRef = useRef(false);
+  const rafIdRef = useRef(null);
+  const lastTimeRef = useRef(0);
+  const reducedMotionRef = useRef(false);
+  const isVisibleRef = useRef(true);
+
+  const total = rows * columns;
+  const spans = Array.from({ length: total }, (_, i) => i);
 
   useEffect(() => {
-    // Check prefers-reduced-motion
+    // 1. Reduced motion check
     const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setReducedMotion(motionQuery.matches);
-    const handleMotionChange = (e) => setReducedMotion(e.matches);
+    reducedMotionRef.current = motionQuery.matches;
+
+    const handleMotionChange = (e) => {
+      reducedMotionRef.current = e.matches;
+      if (e.matches) {
+        if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+        animatingRef.current = false;
+        measureAndInit();
+      } else {
+        startLoop();
+      }
+    };
     motionQuery.addEventListener('change', handleMotionChange);
 
-    // Only listen when container is in viewport to ensure 60fps performance
+    // 2. Measure centers in batch (READ phase), then initialize angles (WRITE phase)
+    const measureAndInit = () => {
+      if (!containerRef.current) return;
+      const count = rows * columns;
+      const centers = [];
+
+      // Batch read all line centers (no interleaving with writes)
+      for (let i = 0; i < count; i++) {
+        const el = lineElsRef.current[i];
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          centers[i] = {
+            x: rect.left + rect.width / 2,
+            y: rect.top + rect.height / 2,
+          };
+        }
+      }
+      centersRef.current = centers;
+
+      // Determine initial target: pointer if active, otherwise container center
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const targetX = pointerRef.current.active && pointerRef.current.x !== null
+        ? pointerRef.current.x
+        : containerRect.left + containerRect.width / 2;
+      const targetY = pointerRef.current.active && pointerRef.current.y !== null
+        ? pointerRef.current.y
+        : containerRect.top + containerRect.height / 2;
+
+      // Batch write initial transforms
+      for (let i = 0; i < count; i++) {
+        const c = centers[i];
+        const el = lineElsRef.current[i];
+        if (c && el) {
+          const dx = targetX - c.x;
+          const dy = targetY - c.y;
+          const angle = (Math.atan2(dy, dx) * 180) / Math.PI + baseAngle;
+          anglesRef.current[i] = angle;
+          el.style.transform = `rotate(${angle.toFixed(2)}deg)`;
+        }
+      }
+    };
+
+    // 3. Single rAF animation loop
+    const tick = (now) => {
+      if (!animatingRef.current) return;
+
+      const dt = Math.min((now - lastTimeRef.current) / 1000, 0.1);
+      lastTimeRef.current = now;
+      const factor = 1 - Math.exp(-dt * 12);
+
+      const count = rows * columns;
+      const centers = centersRef.current;
+
+      let targetX, targetY;
+      if (pointerRef.current.active && pointerRef.current.x !== null) {
+        targetX = pointerRef.current.x;
+        targetY = pointerRef.current.y;
+      } else {
+        const containerRect = containerRef.current?.getBoundingClientRect();
+        if (containerRect) {
+          targetX = containerRect.left + containerRect.width / 2;
+          targetY = containerRect.top + containerRect.height / 2;
+        } else {
+          targetX = window.innerWidth / 2;
+          targetY = window.innerHeight / 2;
+        }
+      }
+
+      let hasMovingLines = false;
+
+      // Write transforms only when delta > 0.05
+      for (let i = 0; i < count; i++) {
+        const c = centers[i];
+        const el = lineElsRef.current[i];
+        if (!c || !el) continue;
+
+        const dx = targetX - c.x;
+        const dy = targetY - c.y;
+        const target = (Math.atan2(dy, dx) * 180) / Math.PI + baseAngle;
+        let current = anglesRef.current[i];
+        if (typeof current !== 'number') {
+          current = target;
+          anglesRef.current[i] = current;
+        }
+
+        // Shortest angular path across +-180
+        const delta = ((target - current + 540) % 360) - 180;
+
+        if (Math.abs(delta) > 0.05) {
+          current += delta * factor;
+          anglesRef.current[i] = current;
+          el.style.transform = `rotate(${current.toFixed(2)}deg)`;
+          hasMovingLines = true;
+        }
+      }
+
+      if (hasMovingLines && isVisibleRef.current && !reducedMotionRef.current) {
+        rafIdRef.current = requestAnimationFrame(tick);
+      } else {
+        animatingRef.current = false;
+        rafIdRef.current = null;
+      }
+    };
+
+    const startLoop = () => {
+      if (reducedMotionRef.current || !isVisibleRef.current) return;
+      if (!animatingRef.current) {
+        animatingRef.current = true;
+        lastTimeRef.current = performance.now();
+        rafIdRef.current = requestAnimationFrame(tick);
+      }
+    };
+
+    // 4. Pointer listeners (store in ref only, zero DOM/state in handler)
+    const handlePointerMove = (e) => {
+      pointerRef.current.x = e.clientX;
+      pointerRef.current.y = e.clientY;
+      pointerRef.current.active = true;
+      startLoop();
+    };
+
+    const handlePointerLeave = () => {
+      pointerRef.current.active = false;
+      startLoop();
+    };
+
+    const handleResizeOrScroll = () => {
+      measureAndInit();
+      startLoop();
+    };
+
+    // 5. Visibility observer
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setIsVisible(entry?.isIntersecting ?? true);
+        const visible = entry?.isIntersecting ?? true;
+        isVisibleRef.current = visible;
+        if (visible) {
+          measureAndInit();
+          startLoop();
+        } else {
+          if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+          animatingRef.current = false;
+        }
       },
       { threshold: 0.05 }
     );
@@ -44,14 +206,25 @@ export function MagnetLines({
       observer.observe(containerRef.current);
     }
 
+    // Initial measurement
+    measureAndInit();
+
+    window.addEventListener('pointermove', handlePointerMove, { passive: true });
+    document.addEventListener('mouseleave', handlePointerLeave, { passive: true });
+    window.addEventListener('resize', handleResizeOrScroll, { passive: true });
+    window.addEventListener('scroll', handleResizeOrScroll, { passive: true });
+
     return () => {
+      window.removeEventListener('pointermove', handlePointerMove);
+      document.removeEventListener('mouseleave', handlePointerLeave);
+      window.removeEventListener('resize', handleResizeOrScroll);
+      window.removeEventListener('scroll', handleResizeOrScroll);
       motionQuery.removeEventListener('change', handleMotionChange);
       observer.disconnect();
+      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+      animatingRef.current = false;
     };
-  }, []);
-
-  const total = rows * columns;
-  const spans = Array.from({ length: total }, (_, i) => i);
+  }, [rows, columns, baseAngle]);
 
   return (
     <div
@@ -67,122 +240,23 @@ export function MagnetLines({
       aria-hidden="true"
     >
       {spans.map((i) => (
-        <Line
+        <div
           key={i}
-          containerRef={containerRef}
-          lineColor={lineColor}
-          lineWidth={lineWidth}
-          lineHeight={lineHeight}
-          baseAngle={baseAngle}
-          active={isVisible && !reducedMotion}
+          ref={(el) => {
+            lineElsRef.current[i] = el;
+          }}
+          style={{
+            width: lineWidth,
+            height: lineHeight,
+            backgroundColor: lineColor,
+            borderRadius: '9999px',
+            willChange: 'transform',
+            pointerEvents: 'none',
+          }}
+          aria-hidden="true"
         />
       ))}
     </div>
-  );
-}
-
-function Line({
-  containerRef,
-  lineColor,
-  lineWidth,
-  lineHeight,
-  baseAngle = 0,
-  active,
-}) {
-  const lineRef = useRef(null);
-  const centerRef = useRef(null);
-  const [rotate, setRotate] = useState(baseAngle);
-
-  // Cache line center on mount, resize, and scroll to avoid layout thrashing
-  useEffect(() => {
-    const updateCenter = () => {
-      if (lineRef.current) {
-        const rect = lineRef.current.getBoundingClientRect();
-        centerRef.current = {
-          x: rect.left + rect.width / 2,
-          y: rect.top + rect.height / 2,
-        };
-      }
-    };
-
-    updateCenter();
-    window.addEventListener('resize', updateCenter, { passive: true });
-    window.addEventListener('scroll', updateCenter, { passive: true });
-
-    return () => {
-      window.removeEventListener('resize', updateCenter);
-      window.removeEventListener('scroll', updateCenter);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!active) {
-      setRotate(baseAngle);
-      return;
-    }
-
-    let rafId = null;
-    let pendingEvent = null;
-
-    const handleMouseMove = (e) => {
-      pendingEvent = e;
-      if (!rafId) {
-        rafId = requestAnimationFrame(() => {
-          if (!centerRef.current || !pendingEvent) {
-            rafId = null;
-            return;
-          }
-
-          const distanceX = pendingEvent.clientX - centerRef.current.x;
-          const distanceY = pendingEvent.clientY - centerRef.current.y;
-          const distance = Math.hypot(distanceX, distanceY);
-
-          // Localized magnetic field radius (~320px)
-          const maxDistance = 320;
-
-          if (distance > maxDistance) {
-            setRotate(baseAngle);
-          } else {
-            // Smooth magnetic influence falloff
-            const influence = Math.pow(1 - distance / maxDistance, 1.6);
-
-            // Compute angle toward cursor
-            const targetAngle = (Math.atan2(distanceY, distanceX) * 180) / Math.PI;
-
-            // Restrain deflection to organic subtle angle (max +/-18 degrees from baseAngle)
-            let diff = ((targetAngle - baseAngle + 180) % 360) - 180;
-            const maxRotation = 18;
-            const clampedDiff = Math.max(-maxRotation, Math.min(maxRotation, diff));
-
-            setRotate(baseAngle + clampedDiff * influence);
-          }
-
-          rafId = null;
-        });
-      }
-    };
-
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      if (rafId) cancelAnimationFrame(rafId);
-    };
-  }, [baseAngle, active]);
-
-  return (
-    <motion.div
-      ref={lineRef}
-      animate={{ rotate }}
-      transition={{ type: 'spring', damping: 28, stiffness: 190 }}
-      style={{
-        width: lineWidth,
-        height: lineHeight,
-        backgroundColor: lineColor,
-        borderRadius: '9999px',
-        willChange: 'transform',
-        touchAction: 'pan-y',
-      }}
-    />
   );
 }
 

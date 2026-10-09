@@ -33,6 +33,8 @@ export default function Hero() {
       data-section="arrival"
       style={{
         position: 'relative',
+        isolation: 'isolate',
+        zIndex: 2,
         minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
@@ -89,62 +91,54 @@ export default function Hero() {
         }
       `}</style>
 
-      {/* ── Magnet Lines — Clearly Visible Architectural Field Behind Typography (z-index: 2) ── */}
+      {/* ── LAYER 1 (z-0): Existing space background (stars etc.) — pointer-events: none ── */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          zIndex: 0,
+          pointerEvents: 'none',
+        }}
+      />
+
+      {/* ── LAYER 2 (z-10): MagnetLines decorative interactive layer ── */}
       <div
         aria-hidden="true"
         className="hero-magnet-lines-field"
         style={{
           position: 'absolute',
-          left: isMobile
-            ? 'auto'
-            : isTablet
-            ? '52vw'
-            : 'clamp(48vw, 50vw, 52vw)',
-          right: isMobile ? '0vw' : 'auto',
-          top: isMobile ? '18%' : '16%',
-          width: isMobile
-            ? '48vw'
-            : isTablet
-            ? '46vw'
-            : 'clamp(480px, 55vw, 880px)',
-          height: isMobile
-            ? '36vh'
-            : isTablet
-            ? '50vh'
-            : 'clamp(420px, 58vh, 650px)',
-          zIndex: 2,
+          inset: 0,
+          zIndex: 10,
           pointerEvents: 'none',
           overflow: 'hidden',
-          // Single primary soft elliptical mask preserving ~55% left, ~75% overlap, 100% center, ~70% right, and natural outer edge fade
+          color: '#FFFFFF',
+          opacity: 0.35,
           maskImage:
-            'radial-gradient(ellipse 82% 72% at 54% 48%, rgba(0,0,0,1) 45%, rgba(0,0,0,0.72) 76%, rgba(0,0,0,0) 100%)',
+            'radial-gradient(ellipse at 35% 50%, rgba(0,0,0,0.25) 0%, black 60%)',
           WebkitMaskImage:
-            'radial-gradient(ellipse 82% 72% at 54% 48%, rgba(0,0,0,1) 45%, rgba(0,0,0,0.72) 76%, rgba(0,0,0,0) 100%)',
+            'radial-gradient(ellipse at 35% 50%, rgba(0,0,0,0.25) 0%, black 60%)',
         }}
       >
         <MagnetLines
-          rows={isMobile ? 5 : isTablet ? 7 : 8}
-          columns={isMobile ? 5 : isTablet ? 8 : 10}
+          rows={isMobile ? 12 : isTablet ? 10 : 9}
+          columns={isMobile ? 8 : isTablet ? 11 : 14}
+          containerSize="100%"
           style={{ width: '100%', height: '100%' }}
-          lineColor={
-            isMobile
-              ? 'rgba(176, 165, 255, 0.12)'
-              : isTablet
-              ? 'rgba(176, 165, 255, 0.22)'
-              : 'rgba(176, 165, 255, 0.28)'
-          }
-          lineWidth="0.14vmin"
-          lineHeight={isMobile ? '2.8vmin' : '3.8vmin'}
+          lineColor="currentColor"
+          lineWidth={isMobile ? '4.5px' : '5.5px'}
+          lineHeight={isMobile ? '38px' : '58px'}
           baseAngle={0}
         />
       </div>
 
-      {/* ── Minimal Editorial Typography Content ── */}
+      {/* ── LAYER 3 (z-20): Hero text, buttons, nav content ── */}
       <div
         className="hero-inner"
         style={{
           position: 'relative',
-          zIndex: 5,
+          zIndex: 20,
+          pointerEvents: 'auto',
           width: '100%',
           maxWidth: '1240px',
           margin: '0 auto',
