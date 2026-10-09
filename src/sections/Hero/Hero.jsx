@@ -39,11 +39,9 @@ export default function Hero() {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        overflow: 'hidden',
         overflowX: 'clip',
-        maxWidth: '100%',
-        paddingTop: '6rem',
-        paddingBottom: '4.5rem',
+        paddingTop: isMobile ? '4.5rem' : '5rem',
+        paddingBottom: isMobile ? '3rem' : '5rem',
       }}
     >
       <style>{`
@@ -145,6 +143,8 @@ export default function Hero() {
           pointerEvents: 'none',
           overflow: 'hidden',
           animation: 'heroGridReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) both',
+          WebkitMaskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
+          maskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
         }}
       >
         <MagnetLines
@@ -168,6 +168,8 @@ export default function Hero() {
           pointerEvents: 'none',
           background:
             'radial-gradient(ellipse 68% 62% at 30% 46%, rgba(5, 5, 12, 0.85) 0%, rgba(5, 5, 12, 0.65) 45%, rgba(5, 5, 12, 0) 80%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
+          maskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
         }}
       />
 
@@ -181,6 +183,8 @@ export default function Hero() {
           pointerEvents: 'none',
           background:
             'radial-gradient(ellipse 90% 85% at 50% 50%, transparent 55%, rgba(3, 3, 8, 0.6) 100%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
+          maskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
         }}
       />
 
@@ -194,6 +198,25 @@ export default function Hero() {
           pointerEvents: 'none',
           opacity: 0.035,
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+          WebkitMaskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
+          maskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
+        }}
+      />
+
+      {/* ── LAYER 2.8 (z-18): Subtle bottom edge transition gradient into shared universe ── */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: '24%',
+          maxHeight: 220,
+          zIndex: 18,
+          pointerEvents: 'none',
+          background:
+            'linear-gradient(to bottom, transparent 0%, rgba(11, 11, 16, 0.15) 50%, rgba(11, 11, 16, 0.7) 100%)',
         }}
       />
 
@@ -396,42 +419,46 @@ export default function Hero() {
             ABOUT ME
           </button>
         </div>
+      </div>
 
-        {/* Scroll Indicator */}
-        <div
-          className="hero-scroll-cue"
+      {/* ── Scroll Indicator: anchored to bottom of hero viewport ── */}
+      <div
+        className="hero-scroll-cue"
+        style={{
+          position: 'absolute',
+          bottom: '32px',
+          left: 'clamp(1.5rem, 5.5vw, 4.5rem)',
+          zIndex: 25,
+          pointerEvents: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+          gap: '0.65rem',
+          animation: 'heroFadeIn 0.6s 0.78s ease both',
+          opacity: 0,
+        }}
+      >
+        <span
           style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'flex-start',
-            gap: '0.65rem',
-            marginTop: '3.5rem',
-            animation: 'heroFadeIn 0.6s 0.78s ease both',
-            opacity: 0,
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: '0.58rem',
+            letterSpacing: '0.22em',
+            color: 'rgba(238, 238, 245, 0.62)',
+            textTransform: 'uppercase',
           }}
         >
-          <span
-            style={{
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: '0.58rem',
-              letterSpacing: '0.22em',
-              color: 'rgba(238, 238, 245, 0.62)',
-              textTransform: 'uppercase',
-            }}
-          >
-            SCROLL TO EXPLORE
-          </span>
-          <div
-            className="hero-scroll-line"
-            style={{
-              width: 1,
-              height: 32,
-              background:
-                'linear-gradient(to bottom, rgba(167, 139, 250, 0.8), transparent)',
-              animation: 'scrollPulse 2.4s ease-in-out infinite',
-            }}
-          />
-        </div>
+          SCROLL TO EXPLORE
+        </span>
+        <div
+          className="hero-scroll-line"
+          style={{
+            width: 1,
+            height: 32,
+            background:
+              'linear-gradient(to bottom, rgba(167, 139, 250, 0.8), transparent)',
+            animation: 'scrollPulse 2.4s ease-in-out infinite',
+          }}
+        />
       </div>
     </section>
   );

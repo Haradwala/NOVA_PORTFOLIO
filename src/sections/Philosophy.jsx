@@ -2,17 +2,16 @@
  * Philosophy.jsx — Engineering Philosophy
  *
  * Editorial layout: minimal, premium, quiet.
- * Componentry MagnetLines used as a barely-visible right-side accent.
- * NO dashboard cards. NO big card backgrounds.
+ * 2-column layout on desktop (~7/5 ratio):
+ *   Left column: Section label → Headline → Body paragraph
+ *   Right column: 4 editorial pillar items (statement + detail)
  *
- * Layout:
- *   Left column: Section label → headline → body
- *   Right accent: Magnet Lines (decorative, non-dominant)
- *   Below: 4 editorial pillar rows (text-only, no card shells)
+ * Starfield canvas shines through continuously from the shared background.
  */
 
 import { useState, useEffect, useRef } from 'react';
 import { registerSection, highlightSection } from '../utils/sectionRegistry';
+import { useScene } from '../features/scene-engine/SceneContext';
 
 const PHILOSOPHY_PILLARS = [
   {
@@ -46,7 +45,16 @@ export default function Philosophy() {
   const [windowWidth, setWindowWidth] = useState(
     typeof window !== 'undefined' ? window.innerWidth : 1200
   );
+  const [inView, setInView] = useState(false);
 
+  // SceneContext registration for universe starfield continuity
+  const { registerSection: registerSceneSection } = useScene();
+  useEffect(() => {
+    registerSceneSection?.('philosophy', sectionRef.current);
+    return () => registerSceneSection?.('philosophy', null);
+  }, [registerSceneSection]);
+
+  // Section registry for navigation
   useEffect(() => {
     const unregisterAbout = registerSection('about', sectionRef);
     const unregisterPhil = registerSection('philosophy', sectionRef);
@@ -71,6 +79,32 @@ export default function Philosophy() {
     };
   }, []);
 
+  // IntersectionObserver for 1-time scroll entrance reveal
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+      setInView(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  const isDesktop = windowWidth >= 1024;
   const isMobile = windowWidth < 768;
 
   return (
@@ -81,86 +115,147 @@ export default function Philosophy() {
       style={{
         position: 'relative',
         zIndex: 10,
-        padding: 'clamp(5rem, 10vw, 9rem) 1.5rem',
-        maxWidth: 1200,
+        background: 'transparent',
+        paddingTop: isMobile ? '0.35rem' : 'clamp(1.25rem, 2.5vh, 2rem)',
+        paddingBottom: 'clamp(4rem, 8vw, 7rem)',
+        paddingLeft: '1.5rem',
+        paddingRight: '1.5rem',
+        maxWidth: 1240,
         margin: '0 auto',
-        overflow: 'hidden',
+        overflowX: 'clip',
       }}
     >
+      <style>{`
+        .phil-reveal {
+          opacity: 0;
+          transform: translateY(24px);
+          transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+          will-change: opacity, transform;
+        }
+        .phil-reveal.in-view {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .phil-reveal {
+            opacity: 1 !important;
+            transform: none !important;
+            transition: none !important;
+          }
+        }
+      `}</style>
 
-      {/* ── Foreground Content ── */}
-      <div style={{ position: 'relative', zIndex: 10, maxWidth: 820 }}>
+      {/* ── Thin Divider fading out at both ends above the section label ── */}
+      <div
+        style={{
+          width: '100%',
+          height: '1px',
+          background:
+            'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.08) 20%, rgba(255, 255, 255, 0.08) 80%, transparent 100%)',
+          marginBottom: isMobile ? '0.85rem' : '1.75rem',
+        }}
+      />
 
-        {/* Section tag */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.75rem',
-            marginBottom: '2.25rem',
-          }}
-        >
-          <div style={{ width: 20, height: 1, background: '#A78BFA' }} />
-          <span
+      {/* ── Two-Column Layout (Desktop ~7/5, collapsing on mobile/tablet) ── */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: isDesktop ? '1.25fr 1fr' : '1fr',
+          gap: isDesktop ? 'clamp(3rem, 5.5vw, 5rem)' : '2.5rem',
+          alignItems: 'start',
+        }}
+      >
+        {/* ── LEFT COLUMN: Label, Headline, Paragraph ── */}
+        <div>
+          {/* Section tag */}
+          <div
+            className={`phil-reveal ${inView ? 'in-view' : ''}`}
             style={{
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: '0.66rem',
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              color: '#A78BFA',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+              marginBottom: '1.75rem',
+              transitionDelay: '0ms',
             }}
           >
-            02 // ENGINEERING PHILOSOPHY
-          </span>
+            <div style={{ width: 20, height: 1, background: '#A78BFA' }} />
+            <span
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: '0.66rem',
+                letterSpacing: '0.2em',
+                textTransform: 'uppercase',
+                color: '#A78BFA',
+              }}
+            >
+              02 // ENGINEERING PHILOSOPHY
+            </span>
+          </div>
+
+          {/* Main Headline (56-72% of Hero name size) */}
+          <h2
+            style={{
+              fontFamily: "'Syne', sans-serif",
+              fontWeight: 800,
+              fontSize: 'clamp(1.75rem, 3.8vw, 3.35rem)',
+              lineHeight: 1.1,
+              letterSpacing: '-0.03em',
+              color: '#EEEEF5',
+              margin: '0 0 1.5rem 0',
+            }}
+          >
+            <div
+              className={`phil-reveal ${inView ? 'in-view' : ''}`}
+              style={{ transitionDelay: '100ms' }}
+            >
+              I BUILD SYSTEMS,
+            </div>
+            <div
+              className={`phil-reveal ${inView ? 'in-view' : ''}`}
+              style={{ transitionDelay: '200ms', marginTop: '0.15em' }}
+            >
+              <span
+                style={{
+                  background:
+                    'linear-gradient(135deg, #EEEEF5 10%, #A78BFA 60%, #38BDF8 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  display: 'inline-block',
+                }}
+              >
+                NOT JUST INTERFACES.
+              </span>
+            </div>
+          </h2>
+
+          {/* Lead Paragraph */}
+          <p
+            className={`phil-reveal ${inView ? 'in-view' : ''}`}
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontWeight: 300,
+              fontSize: 'clamp(0.95rem, 1.4vw, 1.05rem)',
+              color: 'rgba(215, 215, 235, 0.88)',
+              maxWidth: '60ch',
+              lineHeight: 1.7,
+              margin: 0,
+              transitionDelay: '300ms',
+            }}
+          >
+            Software must be reliable before it is clever, and robust before it is fast.
+            My work bridges autonomous AI intelligence, resilient engineering systems, and real-time product architectures.
+          </p>
         </div>
 
-        {/* Main Headline */}
-        <h2
-          style={{
-            fontFamily: "'Syne', sans-serif",
-            fontWeight: 800,
-            fontSize: 'clamp(2rem, 5vw, 3.6rem)',
-            lineHeight: 1.08,
-            letterSpacing: '-0.03em',
-            color: '#EEEEF5',
-            margin: '0 0 1.5rem 0',
-          }}
-        >
-          I BUILD SYSTEMS,{' '}
-          <span
-            style={{
-              background: 'linear-gradient(135deg, #EEEEF5 10%, #A78BFA 60%, #38BDF8 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}
-          >
-            NOT JUST INTERFACES.
-          </span>
-        </h2>
-
-        {/* Lead Paragraph */}
-        <p
-          style={{
-            fontFamily: "'DM Sans', sans-serif",
-            fontWeight: 300,
-            fontSize: 'clamp(0.96rem, 1.6vw, 1.1rem)',
-            color: 'rgba(160, 160, 192, 0.8)',
-            maxWidth: 680,
-            lineHeight: 1.75,
-            margin: '0 0 4rem 0',
-          }}
-        >
-          Software must be reliable before it is clever, and robust before it is fast.
-          My work bridges autonomous AI intelligence, resilient engineering systems, and real-time product architectures.
-        </p>
-
-        {/* Philosophy Pillars — editorial rows */}
+        {/* ── RIGHT COLUMN: Editorial Pillar Rows ── */}
         <div
+          className={`phil-reveal ${inView ? 'in-view' : ''}`}
           style={{
             display: 'flex',
             flexDirection: 'column',
             gap: 0,
+            transitionDelay: '400ms',
           }}
         >
           {PHILOSOPHY_PILLARS.map((item, i) => (
@@ -168,14 +263,15 @@ export default function Philosophy() {
               key={item.number}
               style={{
                 display: 'grid',
-                gridTemplateColumns: '3rem 1fr',
-                gap: '1.25rem',
+                gridTemplateColumns: '2.5rem 1fr',
+                gap: '1rem',
                 alignItems: 'start',
-                padding: '1.5rem 0',
+                padding: '1.25rem 0',
                 borderTop: '1px solid rgba(255, 255, 255, 0.07)',
-                borderBottom: i === PHILOSOPHY_PILLARS.length - 1
-                  ? '1px solid rgba(255, 255, 255, 0.07)'
-                  : 'none',
+                borderBottom:
+                  i === PHILOSOPHY_PILLARS.length - 1
+                    ? '1px solid rgba(255, 255, 255, 0.07)'
+                    : 'none',
               }}
             >
               {/* Number */}
@@ -183,7 +279,7 @@ export default function Philosophy() {
                 style={{
                   fontFamily: "'JetBrains Mono', monospace",
                   fontSize: '0.66rem',
-                  color: 'rgba(167, 139, 250, 0.55)',
+                  color: 'rgba(167, 139, 250, 0.65)',
                   letterSpacing: '0.1em',
                   paddingTop: '0.2rem',
                   userSelect: 'none',
@@ -192,13 +288,13 @@ export default function Philosophy() {
                 {item.number}
               </span>
 
-              {/* Content */}
+              {/* Statement & Detail */}
               <div>
                 <div
                   style={{
                     fontFamily: "'Syne', sans-serif",
                     fontWeight: 700,
-                    fontSize: 'clamp(0.95rem, 1.5vw, 1.05rem)',
+                    fontSize: 'clamp(0.95rem, 1.4vw, 1.05rem)',
                     color: '#EEEEF5',
                     marginBottom: '0.35rem',
                     letterSpacing: '-0.01em',
@@ -210,8 +306,8 @@ export default function Philosophy() {
                   style={{
                     fontFamily: "'DM Sans', sans-serif",
                     fontSize: '0.87rem',
-                    lineHeight: 1.65,
-                    color: 'rgba(150, 150, 185, 0.72)',
+                    lineHeight: 1.6,
+                    color: 'rgba(175, 175, 205, 0.78)',
                     maxWidth: 580,
                   }}
                 >

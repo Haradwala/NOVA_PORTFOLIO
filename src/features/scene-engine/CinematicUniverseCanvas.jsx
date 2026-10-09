@@ -123,6 +123,8 @@ export default function CinematicUniverseCanvas() {
         {/* Scene environments */}
         {!window?.location?.search?.includes('debugNode=true') && (
           activeScene === 'arrival' ||
+          activeScene === 'philosophy' ||
+          activeScene === 'about' ||
           activeScene === 'missions' ||
           activeScene === 'work' ||
           activeScene === 'archive' ||
